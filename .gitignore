@@ -5,3 +5,4 @@ __pycache__/
 media/
 setup.cfg
 *.sqlite3
+db.sqlite3
