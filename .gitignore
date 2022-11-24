@@ -2,6 +2,6 @@ venv/
 migrations/
 __pycache__/
 .mypy_chache/
-db.sqlite3
 media/
-
+setup.cfg
+*.sqlite3
