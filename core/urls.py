@@ -40,6 +40,8 @@ urlpatterns = (
         ),
         path("admin/", admin.site.urls),
         path("api/", include("users.urls"), name="users_base_API"),
+        path("api/", include("orders.urls"), name="orders_base_API"),
+        path("api/", include("shops.urls"), name="shops_base_API"),
         # path("api/users/", include("users.urls"), name="users_base_API"),
         # path("api/shops/", include("shops.urls"), name="shops_base_API"),
         # path("api/token/create/", TokenObtainPairView.as_view(), name="token_create"),

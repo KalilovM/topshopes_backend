@@ -1,10 +1,10 @@
 from rest_framework import mixins
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from core.permissions import IsAnonymous
-from .models import Customer
+from .models import Address, Customer
 from rest_framework import permissions
-from .serializers import CustomerSerializer
+from .serializers import AddressSerializer, CustomerSerializer
 
 
 class CustomerViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, GenericViewSet):
@@ -22,4 +22,10 @@ class CustomerViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.L
         return Customer.objects.all().filter(id = self.request.user.id)
     
 
-    
+
+class AddressViewSet(ModelViewSet):
+    serializer_class = AddressSerializer
+    permission_classes = [permissions.IsAuthenticated,]
+
+    def get_queryset(self):
+        return Address.objects.all().filter(user = self.request.user.id)

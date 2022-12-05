@@ -10,7 +10,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    user = CustomerSerializer()
     items = OrderItemSerializer(many=True, read_only=True)
 
     class Meta:
@@ -18,6 +17,7 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "user",
+            "shop",
             "items",
             "tax",
             "created_at",
