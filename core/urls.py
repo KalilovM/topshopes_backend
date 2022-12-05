@@ -44,8 +44,8 @@ urlpatterns = (
         path("api/", include("shops.urls"), name="shops_base_API"),
         # path("api/users/", include("users.urls"), name="users_base_API"),
         # path("api/shops/", include("shops.urls"), name="shops_base_API"),
-        # path("api/token/create/", TokenObtainPairView.as_view(), name="token_create"),
-        # path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+        path("api/auth/login/", TokenObtainPairView.as_view(), name="token_create"),
+        path("api/auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
