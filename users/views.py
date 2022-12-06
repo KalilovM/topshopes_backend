@@ -7,9 +7,13 @@ from rest_framework import permissions
 from .serializers import AddressSerializer, CustomerSerializer
 
 
-class CustomerViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, GenericViewSet):
+class CustomerViewSet(
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     serializer_class = CustomerSerializer
-    
 
     def get_permissions(self):
         if self.action == "create":
@@ -19,13 +23,14 @@ class CustomerViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.L
         return super().get_permissions()
 
     def get_queryset(self):
-        return Customer.objects.all().filter(id = self.request.user.id)
-    
+        return Customer.objects.all().filter(id=self.request.user.id)
 
 
 class AddressViewSet(ModelViewSet):
     serializer_class = AddressSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
 
     def get_queryset(self):
-        return Address.objects.all().filter(user = self.request.user.id)
+        return Address.objects.all().filter(user=self.request.user.id)

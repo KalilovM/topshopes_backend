@@ -53,6 +53,7 @@ class Shop(models.Model):
     class Meta:
         ordering = ["name"]
 
+
 class Size(models.Model):
     name = models.CharField(max_length=15, verbose_name="Product's size")
 

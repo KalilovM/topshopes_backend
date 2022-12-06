@@ -45,7 +45,10 @@ class Order(models.Model):
         ("CENCELLED", "Cencelled"),
     )
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
-    user = models.ForeignKey("users.Customer", on_delete=models.CASCADE,)
+    user = models.ForeignKey(
+        "users.Customer",
+        on_delete=models.CASCADE,
+    )
     shop = models.ForeignKey("shops.Shop", on_delete=models.CASCADE)
     tax = models.PositiveSmallIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
