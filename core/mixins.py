@@ -3,10 +3,9 @@ from rest_framework import serializers
 
 
 class CommonRelatedField(serializers.RelatedField):
-    model = None
-    serializer = None
-
-    def __init__(self, **kwargs):
+    def __init__(self, model=None, serializer=None, **kwargs):
+        self.model = model
+        self.serializer = serializer
         self.pk_field = kwargs.pop('pk_field', None)
         super().__init__(**kwargs)
 

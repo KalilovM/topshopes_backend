@@ -5,5 +5,5 @@ from .routers import router
 
 urlpatterns = [
                 path("profile/",CustomerViewSet.as_view({"get":"retrieve","post":"create","put":"update","patch":"partial_update"}), name="profile"),
-                path("address/", include(router.urls))
+                path("profile/address/", include(router.urls))
         ]

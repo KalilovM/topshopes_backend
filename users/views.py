@@ -36,3 +36,6 @@ class AddressViewSet(ModelViewSet):
 
     def get_queryset(self):
         return Address.objects.all().filter(user=self.request.user.id)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

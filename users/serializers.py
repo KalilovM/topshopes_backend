@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from core.mixins import CommonRelatedField
 from .models import Customer, Address
 
 
@@ -18,9 +20,7 @@ class CustomerSerializer(serializers.ModelSerializer):
         ]
 
 
-from .mixins import CustomerRelatedField
 class AddressSerializer(serializers.ModelSerializer):
-    user = CustomerRelatedField()
     class Meta:
         model = Address
         fields = "__all__"

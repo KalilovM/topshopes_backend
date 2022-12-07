@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from core.helpers import ImageUrlField
+from core.mixins import CommonRelatedField
 
 from users.serializers import CustomerSerializer
 from .models import (
@@ -20,7 +21,7 @@ from .models import (
 class LinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Link
-        fields = ["youtube", "twitter", "facebook", "instagram"]
+        fields = ["name","link"]
 
 
 class SizeSerializer(serializers.ModelSerializer):
@@ -103,7 +104,7 @@ class ProductSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     size = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
     colors = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
-    shop = ShopSerializer()
+    shop = CommonRelatedField(model=Shop, serializer=ShopSerializer)
     categories = serializers.SlugRelatedField(
         many=True, read_only=True, slug_field="name"
     )
@@ -133,11 +134,10 @@ class ProductSerializer(serializers.ModelSerializer):
             "published",
         ]
 
-
 class SingleShopSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
-    user = CustomerSerializer()
-    socialLinks = LinkSerializer()
+    user = CustomerSerializer(read_only=True)
+    links = LinkSerializer(many=True, read_only=True)
     products = ProductSerializer(many=True, read_only=True)
 
     class Meta:

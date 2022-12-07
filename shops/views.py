@@ -1,6 +1,4 @@
 from rest_framework import mixins, permissions, viewsets
-from rest_framework.decorators import action
-from rest_framework.response import Response
 from .models import (
     Link,
     Shop,
@@ -33,15 +31,23 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
 class ShopProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAuthenticated]
     
     def get_queryset(self):
         return Product.objects.prefetch_related("images").filter(shop = self.request.user.shop)
+    
+    def perform_create(self, serializer):
+        serializer.save(shop = self.request.user.shop)
 
 class MyShopViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated]
+    serializer_class = SingleShopSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user = self.request.user)
 
     def get_queryset(self):
         if self.action == "retrieve":
@@ -50,11 +56,6 @@ class MyShopViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Updat
                 .filter(user=self.request.user)
             )
         return Shop.objects.filter(user=self.request.user.pk)
-
-    def get_serializer_class(self):
-        if self.action == "retrieve":
-            return SingleShopSerializer
-        return ShopSerializer
 
 class ShopViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Shop.objects.all()
@@ -69,6 +70,9 @@ class LinkViewSet(
 ):
     serializer_class = LinkSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(shop=self.request.user.shop)
 
     def get_queryset(self):
         return Link.objects.filter(shop=self.request.user.shop)

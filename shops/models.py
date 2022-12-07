@@ -6,17 +6,6 @@ from core.helpers import PathAndRename
 
 
 # TODO: barcode for product and qr code
-class Link(models.Model):
-    facebook = models.CharField(max_length=255, unique=True)
-    youtube = models.CharField(max_length=255, unique=True)
-    twitter = models.CharField(max_length=255, unique=True)
-    instagram = models.CharField(max_length=255, unique=True)
-
-    def __str__(self):
-        return f"Links {self.id}"
-
-    class Meta:
-        ordering = ["id"]
 
 
 class Shop(models.Model):
@@ -43,9 +32,6 @@ class Shop(models.Model):
     profilePicture = models.ImageField(
         upload_to=PathAndRename("shop/profiles/"), verbose_name="Shop's profile picture"
     )
-    socialLinks = models.ForeignKey(
-        Link, on_delete=models.SET_NULL, null=True, verbose_name="Shop's social links"
-    )
 
     def __str__(self):
         return self.name
@@ -53,6 +39,16 @@ class Shop(models.Model):
     class Meta:
         ordering = ["name"]
 
+class Link(models.Model):
+    name = models.CharField(max_length=30, verbose_name="Social Network")
+    link = models.CharField(max_length=255, verbose_name="Social Network Link")
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE,related_name="links", related_query_name="links" ,verbose_name="Link to shop")
+
+    def __str__(self):
+        return f"Links {self.id}"
+
+    class Meta:
+        ordering = ["id"]
 
 class Size(models.Model):
     name = models.CharField(max_length=15, verbose_name="Product's size")
