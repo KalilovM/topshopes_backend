@@ -70,7 +70,7 @@ class BrandTypeSerializer(serializers.ModelSerializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = ["image"]
+        fields = ["id","image"]
 
 
 class CategorySerializer(serializers.ModelSerializer):

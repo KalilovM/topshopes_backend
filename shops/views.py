@@ -96,7 +96,7 @@ class BrandTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-class ImageViewSet(viewsets.ModelViewSet):
+class ImageViewSet(mixins.UpdateModelMixin, mixins.DestroyModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -108,7 +108,7 @@ class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-class BrandViewSet(viewsets.ModelViewSet):
+class BrandViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
     permission_classes = [permissions.IsAuthenticated]
