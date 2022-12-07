@@ -1,7 +1,6 @@
 from rest_framework import routers
-from .views import CustomerViewSet, AddressViewSet
+from .views import AddressViewSet
 
 router = routers.SimpleRouter()
 
-router.register(r"profile", CustomerViewSet, basename="profile")
-router.register(r"address", AddressViewSet, basename="address")
+router.register(r"", AddressViewSet, basename="address")

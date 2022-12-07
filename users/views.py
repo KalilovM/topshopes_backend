@@ -10,7 +10,7 @@ from .serializers import AddressSerializer, CustomerSerializer
 class CustomerViewSet(
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
-    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
     GenericViewSet,
 ):
     serializer_class = CustomerSerializer
@@ -25,6 +25,8 @@ class CustomerViewSet(
     def get_queryset(self):
         return Customer.objects.all().filter(id=self.request.user.id)
 
+    def get_object(self, pk = None):
+        return self.request.user
 
 class AddressViewSet(ModelViewSet):
     serializer_class = AddressSerializer

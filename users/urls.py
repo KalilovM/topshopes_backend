@@ -1,3 +1,9 @@
+from django.urls import path, include
+
+from users.views import CustomerViewSet
 from .routers import router
 
-urlpatterns = router.urls
+urlpatterns = [
+                path("profile/",CustomerViewSet.as_view({"get":"retrieve","post":"create","put":"update","patch":"partial_update"}), name="profile"),
+                path("address/", include(router.urls))
+        ]

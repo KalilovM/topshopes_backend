@@ -7,7 +7,7 @@ from users.managers import CustomeManager
 
 
 class Customer(AbstractUser):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     username = None
     email = models.CharField(max_length=50, unique=True)
     avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
@@ -26,7 +26,7 @@ class Customer(AbstractUser):
 
 
 class Address(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     user = models.ForeignKey(to=Customer, on_delete=models.CASCADE)
     city = models.CharField(max_length=30)
     country = models.CharField(max_length=35)

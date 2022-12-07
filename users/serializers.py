@@ -18,7 +18,9 @@ class CustomerSerializer(serializers.ModelSerializer):
         ]
 
 
+from .mixins import CustomerRelatedField
 class AddressSerializer(serializers.ModelSerializer):
+    user = CustomerRelatedField()
     class Meta:
         model = Address
         fields = "__all__"
