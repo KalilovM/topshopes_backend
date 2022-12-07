@@ -26,7 +26,7 @@ from .serializers import (
 )
 
 
-class ProductViewSet(viewsets.ModelViewSet):
+class ProductViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = Product.objects.prefetch_related("images").all()
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAuthenticated]
