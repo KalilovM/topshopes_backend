@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
@@ -27,6 +28,10 @@ class CustomerViewSet(
 
     def get_object(self, pk = None):
         return self.request.user
+
+    def perform_create(self, serializer):
+        print(self.request.data)
+        serializer.save(password = make_password(self.request.data['password']))
 
 class AddressViewSet(ModelViewSet):
     serializer_class = AddressSerializer

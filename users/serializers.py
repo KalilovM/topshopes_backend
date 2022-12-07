@@ -5,6 +5,7 @@ from .models import Customer, Address
 
 
 class CustomerSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
     class Meta:
         model = Customer
         fields = [
