@@ -39,11 +39,10 @@ urlpatterns = (
             name="schema-redoc",
         ),
         path("admin/", admin.site.urls),
+        path("api/admin/",include("head.urls"), name="admin_base_API"),
         path("api/", include("users.urls"), name="users_base_API"),
         path("api/", include("orders.urls"), name="orders_base_API"),
         path("api/", include("shops.urls"), name="shops_base_API"),
-        # path("api/users/", include("users.urls"), name="users_base_API"),
-        # path("api/shops/", include("shops.urls"), name="shops_base_API"),
         path("api/auth/login/", TokenObtainPairView.as_view(), name="token_create"),
         path("api/auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     ]
