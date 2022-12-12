@@ -14,8 +14,6 @@ from .views import (
 )
 
 router = routers.SimpleRouter()
-router.register(r"shops/categories", CategoryViewSet, basename="category")
-router.register(r"shops/brand", BrandViewSet, basename="brand")
 router.register(r"products/sizes", SizeViewSet, basename="size")
 router.register(r"products/colors", ColorViewSet, basename="color")
 router.register(r"porducts/images", ImageViewSet, basename="image")
@@ -24,5 +22,7 @@ router.register(r"shop/orders", ShopOrderViewSet, basename="shop-order")
 router.register(r"shop/link", LinkViewSet, basename="shop-link")
 router.register(r"shop", MyShopViewSet, basename="shop")
 
+router.register(r"shops/categories", CategoryViewSet, basename="category")
+router.register(r"shops/brand", BrandViewSet, basename="brand")
 router.register(r"shops/products", ProductViewSet, basename="products")
 router.register(r"shops", ShopViewSet, basename="shops")

@@ -31,7 +31,6 @@ class ProductViewSet(
 ):
     queryset = Product.objects.prefetch_related("images").all()
     serializer_class = ProductSerializer
-    permission_classes = [permissions.AllowAny]
 
 
 class ShopProductViewSet(viewsets.ModelViewSet):
@@ -125,16 +124,13 @@ class ImageViewSet(
 class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 
 class BrandViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 
 class ReviewViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [permissions.IsAuthenticated]
