@@ -104,7 +104,7 @@ class ProductSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     size = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
     colors = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
-    shop = CommonRelatedField(model=Shop, serializer=ShopSerializer)
+    shop = CommonRelatedField(model=Shop, serializer=ShopSerializer, read_only=True)
     categories = serializers.SlugRelatedField(
         many=True, read_only=True, slug_field="name"
     )
