@@ -26,40 +26,55 @@ from .serializers import (
 )
 
 
-class ProductViewSet(mixins.ListModelMixin,mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class ProductViewSet(
+    mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
+):
     queryset = Product.objects.prefetch_related("images").all()
     serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
 
 class ShopProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAuthenticated]
-    
-    def get_queryset(self):
-        return Product.objects.prefetch_related("images").filter(shop = self.request.user.shop)
-    
-    def perform_create(self, serializer):
-        serializer.save(shop = self.request.user.shop)
 
-class MyShopViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
+    def get_queryset(self):
+        return Product.objects.prefetch_related("images").filter(
+            shop=self.request.user.shop
+        )
+
+    def perform_create(self, serializer):
+        serializer.save(shop=self.request.user.shop)
+
+
+class MyShopViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = SingleShopSerializer
 
     def perform_create(self, serializer):
-        serializer.save(user = self.request.user)
+        serializer.save(user=self.request.user)
 
     def get_queryset(self):
         if self.action == "retrieve":
-            return (
-                Shop.objects.prefetch_related("products")
-                .filter(user=self.request.user)
+            return Shop.objects.prefetch_related("products").filter(
+                user=self.request.user
             )
         return Shop.objects.filter(user=self.request.user.pk)
 
-class ShopViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+
+class ShopViewSet(
+    mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
+):
     queryset = Shop.objects.all()
     serializer_class = ShopSerializer
+    permission_classes = [permissions.AllowAny]
+
 
 class LinkViewSet(
     mixins.ListModelMixin,
@@ -96,7 +111,12 @@ class BrandTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-class ImageViewSet(mixins.UpdateModelMixin, mixins.DestroyModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+class ImageViewSet(
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.CreateModelMixin,
+    viewsets.GenericViewSet,
+):
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
     permission_classes = [permissions.IsAuthenticated]

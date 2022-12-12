@@ -39,16 +39,24 @@ class Shop(models.Model):
     class Meta:
         ordering = ["name"]
 
+
 class Link(models.Model):
     name = models.CharField(max_length=30, verbose_name="Social Network")
     link = models.CharField(max_length=255, verbose_name="Social Network Link")
-    shop = models.ForeignKey(Shop, on_delete=models.CASCADE,related_name="links", related_query_name="links" ,verbose_name="Link to shop")
+    shop = models.ForeignKey(
+        Shop,
+        on_delete=models.CASCADE,
+        related_name="links",
+        related_query_name="links",
+        verbose_name="Link to shop",
+    )
 
     def __str__(self):
         return f"Links {self.id}"
 
     class Meta:
         ordering = ["id"]
+
 
 class Size(models.Model):
     name = models.CharField(max_length=15, verbose_name="Product's size")

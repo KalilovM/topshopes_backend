@@ -6,7 +6,7 @@ class CommonRelatedField(serializers.RelatedField):
     def __init__(self, model=None, serializer=None, **kwargs):
         self.model = model
         self.serializer = serializer
-        self.pk_field = kwargs.pop('pk_field', None)
+        self.pk_field = kwargs.pop("pk_field", None)
         super().__init__(**kwargs)
 
     def get_queryset(self):
@@ -15,7 +15,9 @@ class CommonRelatedField(serializers.RelatedField):
             queryset = self.model.objects.all()
 
         if queryset is None:
-            raise Exception('CommonRelated field must provide a `queryset` or `model` argument')
+            raise Exception(
+                "CommonRelated field must provide a `queryset` or `model` argument"
+            )
 
         return queryset
 
@@ -25,9 +27,9 @@ class CommonRelatedField(serializers.RelatedField):
         try:
             return self.get_queryset().get(pk=data)
         except ObjectDoesNotExist:
-            self.fail('does_not_exist', pk_value=data)
+            self.fail("does_not_exist", pk_value=data)
         except (TypeError, ValueError):
-            self.fail('incorrect_type', data_type=type(data).__name__)
+            self.fail("incorrect_type", data_type=type(data).__name__)
 
     def to_representation(self, value):
         if self.serializer is not None:

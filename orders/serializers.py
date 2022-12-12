@@ -7,7 +7,13 @@ from rest_framework import serializers
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
-        fields = ["product_image", "product_name", "product_price", "product_quantity", "order"]
+        fields = [
+            "product_image",
+            "product_name",
+            "product_price",
+            "product_quantity",
+            "order",
+        ]
 
 
 class OrderSerializer(serializers.ModelSerializer):

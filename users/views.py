@@ -26,12 +26,13 @@ class CustomerViewSet(
     def get_queryset(self):
         return Customer.objects.all().filter(id=self.request.user.id)
 
-    def get_object(self, pk = None):
+    def get_object(self, pk=None):
         return self.request.user
 
     def perform_create(self, serializer):
         print(self.request.data)
-        serializer.save(password = make_password(self.request.data['password']))
+        serializer.save(password=make_password(self.request.data["password"]))
+
 
 class AddressViewSet(ModelViewSet):
     serializer_class = AddressSerializer

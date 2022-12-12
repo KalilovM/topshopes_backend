@@ -24,5 +24,5 @@ router.register(r"shop/orders", ShopOrderViewSet, basename="shop-order")
 router.register(r"shop/link", LinkViewSet, basename="shop-link")
 router.register(r"shop", MyShopViewSet, basename="shop")
 
-router.register(r"shops/products",ProductViewSet, basename="products")
+router.register(r"shops/products", ProductViewSet, basename="products")
 router.register(r"shops", ShopViewSet, basename="shops")

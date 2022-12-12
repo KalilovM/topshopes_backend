@@ -39,7 +39,7 @@ urlpatterns = (
             name="schema-redoc",
         ),
         path("admin/", admin.site.urls),
-        path("api/admin/",include("head.urls"), name="admin_base_API"),
+        path("api/admin/", include("head.urls"), name="admin_base_API"),
         path("api/", include("users.urls"), name="users_base_API"),
         path("api/", include("orders.urls"), name="orders_base_API"),
         path("api/", include("shops.urls"), name="shops_base_API"),

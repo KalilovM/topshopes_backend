@@ -21,7 +21,7 @@ from .models import (
 class LinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Link
-        fields = ["name","link"]
+        fields = ["name", "link"]
 
 
 class SizeSerializer(serializers.ModelSerializer):
@@ -70,7 +70,7 @@ class BrandTypeSerializer(serializers.ModelSerializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = ["id","image"]
+        fields = ["id", "image"]
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -133,6 +133,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "unit",
             "published",
         ]
+
 
 class SingleShopSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()

@@ -7,6 +7,7 @@ class ShopRelatedField(CommonRelatedField):
     model = Shop
     serializer = ShopSerializer
 
+
 class LinkRelatedField(CommonRelatedField):
     model = Link
     serializer = LinkSerializer
