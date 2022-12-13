@@ -105,7 +105,7 @@ class ProductSerializer(serializers.ModelSerializer):
     size = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
     colors = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
     shop = CommonRelatedField(model=Shop, serializer=ShopSerializer, read_only=True)
-    categories = CategoryRelatedField(many=True)
+    categories = CategoryRelatedField(many=True, queryset=Category.objects.all())
     # how to set only image to field brand (brand image only, now it's object and image)
     images = ImageUrlField(many=True, read_only=True)
     brand = ImageUrlField(many=False, read_only=True)

@@ -1,8 +1,6 @@
 from core.mixins import CommonRelatedField
-from shops.mixins import ShopRelatedField
 from shops.models import Shop
 from shops.serializers import ShopSerializer
-from users.mixins import CustomerRelatedField
 from users.models import Customer
 from users.serializers import CustomerSerializer
 from .models import OrderItem, Order
