@@ -93,7 +93,6 @@ class CategorySerializer(serializers.ModelSerializer):
 class ShopSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     user = CustomerSerializer()
-    socialLinks = LinkSerializer()
 
     class Meta:
         model = Shop
