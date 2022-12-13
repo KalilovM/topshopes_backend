@@ -97,7 +97,7 @@ class Category(MPTTModel):
         upload_to=PathAndRename("category/icons/"), null=True, blank=True
     )
     image = models.ImageField(upload_to=PathAndRename("category/images/"))
-    name = models.CharField(max_length=50, verbose_name="Category name")
+    name = models.CharField(max_length=50, verbose_name="Category name", unique=True)
     slug = AutoSlugField(populate_from="name")
     description = models.TextField()
     parent = TreeForeignKey(

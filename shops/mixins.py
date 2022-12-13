@@ -1,13 +1,6 @@
-from core.mixins import CommonRelatedField
-from shops.models import Link, Shop
-from shops.serializers import LinkSerializer, ShopSerializer
+from rest_framework import serializers
 
 
-class ShopRelatedField(CommonRelatedField):
-    model = Shop
-    serializer = ShopSerializer
-
-
-class LinkRelatedField(CommonRelatedField):
-    model = Link
-    serializer = LinkSerializer
+class CategoryRelatedField(serializers.RelatedField):
+    def to_representation(self, value):
+        return {"id": value.name, "name": value.title}

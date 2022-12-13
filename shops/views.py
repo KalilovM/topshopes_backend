@@ -29,20 +29,37 @@ from .serializers import (
 class ProductViewSet(
     mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
 ):
+    """
+    Product viewset to get all products
+    Only get method allowed
+    """
+
     queryset = Product.objects.prefetch_related("images").all()
     serializer_class = ProductSerializer
 
 
 class ShopProductViewSet(viewsets.ModelViewSet):
+    """
+    Viewset allows the owner of shop to edit products
+    """
+
     serializer_class = ProductSerializer
+    # Add new permission is owner
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+
+        """
+        Returns only current user's shop products
+        """
         return Product.objects.prefetch_related("images").filter(
             shop=self.request.user.shop
         )
 
     def perform_create(self, serializer):
+        """
+        On create product set shop to user's
+        """
         serializer.save(shop=self.request.user.shop)
 
 
@@ -53,23 +70,35 @@ class MyShopViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
+    """
+    Viewset to edit user's shop
+    available all methods
+    """
+
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = SingleShopSerializer
 
     def perform_create(self, serializer):
+        """
+        On create set user to current user
+        """
         serializer.save(user=self.request.user)
 
     def get_queryset(self):
-        if self.action == "retrieve":
-            return Shop.objects.prefetch_related("products").filter(
-                user=self.request.user
-            )
+        """
+        Returns only user's shop
+        """
         return Shop.objects.filter(user=self.request.user.pk)
 
 
 class ShopViewSet(
     mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
 ):
+    """
+    Viewset to get all Shops
+    Only to get
+    """
+
     queryset = Shop.objects.all()
     serializer_class = ShopSerializer
     permission_classes = [permissions.AllowAny]
@@ -82,10 +111,17 @@ class LinkViewSet(
     mixins.UpdateModelMixin,
     viewsets.GenericViewSet,
 ):
+    """
+    Viewset for only user's shop links and can edit
+    """
+
     serializer_class = LinkSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
+        """
+        On create save shop
+        """
         serializer.save(shop=self.request.user.shop)
 
     def get_queryset(self):

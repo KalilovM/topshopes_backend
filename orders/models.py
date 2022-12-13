@@ -6,6 +6,11 @@ from core.helpers import PathAndRename
 
 
 class OrderItem(models.Model):
+    """
+    Model of item for order
+    Contains one product information
+    """
+
     product_image = models.ImageField(upload_to=PathAndRename("orders/items/product/"))
     product_name = models.CharField(max_length=100)
     product_price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -38,6 +43,10 @@ class OrderItem(models.Model):
 
 
 class Order(models.Model):
+    """
+    Order model to create order for user
+    """
+
     STATUSES = (
         ("PENDING", "Pending"),
         ("PROCCESSING", "Proccessing"),
@@ -58,7 +67,7 @@ class Order(models.Model):
     )
     is_delivered = models.BooleanField(default=False)
     shipping_address = models.CharField(max_length=255)
-    status = models.CharField(max_length=35, choices=STATUSES)
+    status = models.CharField(max_length=35, choices=STATUSES, default="PENDING")
     delivered_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):

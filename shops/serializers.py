@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from core.helpers import ImageUrlField
 from core.mixins import CommonRelatedField
+from shops.mixins import CategoryRelatedField
 
 from users.serializers import CustomerSerializer
 from .models import (
@@ -104,9 +105,7 @@ class ProductSerializer(serializers.ModelSerializer):
     size = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
     colors = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
     shop = CommonRelatedField(model=Shop, serializer=ShopSerializer, read_only=True)
-    categories = serializers.SlugRelatedField(
-        many=True, read_only=True, slug_field="name"
-    )
+    categories = CategoryRelatedField(many=True)
     # how to set only image to field brand (brand image only, now it's object and image)
     images = ImageUrlField(many=True, read_only=True)
     brand = ImageUrlField(many=False, read_only=True)
