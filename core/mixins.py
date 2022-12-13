@@ -3,6 +3,12 @@ from rest_framework import serializers
 
 
 class CommonRelatedField(serializers.RelatedField):
+    """
+    Relation between two models
+    On create gets id
+    Returns as json entire object of related model
+    """
+
     def __init__(self, model=None, serializer=None, **kwargs):
         self.model = model
         self.serializer = serializer

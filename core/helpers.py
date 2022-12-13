@@ -7,6 +7,11 @@ from rest_framework import serializers
 
 @deconstructible
 class PathAndRename:
+    """
+    Class to rename image to uuid4 and save it
+    Returns path to image
+    """
+
     def __init__(self, sub_path):
         self.sub_path = sub_path
 
@@ -25,6 +30,10 @@ class PathAndRename:
 
 
 class ImageUrlField(serializers.RelatedField):
+    """
+    IDK
+    """
+
     def to_representation(self, value):
         url = value.image.url
         request = self.context.get("request", None)
