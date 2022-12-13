@@ -18,14 +18,23 @@ from .models import (
 )
 
 
-# Not important serializers
 class LinkSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Link model
+    Return name and link
+    """
+
     class Meta:
         model = Link
         fields = ["name", "link"]
 
 
 class SizeSerializer(serializers.ModelSerializer):
+    """
+    Size serialzier
+    Return all fields
+    """
+
     id = serializers.ReadOnlyField()
 
     class Meta:
@@ -34,6 +43,11 @@ class SizeSerializer(serializers.ModelSerializer):
 
 
 class ColorSerializer(serializers.ModelSerializer):
+    """
+    Color serializer
+    Return all fields
+    """
+
     id = serializers.ReadOnlyField()
 
     class Meta:
@@ -42,6 +56,11 @@ class ColorSerializer(serializers.ModelSerializer):
 
 
 class BrandSerializer(serializers.ModelSerializer):
+    """
+    Brand serializer able to select fields to represent
+    Return all fields
+    """
+
     id = serializers.ReadOnlyField()
 
     def __init__(self, *args, **kwargs):
@@ -61,6 +80,11 @@ class BrandSerializer(serializers.ModelSerializer):
 
 
 class BrandTypeSerializer(serializers.ModelSerializer):
+    """
+    Serialzier for brand type
+    Return all fields
+    """
+
     id = serializers.ReadOnlyField()
 
     class Meta:
@@ -69,12 +93,22 @@ class BrandTypeSerializer(serializers.ModelSerializer):
 
 
 class ImageSerializer(serializers.ModelSerializer):
+    """
+    Serializer for product image
+    Return only id and image
+    """
+
     class Meta:
         model = Image
         fields = ["id", "image"]
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    """
+    Category serializer
+    Return id, name, icon, image, slug, parent, descirption, featured fields
+    """
+
     id = serializers.ReadOnlyField()
 
     class Meta:
@@ -92,6 +126,11 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ShopSerializer(serializers.ModelSerializer):
+    """
+    Shop serializer
+    Return all fields
+    """
+
     id = serializers.ReadOnlyField()
     user = CustomerSerializer()
 
@@ -101,12 +140,16 @@ class ShopSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    """
+    Product serialzier
+    Return necessary fields for list view
+    """
+
     id = serializers.ReadOnlyField()
     size = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
     colors = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
     shop = CommonRelatedField(model=Shop, serializer=ShopSerializer, read_only=True)
     categories = CategoryRelatedField(many=True, queryset=Category.objects.all())
-    # how to set only image to field brand (brand image only, now it's object and image)
     images = ImageUrlField(many=True, read_only=True)
     brand = ImageUrlField(many=False, read_only=True)
     # reviews = ReviewSerializer(many=True)
@@ -134,6 +177,11 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class SingleShopSerializer(serializers.ModelSerializer):
+    """
+    Only single shop serializer
+    Return only one shop with all fields
+    """
+
     id = serializers.ReadOnlyField()
     user = CustomerSerializer(read_only=True)
     links = LinkSerializer(many=True, read_only=True)
@@ -145,6 +193,11 @@ class SingleShopSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    """
+    Review serializer
+    Return all fields
+    """
+
     id = serializers.ReadOnlyField()
     customer = CustomerSerializer(read_only=True)
     product = ProductSerializer(read_only=True)

@@ -9,6 +9,10 @@ from core.helpers import PathAndRename
 
 
 class Shop(models.Model):
+    """
+    Simple shop model
+    """
+
     id = models.UUIDField(
         default=uuid.uuid4, primary_key=True, verbose_name="Shop's id"
     )
@@ -41,6 +45,11 @@ class Shop(models.Model):
 
 
 class Link(models.Model):
+    """
+    Shops links
+    One link - one social network
+    """
+
     name = models.CharField(max_length=30, verbose_name="Social Network")
     link = models.CharField(max_length=255, verbose_name="Social Network Link")
     shop = models.ForeignKey(
@@ -59,6 +68,10 @@ class Link(models.Model):
 
 
 class Size(models.Model):
+    """
+    Product size model
+    """
+
     name = models.CharField(max_length=15, verbose_name="Product's size")
 
     def __str__(self):
@@ -66,6 +79,10 @@ class Size(models.Model):
 
 
 class Color(models.Model):
+    """
+    Product color model
+    """
+
     name = models.CharField(max_length=15, unique=True, verbose_name="Color's name")
     color = models.CharField(max_length=20, unique=True, verbose_name="Color")
 
@@ -74,6 +91,10 @@ class Color(models.Model):
 
 
 class BrandType(models.Model):
+    """
+    Brand types
+    """
+
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
@@ -81,10 +102,13 @@ class BrandType(models.Model):
 
 
 class Image(models.Model):
+    """
+    Product image model
+    """
+
     product = models.ForeignKey(
         "Product", on_delete=models.CASCADE, related_name="images"
     )
-    # TODO: create helper function to rename and return path of image
     image = models.ImageField(upload_to=PathAndRename("products/gallery/"))
 
     def __str__(self):
@@ -92,6 +116,10 @@ class Image(models.Model):
 
 
 class Category(MPTTModel):
+    """
+    Category model for product
+    """
+
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     icon = models.ImageField(
         upload_to=PathAndRename("category/icons/"), null=True, blank=True
@@ -119,6 +147,10 @@ class Category(MPTTModel):
 
 
 class Brand(models.Model):
+    """
+    Brand fro product
+    """
+
     id = models.UUIDField(
         default=uuid.uuid4, primary_key=True, verbose_name="Brand's id"
     )
@@ -143,6 +175,10 @@ class Brand(models.Model):
 
 
 class Product(models.Model):
+    """
+    Product for shop model
+    """
+
     id = models.UUIDField(
         default=uuid.uuid4, primary_key=True, verbose_name="Product's id"
     )
@@ -184,6 +220,10 @@ class Product(models.Model):
 
 
 class Review(models.Model):
+    """
+    Review for product
+    """
+
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     rating = models.IntegerField(default=5)
     published = models.BooleanField(default=False)

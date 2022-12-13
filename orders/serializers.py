@@ -24,7 +24,9 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    """ """
+    """
+    Order serializer to return all order information
+    """
 
     user = CommonRelatedField(
         model=Customer, serializer=CustomerSerializer, read_only=True

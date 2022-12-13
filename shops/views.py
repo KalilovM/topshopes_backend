@@ -129,18 +129,30 @@ class LinkViewSet(
 
 
 class SizeViewSet(viewsets.ModelViewSet):
+    """
+    Size viewset every user can create own sizes for product
+    """
+
     queryset = Size.objects.all()
     serializer_class = SizeSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
 class ColorViewSet(viewsets.ModelViewSet):
+    """
+    Color viewset every user can create own color for product
+    """
+
     queryset = Color.objects.all()
     serializer_class = ColorSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
 class BrandTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    Viewset only to get in a list
+    """
+
     queryset = BrandType.objects.all()
     serializer_class = BrandTypeSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -152,21 +164,37 @@ class ImageViewSet(
     mixins.CreateModelMixin,
     viewsets.GenericViewSet,
 ):
+    """
+    Viewset to get, destroy and update product images
+    """
+
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
 class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    Viewset only to get in a list Categories
+    """
+
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
 
 class BrandViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    Viewset only to get in a list Brands
+    """
+
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
 
 
 class ReviewViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    Viewset only to get in a list Reviews
+    """
+
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
