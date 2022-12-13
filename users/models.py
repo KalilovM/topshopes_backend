@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from typing import List
 import uuid
-
+from core.helpers import PathAndRename
 from users.managers import CustomeManager
 
 
@@ -10,7 +10,9 @@ class Customer(AbstractUser):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     username = None
     email = models.CharField(max_length=50, unique=True)
-    avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
+    avatar = models.ImageField(
+        upload_to=PathAndRename("avatars/"), null=True, blank=True
+    )
     # TODO: check default value of date of birth on creation or on app start
     dateOfBirth = models.DateField(auto_now_add=True)
     verified = models.BooleanField(default=False)

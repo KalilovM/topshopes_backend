@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from core.mixins import CommonRelatedField
 from .models import Customer, Address
 
 
