@@ -15,6 +15,7 @@ SECRET_KEY = "django-insecure-@_&luv@s)3hnqh4ft%5@yb(-6nf8wx55^305!h_fzb=##x1mc@
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
 
 AUTH_USER_MODEL = "users.Customer"
 # Application definition
