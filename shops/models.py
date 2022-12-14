@@ -198,7 +198,7 @@ class Product(models.Model):
     price = models.DecimalField(
         max_digits=10, decimal_places=2, verbose_name="Product's price"
     )
-    size = models.ManyToManyField(
+    sizes = models.ManyToManyField(
         Size, related_name="size", verbose_name="Product's sizes"
     )
     status = models.CharField(max_length=50, null=True, blank=True)
