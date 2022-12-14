@@ -152,7 +152,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "title",
             "brand",
             "price",
-            "size",
+            "sizes",
             "colors",
             "discount",
             "thumbnail",
