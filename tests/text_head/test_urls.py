@@ -18,7 +18,7 @@ class TestAdminUserEndpoints:
     def test_list(self, client: APIClient):
         baker.make(Customer, _quantity=3)
 
-        response: Response = client.get(self.endpoint)
+        response: Response = client.get(self.endpoint)  # type: ignore
 
         assert response.status_code == 200
         assert len(json.loads(response.content)) == 3
