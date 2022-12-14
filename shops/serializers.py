@@ -63,17 +63,6 @@ class BrandSerializer(serializers.ModelSerializer):
 
     id = serializers.ReadOnlyField()
 
-    def __init__(self, *args, **kwargs):
-        fields = kwargs.pop("fields", None)
-
-        super().__init__(self, *args, **kwargs)
-
-        if fields is not None:
-            allowed = set(fields)
-            existing = set(self.fields)
-            for field in existing - allowed:
-                self.fields.pop(field)
-
     class Meta:
         model = Brand
         fields = "__all__"
