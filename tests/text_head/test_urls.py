@@ -20,5 +20,5 @@ class TestAdminUserEndpoints:
 
         response: Response = client.get(self.endpoint)
 
-        assert True
-        # assert len(json.loads(response.content)) == 3
+        assert response.status_code == 200
+        assert len(json.loads(response.content)) == 3

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from core.helpers import ImageUrlField
 from core.mixins import CommonRelatedField
-from shops.mixins import CategoryRelatedField, CustomRelatedField
+from shops.mixins import CustomRelatedField
 
 from users.serializers import CustomerSerializer
 from .models import (
