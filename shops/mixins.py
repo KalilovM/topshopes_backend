@@ -22,4 +22,9 @@ class CustomRelatedFieldWithImage(CustomRelatedField):
     """
 
     def to_representation(self, value):
-        return {"id": value.id, "name": value.name, "image": value.image}
+        request = self.context.get("request", None)
+        if request is not None:
+            image = request.build_absolute_uri(value.image.url)
+        else:
+            raise ValueError
+        return {"id": value.id, "name": value.name, "image": image}

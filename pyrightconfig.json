@@ -1,3 +1,4 @@
 {
-  "executionEnvironments": [{ "root": "src" }]
+  "executionEnvironments": [{ "root": "src" }],
+  "ignore": ["**/tests"]
 }
