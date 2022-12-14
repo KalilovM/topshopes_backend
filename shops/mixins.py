@@ -13,3 +13,13 @@ class CustomRelatedField(serializers.RelatedField):
 
     def to_internal_value(self, data):
         return data
+
+
+class CustomRelatedFieldWithImage(CustomRelatedField):
+    """
+    Same as CustomRelatedField
+    Return {id:model_id, name:model_name, image:model_image}
+    """
+
+    def to_representation(self, value):
+        return {"id": value.id, "name": value.name, "image": value.image}

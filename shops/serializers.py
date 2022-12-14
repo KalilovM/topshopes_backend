@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from core.helpers import ImageUrlField
 from core.mixins import CommonRelatedField
-from shops.mixins import CustomRelatedField
+from shops.mixins import CustomRelatedField, CustomRelatedFieldWithImage
 
 from users.serializers import CustomerSerializer
 from .models import (
@@ -140,7 +140,7 @@ class ProductSerializer(serializers.ModelSerializer):
     shop = CommonRelatedField(model=Shop, serializer=ShopSerializer, read_only=True)
     categories = CustomRelatedField(many=True, queryset=Category.objects.all())
     images = ImageUrlField(many=True, read_only=True)
-    brand = ImageUrlField(many=False, read_only=True)
+    brand = CustomRelatedFieldWithImage(many=False, queryset=Brand.objects.all())
     # reviews = ReviewSerializer(many=True)
 
     class Meta:
