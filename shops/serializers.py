@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from core.helpers import ImageUrlField
 from core.mixins import CommonRelatedField
-from shops.mixins import CategoryRelatedField
+from shops.mixins import CategoryRelatedField, CustomRelatedField
 
 from users.serializers import CustomerSerializer
 from .models import (
@@ -146,10 +146,10 @@ class ProductSerializer(serializers.ModelSerializer):
     """
 
     id = serializers.ReadOnlyField()
-    size = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
-    colors = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
+    sizes = CustomRelatedField(many=True, queryset=Size.objects.all())
+    color = CustomRelatedField(many=True, queryset=Color.objects.all())
     shop = CommonRelatedField(model=Shop, serializer=ShopSerializer, read_only=True)
-    categories = CategoryRelatedField(many=True, queryset=Category.objects.all())
+    categories = CustomRelatedField(many=True, queryset=Category.objects.all())
     images = ImageUrlField(many=True, read_only=True)
     brand = ImageUrlField(many=False, read_only=True)
     # reviews = ReviewSerializer(many=True)

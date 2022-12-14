@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from typing import List
 import uuid
 from core.helpers import PathAndRename
-from users.managers import CustomeManager
+from users.managers import CustomManager
 
 
 class Customer(AbstractUser):
@@ -25,7 +25,7 @@ class Customer(AbstractUser):
 
     USERNAME_FIELD: str = "email"
     REQUIRED_FIELDS: List[str] = []
-    objects = CustomeManager()
+    objects = CustomManager()
 
     def __str__(self) -> str:
         return self.email

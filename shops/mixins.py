@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
 
-class CategoryRelatedField(serializers.RelatedField):
+class CustomRelatedField(serializers.RelatedField):
     """
-    Relation with category
-    Return {id: cat_id, name: cat_name}
+    Relation with model
+    Return {id: model_id, name: model_name}
     Takes only id
     """
 
