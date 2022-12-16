@@ -1,7 +1,9 @@
-from django.db import models
 import uuid
+
 from autoslug import AutoSlugField
+from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
+
 from core.helpers import PathAndRename
 
 
@@ -18,7 +20,7 @@ class Shop(models.Model):
     )
     name = models.CharField(max_length=100, unique=True, verbose_name="Shop's name")
     slug = AutoSlugField(
-        populate_from="name", unique=True, db_index=True, verbose_name="Link to shop"
+        populate_from="name", unique=True, db_index=True, verbose_name="Link to shop", editable=False
     )
     user = models.OneToOneField(
         "users.Customer",
@@ -30,10 +32,10 @@ class Shop(models.Model):
     address = models.CharField(max_length=200, verbose_name="Shop's address")
     verified = models.BooleanField(default=False, verbose_name="Is shop verified?")
     phone = models.CharField(max_length=100, unique=True)
-    coverPicture = models.ImageField(
+    cover_picture = models.ImageField(
         upload_to=PathAndRename("shop/covers/"), verbose_name="Shop's cover picture"
     )
-    profilePicture = models.ImageField(
+    profile_picture = models.ImageField(
         upload_to=PathAndRename("shop/profiles/"), verbose_name="Shop's profile picture"
     )
 
@@ -126,7 +128,7 @@ class Category(MPTTModel):
     )
     image = models.ImageField(upload_to=PathAndRename("category/images/"))
     name = models.CharField(max_length=50, verbose_name="Category name", unique=True)
-    slug = AutoSlugField(populate_from="name")
+    slug = AutoSlugField(populate_from="name", editable=False)
     description = models.TextField()
     parent = TreeForeignKey(
         "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
@@ -148,14 +150,14 @@ class Category(MPTTModel):
 
 class Brand(models.Model):
     """
-    Brand fro product
+    Brand for product
     """
 
     id = models.UUIDField(
         default=uuid.uuid4, primary_key=True, verbose_name="Brand's id"
     )
     name = models.CharField(max_length=100, verbose_name="Brand's name", unique=True)
-    slug = AutoSlugField(populate_from="name", unique=True, verbose_name="Brand's link")
+    slug = AutoSlugField(populate_from="name", unique=True, verbose_name="Brand's link", editable=False)
     image = models.ImageField(
         upload_to=PathAndRename("brands/"), verbose_name="Brand's image"
     )
@@ -184,7 +186,7 @@ class Product(models.Model):
     )
     title = models.CharField(max_length=150, verbose_name="Product's title")
     slug = AutoSlugField(
-        populate_from="title", unique=True, verbose_name="Link to product"
+        populate_from="title", unique=True, verbose_name="Link to product", editable=False
     )
     brand = models.ForeignKey(
         Brand, on_delete=models.SET_NULL, null=True, verbose_name="Product's brand"
@@ -199,13 +201,13 @@ class Product(models.Model):
         max_digits=10, decimal_places=2, verbose_name="Product's price"
     )
     sizes = models.ManyToManyField(
-        Size, related_name="size", verbose_name="Product's sizes"
+        Size, related_name="sizes", verbose_name="Product's sizes",
     )
     status = models.CharField(max_length=50, null=True, blank=True)
     rating = models.PositiveSmallIntegerField(null=True, blank=True)
     unit = models.CharField(max_length=50)
     published = models.BooleanField(default=True)
-    colors = models.ManyToManyField(Color, verbose_name="Product's colors")
+    colors = models.ManyToManyField(Color, verbose_name="Product's colors", related_name="colors")
     discount = models.IntegerField(default=0, verbose_name="Product's discount")
     thumbnail = models.ImageField(
         upload_to=PathAndRename("products/thumbnail/"),

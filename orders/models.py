@@ -63,7 +63,7 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     discount = models.PositiveSmallIntegerField()
     total_price = models.DecimalField(
-        max_digits=15, decimal_places=2, editable=True, default=0
+        max_digits=15, decimal_places=2, editable=False, default=0
     )
     is_delivered = models.BooleanField(default=False)
     shipping_address = models.CharField(max_length=255)

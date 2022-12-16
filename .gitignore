@@ -6,3 +6,5 @@ media/
 setup.cfg
 *.sqlite3
 db.sqlite3
+.fleet
+.idea

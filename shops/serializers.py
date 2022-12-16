@@ -1,8 +1,10 @@
+from typing import Dict
+
 from rest_framework import serializers
+
 from core.helpers import ImageUrlField
 from core.mixins import CommonRelatedField
 from shops.mixins import CustomRelatedField, CustomRelatedFieldWithImage
-
 from users.serializers import CustomerSerializer
 from .models import (
     Link,
@@ -137,11 +139,19 @@ class ProductSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     sizes = CustomRelatedField(many=True, queryset=Size.objects.all())
     colors = CustomRelatedField(many=True, queryset=Color.objects.all())
-    shop = CommonRelatedField(model=Shop, serializer=ShopSerializer, read_only=True)
+    shop = CommonRelatedField(model=Shop, serializer=ShopSerializer)
     categories = CustomRelatedField(many=True, queryset=Category.objects.all())
     images = ImageUrlField(many=True, read_only=True)
     brand = CustomRelatedFieldWithImage(many=False, queryset=Brand.objects.all())
+
     # reviews = ReviewSerializer(many=True)
+
+    def validate(self, data: Dict):
+        print(data)
+        if data["shop"] is None:
+            data["shop"] = self.context["request"].user.shop
+        else:
+            super().validate(self)
 
     class Meta:
         model = Product

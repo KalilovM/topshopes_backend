@@ -31,6 +31,7 @@ class OrderSerializer(serializers.ModelSerializer):
     user = CommonRelatedField(
         model=Customer, serializer=CustomerSerializer, read_only=True
     )
+    total_price = serializers.ReadOnlyField()
     shop = CommonRelatedField(model=Shop, serializer=ShopSerializer)
     items = OrderItemSerializer(many=True, read_only=True)
 

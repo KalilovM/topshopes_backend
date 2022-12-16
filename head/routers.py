@@ -9,11 +9,10 @@ from head.views import (
     AdminUsersViewSet,
 )
 
-
 router = routers.SimpleRouter()
 router.register(r"users", AdminUsersViewSet)
 router.register(r"shops", AdminShopViewSet)
 router.register(r"categories", AdminCategoryViewSet)
-router.register(r"brand", AdminBrandViewSet)
 router.register(r"brand/type", AdminBrandTypeViewSet)
+router.register(r"brand", AdminBrandViewSet)
 router.register(r"products", AdminProductViewSet)

@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from shops.models import Brand
+
 
 class CustomRelatedField(serializers.RelatedField):
     """
@@ -28,3 +30,9 @@ class CustomRelatedFieldWithImage(CustomRelatedField):
         else:
             raise ValueError
         return {"id": value.id, "name": value.name, "image": image}
+
+    def to_internal_value(self, data: str):
+        try:
+            return Brand.objects.get(pk=data)
+        except ValueError:
+            raise ValueError
