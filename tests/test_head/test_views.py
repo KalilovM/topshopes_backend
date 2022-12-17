@@ -1,4 +1,6 @@
+import pprint
 import json
+import uuid
 from io import StringIO
 from typing import List
 
@@ -9,8 +11,14 @@ from rest_framework.response import Response
 from rest_framework.test import APIClient
 
 import shops.models
-from shops.models import Size, Color, Category
-from tests.factories import BrandFactory, BrandTypeFactory, ShopFactory, ProductFactory, CategoryFactory
+from shops.models import Category, Color, Size
+from tests.factories import (
+    BrandFactory,
+    BrandTypeFactory,
+    CategoryFactory,
+    ProductFactory,
+    ShopFactory,
+)
 from users.models import Customer
 
 pytestmark = pytest.mark.django_db
@@ -24,11 +32,7 @@ class TestAdminUserViewset:
     # TODO: About admin creation
 
     endpoint = "/api/admin/users/"
-    payload = dict(
-        email="test@gmail.com",
-        phone="09090909",
-        password="jfmnf123"
-    )
+    payload = dict(email="test@gmail.com", phone="09090909", password="jfmnf123")
 
     def test_permission_any_failed(self, client: APIClient):
         response: Response = client.get(self.endpoint)
@@ -66,7 +70,7 @@ class TestAdminUserViewset:
         user: Customer = baker.make(Customer)
         response = admin_client.patch(f"{self.endpoint}{user.id}/", self.payload)
         assert response.status_code == 200
-        assert response.data['email'] == self.payload["email"]
+        assert response.data["email"] == self.payload["email"]
         assert response.data["phone"] == self.payload["phone"]
 
     def test_admin_user_update(self, admin_client: APIClient):
@@ -93,7 +97,9 @@ class TestAdminUserViewset:
 class TestAdminProductsViewset:
     endpoint = "/api/admin/products/"
 
-    def test_admin_products_list(self, admin_client: APIClient, user: Customer, category_set: List[Category]):
+    def test_admin_products_list(
+        self, admin_client: APIClient, user: Customer, category_set: List[Category]
+    ):
         size_set = baker.make(Size, _quantity=5)
         color_set = baker.make(Color, _quantity=4)
         shop = ShopFactory.create(
@@ -104,13 +110,19 @@ class TestAdminProductsViewset:
             verified=False,
             phone="01020304",
         )
-        brand_type = BrandTypeFactory.create(
-            name="BrandType"
-        )
+        brand_type = BrandTypeFactory.create(name="BrandType")
         brand = BrandFactory.create(
             name="testBrand",
             type=brand_type,
             featured=True,
+            image=InMemoryUploadedFile(
+                file=StringIO("test"),
+                field_name="test",
+                name="test.jpg",
+                content_type="image/jpeg",
+                size=1,
+                charset="utf-8",
+            ),
         )
         product = ProductFactory.create(
             title="testProd",
@@ -133,13 +145,11 @@ class TestAdminProductsViewset:
                 size=1,
                 charset="utf-8",
             ),
-
         )
 
-        print(shop)
-        print(brand_type)
-        print(brand)
-        response = admin_client.get(self.endpoint)
+        response: Response = admin_client.get(self.endpoint, format="json")
+        print(response.content)
+        pprint.pformat(response.data, indent=0, width=1)
         assert response.status_code == 200
 
     def test_admin_products_create(self, admin_client: APIClient):

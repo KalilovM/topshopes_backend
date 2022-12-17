@@ -8,3 +8,5 @@ setup.cfg
 db.sqlite3
 .fleet
 .idea
+.pytest_cache
+.vscode

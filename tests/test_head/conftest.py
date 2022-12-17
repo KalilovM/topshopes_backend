@@ -46,9 +46,5 @@ def category_set(db, admin_client: APIClient):
         ),
              description="description3"),
     ]
-    models = []
     for payload in payload_set:
         response = admin_client.post("/api/admin/categories/", payload)
-        models.append(response.data)
-        print(response.data["slug"])
-    return models

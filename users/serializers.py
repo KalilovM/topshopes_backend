@@ -22,6 +22,7 @@ class CustomerSerializer(serializers.ModelSerializer):
             "password",
             "dateOfBirth",
             "verified",
+            "is_superuser"
         ]
 
 
