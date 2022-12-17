@@ -147,13 +147,6 @@ class ProductSerializer(serializers.ModelSerializer):
 
     # reviews = ReviewSerializer(many=True)
 
-    def validate(self, data: Dict):
-        print(data)
-        if data["shop"] is None:
-            data["shop"] = self.context["request"].user.shop
-        else:
-            super().validate(self)
-
     class Meta:
         model = Product
         fields = [
