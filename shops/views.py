@@ -56,6 +56,16 @@ class ShopProductViewSet(viewsets.ModelViewSet):
             shop=self.request.user.shop
         )
 
+    def create(self, request, *args, **kwargs):
+        """
+        On create product poping images from request.data
+        and create images model
+        """
+        images = request.data.pop("images")
+        product = Product.objects.create(**request.data)
+        for image in images:
+            Image.objects.create(product=product, image=image)
+
     def perform_create(self, serializer):
         """
         On create product set shop to user's

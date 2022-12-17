@@ -31,7 +31,8 @@ class PathAndRename:
 
 class ImageUrlField(serializers.RelatedField):
     """
-    IDK
+    Return absolute url to image related field
+    Return {url: url}
     """
 
     def to_representation(self, value):

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 
+# TODO: rename it
 class ProductImageRelationField(serializers.RelatedField):
     """
     Relation in product's image field with Images model
@@ -9,9 +10,13 @@ class ProductImageRelationField(serializers.RelatedField):
     """
 
     def to_representation(self, value):
-        print(value)
-        return True
+        try:
+            return {
+                "id": value.id,
+                "image": value.image.url,
+            }
+        except AttributeError:
+            self.fail("invalid data")
 
     def to_internal_value(self, data):
-        print(data)
         return data

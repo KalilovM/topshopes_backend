@@ -17,7 +17,7 @@ router = routers.SimpleRouter()
 # routes for authorized users
 router.register(r"products/sizes", SizeViewSet, basename="size")
 router.register(r"products/colors", ColorViewSet, basename="color")
-router.register(r"porducts/images", ImageViewSet, basename="image")
+router.register(r"products/images", ImageViewSet, basename="image")
 router.register(r"products", ShopProductViewSet, basename="product")
 router.register(r"shop/orders", ShopOrderViewSet, basename="shop-order")
 router.register(r"shop/link", LinkViewSet, basename="shop-link")
