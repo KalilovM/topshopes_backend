@@ -3,6 +3,7 @@ from typing import Dict
 from rest_framework import serializers
 
 from core.helpers import ImageUrlField
+from .serializer_fields import ProductImageRelationField
 from core.mixins import CommonRelatedField
 from shops.mixins import CustomRelatedField, CustomRelatedFieldWithImage
 from users.serializers import CustomerSerializer
@@ -141,7 +142,7 @@ class ProductSerializer(serializers.ModelSerializer):
     colors = CustomRelatedField(many=True, queryset=Color.objects.all())
     shop = CommonRelatedField(model=Shop, serializer=ShopSerializer)
     categories = CustomRelatedField(many=True, queryset=Category.objects.all())
-    images = ImageUrlField(many=True, read_only=True)
+    images = ProductImageRelationField(many=True, queryset=Image.objects.all())
     brand = CustomRelatedFieldWithImage(many=False, queryset=Brand.objects.all())
 
     # reviews = ReviewSerializer(many=True)

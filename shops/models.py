@@ -180,6 +180,11 @@ class Product(models.Model):
     """
     Product for shop model
     """
+    STATUSES = (
+        ("available", "Available"),
+        ("unavailable", "Unavailable"),
+        ("coming_soon", "Coming soon"),
+    )
 
     id = models.UUIDField(
         default=uuid.uuid4, primary_key=True, verbose_name="Product's id"
@@ -203,7 +208,7 @@ class Product(models.Model):
     sizes = models.ManyToManyField(
         Size, related_name="sizes", verbose_name="Product's sizes",
     )
-    status = models.CharField(max_length=50, null=True, blank=True)
+    status = models.CharField(choices=STATUSES, max_length=20, default="available")
     rating = models.PositiveSmallIntegerField(null=True, blank=True)
     unit = models.CharField(max_length=50)
     published = models.BooleanField(default=True)

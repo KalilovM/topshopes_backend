@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.test import APIClient
 
 import shops.models
-from shops.models import Category, Color, Size
+from shops.models import Category, Color, Size, Product
 from tests.factories import (
     BrandFactory,
     BrandTypeFactory,
@@ -148,9 +148,11 @@ class TestAdminProductsViewset:
         )
 
         response: Response = admin_client.get(self.endpoint, format="json")
-        print(response.content)
-        pprint.pformat(response.data, indent=0, width=1)
+        # pretty print created product
+        # for i in response.data:
+        #     pprint.pprint(i)
         assert response.status_code == 200
+        assert Product.objects.count() == 1
 
     def test_admin_products_create(self, admin_client: APIClient):
         pass

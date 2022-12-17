@@ -61,9 +61,9 @@ class Order(models.Model):
     shop = models.ForeignKey("shops.Shop", on_delete=models.CASCADE)
     tax = models.PositiveSmallIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
-    discount = models.PositiveSmallIntegerField()
+    discount = models.PositiveSmallIntegerField(default=0)
     total_price = models.DecimalField(
-        max_digits=15, decimal_places=2, editable=False, default=0
+        max_digits=15, decimal_places=2, editable=False, default=Decimal(0)
     )
     is_delivered = models.BooleanField(default=False)
     shipping_address = models.CharField(max_length=255)
