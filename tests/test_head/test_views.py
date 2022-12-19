@@ -1,24 +1,15 @@
-import pprint
 import json
-import uuid
-from io import StringIO
+import pprint
 from typing import List
 
 import pytest
-from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.files.uploadedfile import SimpleUploadedFile
 from model_bakery import baker
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 
-import shops.models
-from shops.models import Category, Color, Size, Product
-from tests.factories import (
-    BrandFactory,
-    BrandTypeFactory,
-    CategoryFactory,
-    ProductFactory,
-    ShopFactory,
-)
+from shops.models import Category, Color, Size, Product, Brand, Shop, BrandType
+from tests.factories import ProductFactory
 from users.models import Customer
 
 pytestmark = pytest.mark.django_db
@@ -98,36 +89,20 @@ class TestAdminProductsViewset:
     endpoint = "/api/admin/products/"
 
     def test_admin_products_list(
-        self, admin_client: APIClient, user: Customer, category_set: List[Category]
+        self,
+        admin_client: APIClient,
+        user: Customer,
+        category_set: List[Category],
+        size_set: List[Size],
+        color_set: List[Color],
+        shop_set: Shop,
+        brand_set: Brand,
+        brandtype_set: BrandType,
     ):
-        size_set = baker.make(Size, _quantity=5)
-        color_set = baker.make(Color, _quantity=4)
-        shop = ShopFactory.create(
-            name="Testing Shop",
-            user=user,
-            email="testing@me.com",
-            address="testingaddresss",
-            verified=False,
-            phone="01020304",
-        )
-        brand_type = BrandTypeFactory.create(name="BrandType")
-        brand = BrandFactory.create(
-            name="testBrand",
-            type=brand_type,
-            featured=True,
-            image=InMemoryUploadedFile(
-                file=StringIO("test"),
-                field_name="test",
-                name="test.jpg",
-                content_type="image/jpeg",
-                size=1,
-                charset="utf-8",
-            ),
-        )
         product = ProductFactory.create(
             title="testProd",
-            brand=brand,
-            shop=shop,
+            brand=brand_set,
+            shop=shop_set,
             price="100.00",
             status="ontest",
             rating=10,  # TODO need to test also
@@ -137,13 +112,10 @@ class TestAdminProductsViewset:
             sizes=size_set,
             colors=color_set,
             categories=category_set,
-            thumbnail=InMemoryUploadedFile(
-                file=StringIO("test"),
-                field_name="test",
-                name="test.jpg",
+            thumbnail=SimpleUploadedFile(
+                name="test_image.jpg",
+                content=open("tests/test_head/testimage.webp", "rb").read(),
                 content_type="image/jpeg",
-                size=1,
-                charset="utf-8",
             ),
         )
 
@@ -154,5 +126,39 @@ class TestAdminProductsViewset:
         assert response.status_code == 200
         assert Product.objects.count() == 1
 
-    def test_admin_products_create(self, admin_client: APIClient):
-        pass
+    def test_admin_products_create(
+        self,
+        admin_client: APIClient,
+        category_set: List[Category],
+        shop_set: Shop,
+        brand_set: Brand,
+        brandtype_set: BrandType,
+        color_set: List[Color],
+        size_set: List[Size],
+    ):
+        payload = dict(
+            title="testProd",
+            brand=brand_set.id,
+            shop=shop_set.id,
+            price="100.00",
+            status="available",
+            rating=10,  # TODO need to test also
+            unit="kg",
+            published=True,
+            discount=10,
+            sizes=[i.id for i in size_set],
+            colors=[i.id for i in color_set],
+            categories=[i.id for i in Category.objects.all()],
+            thumbnail=SimpleUploadedFile(
+                name="test_image.jpg",
+                content=open("tests/test_head/testimage.webp", "rb").read(),
+                content_type="image/jpeg",
+            ),
+            description="description1",
+        )
+        response: Response = admin_client.post(self.endpoint, payload)
+        assert response.status_code == 201
+        assert Product.objects.count() == 1
+        # pretty print created product
+        # response_json = json.loads(response.content)
+        # pprint.pprint(response_json)
