@@ -33,7 +33,7 @@ class CommonRelatedField(serializers.RelatedField):
         try:
             return self.get_queryset().get(pk=data)
         except ObjectDoesNotExist:
-            self.fail("does_not_exist", pk_value=data)
+            raise ValueError
         except (TypeError, ValueError):
             self.fail("incorrect_type", data_type=type(data).__name__)
 

@@ -1,9 +1,5 @@
-from typing import Dict
-
 from rest_framework import serializers
 
-from core.helpers import ImageUrlField
-from .serializer_fields import ProductImageRelationField
 from core.mixins import CommonRelatedField
 from shops.mixins import CustomRelatedField, CustomRelatedFieldWithImage
 from users.serializers import CustomerSerializer
@@ -142,7 +138,7 @@ class ProductSerializer(serializers.ModelSerializer):
     colors = CustomRelatedField(many=True, queryset=Color.objects.all())
     shop = CommonRelatedField(model=Shop, serializer=ShopSerializer)
     categories = CustomRelatedField(many=True, queryset=Category.objects.all())
-    images = ProductImageRelationField(many=True, queryset=Image.objects.all())
+    images = CustomRelatedFieldWithImage(many=True, queryset=Image.objects.all)
     brand = CustomRelatedFieldWithImage(many=False, queryset=Brand.objects.all())
 
     # reviews = ReviewSerializer(many=True)
@@ -167,6 +163,23 @@ class ProductSerializer(serializers.ModelSerializer):
             "unit",
             "published",
         ]
+
+    def validate_images(self, value):
+        if len(value) == 0:
+            raise serializers.ValidationError("Images are required")
+
+        for image in value:
+            if image.size > 1024 * 1024 * 5:
+                raise serializers.ValidationError("Image size is too big")
+        return value
+
+    def validate(self, attrs):
+        images = []
+        for image in attrs["images"]:
+            image = Image.objects.create(product=self.instance, image=image)
+            images.append(image.id)
+        attrs["images"] = images
+        return attrs
 
 
 class SingleShopSerializer(serializers.ModelSerializer):
