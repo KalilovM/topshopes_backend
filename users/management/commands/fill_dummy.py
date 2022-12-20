@@ -1,6 +1,7 @@
 from orders.models import Order, OrderItem
 from django.core.management.base import BaseCommand
 from faker import Faker
+import random
 from users.models import Customer, Address
 from shops.models import (
     Shop,
@@ -80,9 +81,10 @@ def fill_customer():
 
 
 def fill_address():
+    users = random.choices(Customer.objects.all(), k=10)
     for _ in range(10):
         Address.objects.create(
-            user=fake.random_element(Customer.objects.all()),
+            user=users[_],
             country=fake.country(),
             city=fake.city(),
             street=fake.street_name(),
@@ -117,16 +119,31 @@ COLORS = [
     "#FFFFFF",
     "#000000",
     "#FFC0CB",
+    "#FFD700",
+    "#D3D3D3",
+    "#90EE90",
+    "#ADD8E6",
+    "#FFB6C1",
+    "#FFA07A",
+    "#20B2AA",
+    "#87CEFA",
+    "#778899",
+    "#B0C4DE",
+    "#FFFFE0",
+    "#00FF00",
 ]
 
 
 def fill_color():
+    colors = random.choices(COLORS, k=10)
     for _ in range(10):
-        color = COLORS[_]
+        color = colors[_]
         Color.objects.create(name=fake.color_name(), color=color)
 
 
 SIZES = [
+    "XXXS",
+    "XXS",
     "XS",
     "S",
     "M",
@@ -139,6 +156,7 @@ SIZES = [
 
 
 def fill_size():
+
     for _ in range(10):
         Size.objects.create(name=fake.random_element(SIZES))
 
