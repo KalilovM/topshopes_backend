@@ -37,8 +37,9 @@ INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "shops.apps.ShopsConfig",
     "orders.apps.OrdersConfig",
-    "static_pages.apps.StaticPagesConfig",
     "head.apps.HeadConfig",
+    "pages.apps.PagesConfig",
+    "posts.apps.PostsConfig",
 ]
 
 MIDDLEWARE = [

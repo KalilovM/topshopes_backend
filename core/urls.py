@@ -46,6 +46,7 @@ urlpatterns = (
         path("api/", include("users.urls"), name="users_base_API"),
         path("api/", include("orders.urls"), name="orders_base_API"),
         path("api/", include("shops.urls"), name="shops_base_API"),
+        path("api/", include("posts.urls"), name="posts_base_API"),
         # auth routes
         path("api/auth/login/", TokenObtainPairView.as_view(), name="token_create"),
         path("api/auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),

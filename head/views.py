@@ -11,6 +11,16 @@ from shops.serializers import (
 from users.models import Customer
 from users.serializers import CustomerSerializer
 
+from posts.models import Post
+from posts.serializers import PostSerializer
+
+from pages.models import Page, PageNavigation, PageNavigationCategory
+from pages.serializers import (
+    PageSerializer,
+    PageNavigationSerializer,
+    PageNavigationCategorySerializer,
+)
+
 
 class AdminUsersViewSet(viewsets.ModelViewSet):
     """
@@ -78,4 +88,45 @@ class AdminProductViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
 
 
-# class StaticPageViewSet(viewsets.ModelViewSet):
+class AdminPostViewSet(viewsets.ModelViewSet):
+    """
+    Viewset to manage posts
+    Allowed: All methods
+    """
+
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+
+class AdminPageViewSet(viewsets.ModelViewSet):
+    """
+    Viewset to manage pages
+    Allowed: All methods
+    """
+
+    queryset = Page.objects.all()
+    serializer_class = PageSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+
+class AdminPageNavigationViewSet(viewsets.ModelViewSet):
+    """
+    Viewset to manage page navigations
+    Allowed: All methods
+    """
+
+    queryset = PageNavigation.objects.all()
+    serializer_class = PageNavigationSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+
+class AdminPageNavigationCategoryViewSet(viewsets.ModelViewSet):
+    """
+    Viewset to manage page navigation categories
+    Allowed: All methods
+    """
+
+    queryset = PageNavigationCategory.objects.all()
+    serializer_class = PageNavigationCategorySerializer
+    permission_classes = [permissions.IsAdminUser]

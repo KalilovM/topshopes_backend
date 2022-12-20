@@ -8,7 +8,7 @@ from model_bakery import baker
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 
-from shops.models import Category, Color, Size, Product, Brand, Shop, BrandType
+from shops.models import Category, Color, Size, Product, Brand, Shop, BrandType, Image
 from tests.factories import ProductFactory
 from users.models import Customer
 
@@ -162,3 +162,188 @@ class TestAdminProductsViewset:
         # pretty print created product
         # response_json = json.loads(response.content)
         # pprint.pprint(response_json)
+        for i in range(3):
+            Image.objects.create(
+                product=Product.objects.first(),
+                image=SimpleUploadedFile(
+                    name="test_image.jpg",
+                    content=open("tests/test_head/testimage.webp", "rb").read(),
+                    content_type="image/jpeg",
+                ),
+            )
+        assert Image.objects.count() == 3
+        assert Product.objects.first().images.count() == 3
+
+    def test_admin_products_partial_update(
+        self,
+        admin_client: APIClient,
+        category_set: List[Category],
+        shop_set: Shop,
+        brand_set: Brand,
+        brandtype_set: BrandType,
+        color_set: List[Color],
+        size_set: List[Size],
+    ):
+        product = ProductFactory.create(
+            title="testProd",
+            brand=brand_set,
+            shop=shop_set,
+            price="100.00",
+            status="ontest",
+            rating=10,  # TODO need to test also
+            unit="kg",
+            published=True,
+            discount=10,
+            sizes=size_set,
+            colors=color_set,
+            categories=category_set,
+            thumbnail=SimpleUploadedFile(
+                name="test_image.jpg",
+                content=open("tests/test_head/testimage.webp", "rb").read(),
+                content_type="image/jpeg",
+            ),
+        )
+        payload = dict(
+            title="testProd_updated",
+            brand=brand_set.id,
+            shop=shop_set.id,
+            price="100.00",
+            status="available",
+            rating=10,  # TODO need to test also
+            unit="kg",
+            published=True,
+            discount=10,
+            sizes=[i.id for i in size_set],
+            colors=[i.id for i in color_set],
+            categories=[i.id for i in Category.objects.all()],
+            thumbnail=SimpleUploadedFile(
+                name="test_image.jpg",
+                content=open("tests/test_head/testimage.webp", "rb").read(),
+                content_type="image/jpeg",
+            ),
+        )
+        response: Response = admin_client.patch(
+            f"{self.endpoint}{product.id}/", payload
+        )
+        assert response.status_code == 200
+        assert Product.objects.count() == 1
+        assert response.data["title"] == payload["title"]
+
+    def test_admin_products_update(
+        self,
+        admin_client: APIClient,
+        category_set: List[Category],
+        shop_set: Shop,
+        brand_set: Brand,
+        brandtype_set: BrandType,
+        color_set: List[Color],
+        size_set: List[Size],
+    ):
+        product = ProductFactory.create(
+            title="testProd",
+            brand=brand_set,
+            shop=shop_set,
+            price="100.00",
+            status="ontest",
+            rating=10,  # TODO need to test also
+            unit="kg",
+            published=True,
+            discount=10,
+            sizes=size_set,
+            colors=color_set,
+            categories=category_set,
+            thumbnail=SimpleUploadedFile(
+                name="test_image.jpg",
+                content=open("tests/test_head/testimage.webp", "rb").read(),
+                content_type="image/jpeg",
+            ),
+        )
+        payload = dict(
+            title="testProd_updated",
+            brand=brand_set.id,
+            shop=shop_set.id,
+            price="100.00",
+            status="available",
+            rating=10,  # TODO need to test also
+            unit="kg",
+            published=True,
+            discount=10,
+            sizes=[i.id for i in size_set],
+            colors=[i.id for i in color_set],
+            categories=[i.id for i in Category.objects.all()],
+            thumbnail=SimpleUploadedFile(
+                name="test_image.jpg",
+                content=open("tests/test_head/testimage.webp", "rb").read(),
+                content_type="image/jpeg",
+            ),
+        )
+        response: Response = admin_client.put(f"{self.endpoint}{product.id}/", payload)
+        assert response.status_code == 200
+        assert Product.objects.count() == 1
+        assert response.data["title"] == payload["title"]
+
+    def test_admin_products_delete(
+        self,
+        admin_client: APIClient,
+        category_set: List[Category],
+        shop_set: Shop,
+        brand_set: Brand,
+        brandtype_set: BrandType,
+        color_set: List[Color],
+        size_set: List[Size],
+    ):
+        product = ProductFactory.create(
+            title="testProd",
+            brand=brand_set,
+            shop=shop_set,
+            price="100.00",
+            status="ontest",
+            rating=10,  # TODO need to test also
+            unit="kg",
+            published=True,
+            discount=10,
+            sizes=size_set,
+            colors=color_set,
+            categories=category_set,
+            thumbnail=SimpleUploadedFile(
+                name="test_image.jpg",
+                content=open("tests/test_head/testimage.webp", "rb").read(),
+                content_type="image/jpeg",
+            ),
+        )
+        response: Response = admin_client.delete(f"{self.endpoint}{product.id}/")
+        assert response.status_code == 204
+        assert Product.objects.count() == 0
+
+    def test_admin_products_retrieve(
+        self,
+        admin_client: APIClient,
+        category_set: List[Category],
+        shop_set: Shop,
+        brand_set: Brand,
+        brandtype_set: BrandType,
+        color_set: List[Color],
+        size_set: List[Size],
+    ):
+        product = ProductFactory.create(
+            title="testProd",
+            brand=brand_set,
+            shop=shop_set,
+            price="100.00",
+            status="ontest",
+            rating=10,  # TODO need to test also
+            unit="kg",
+            published=True,
+            discount=10,
+            sizes=size_set,
+            colors=color_set,
+            categories=category_set,
+            thumbnail=SimpleUploadedFile(
+                name="test_image.jpg",
+                content=open("tests/test_head/testimage.webp", "rb").read(),
+                content_type="image/jpeg",
+            ),
+        )
+        response: Response = admin_client.get(f"{self.endpoint}{product.id}/")
+        assert response.status_code == 200
+        assert Product.objects.count() == 1

@@ -2,7 +2,7 @@ from io import BytesIO, StringIO
 from typing import List
 from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
 from model_bakery import baker
-from shops.models import Category, Color, Size, Product, Brand, Shop, BrandType
+from shops.models import Category, Color, Size, Product, Brand, Shop, BrandType, Image
 from tests.factories import (
     BrandFactory,
     BrandTypeFactory,

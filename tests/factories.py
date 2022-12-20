@@ -41,8 +41,7 @@ class CategoryFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Category
 
-    parent = factory.SubFactory('tests.factories.CategoryFactory', parent=None)
-
+    parent = factory.SubFactory("tests.factories.CategoryFactory", parent=None)
 
 
 class SizeFactory(factory.django.DjangoModelFactory):
@@ -57,16 +56,14 @@ class ShopFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory(CustomerFactory)
     cover_picture = factory.LazyAttribute(
         lambda _: ContentFile(
-            factory.django.ImageField()._make_data(
-                {'width': 1024, 'height': 768}
-            ), 'example.jpg'
+            factory.django.ImageField()._make_data({"width": 1024, "height": 768}),
+            "example.jpg",
         )
     )
     profile_picture = factory.LazyAttribute(
         lambda _: ContentFile(
-            factory.django.ImageField()._make_data(
-                {'width': 1024, 'height': 768}
-            ), 'example.jpg'
+            factory.django.ImageField()._make_data({"width": 1024, "height": 768}),
+            "example.jpg",
         )
     )
 
@@ -79,9 +76,8 @@ class ProductFactory(factory.django.DjangoModelFactory):
     brand = factory.SubFactory(BrandFactory)
     thumbnail = factory.LazyAttribute(
         lambda _: ContentFile(
-            factory.django.ImageField()._make_data(
-                {'width': 1024, 'height': 768}
-            ), 'example.jpg'
+            factory.django.ImageField()._make_data({"width": 1024, "height": 768}),
+            "example.jpg",
         )
     )
 
@@ -92,7 +88,6 @@ class ProductFactory(factory.django.DjangoModelFactory):
             return
         if extracted:
             # A list of groups were passed in, use them
-            print(extracted)
             for category in extracted:
                 self.categories.add(category)
 
@@ -124,8 +119,7 @@ class ImageFactory(factory.django.DjangoModelFactory):
     image = factory.django.ImageField(color="blue")
     product = factory.LazyAttribute(
         lambda _: ContentFile(
-            factory.django.ImageField()._make_data(
-                {'width': 1024, 'height': 768}
-            ), 'example.jpg'
+            factory.django.ImageField()._make_data({"width": 1024, "height": 768}),
+            "example.jpg",
         )
     )
