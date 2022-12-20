@@ -14,9 +14,11 @@ Functionality:
 - Static pages (about, contacts, etc.)
 - Static pages categories and navigation
 - Admin panel for managing users, products, shops, static pages, etc.
-  Available Commands:
-- python manage.py fill_dummy - fill database with dummy data (Wouldn't fill navigation and static pages)
-- python manage.py createsuperuser - create superuser
+
+
+## Available Commands:
+- ```python manage.py fill_dummy``` - fill database with dummy data (Wouldn't fill navigation and static pages)
+- ```python manage.py createsuperuser``` - create superuser
 
 ## Installation
 
