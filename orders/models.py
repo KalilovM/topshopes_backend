@@ -49,9 +49,9 @@ class Order(models.Model):
 
     STATUSES = (
         ("PENDING", "Pending"),
-        ("PROCCESSING", "Proccessing"),
+        ("PROCESSING", "Processing"),
         ("DELIVERED", "Delivered"),
-        ("CENCELLED", "Cencelled"),
+        ("CANCELLED", "Cancelled"),
     )
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     user = models.ForeignKey(
