@@ -108,37 +108,38 @@ def fill_shop():
         )
 
 
-COLORS = [
-    "#FF0000",
-    "#FFA500",
-    "#FFFF00",
-    "#008000",
-    "#0000FF",
-    "#4B0082",
-    "#EE82EE",
-    "#FFFFFF",
-    "#000000",
-    "#FFC0CB",
-    "#FFD700",
-    "#D3D3D3",
-    "#90EE90",
-    "#ADD8E6",
-    "#FFB6C1",
-    "#FFA07A",
-    "#20B2AA",
-    "#87CEFA",
-    "#778899",
-    "#B0C4DE",
-    "#FFFFE0",
-    "#00FF00",
-]
+COLORS = {
+    "red": "#FF0000",
+    "green": "#008000",
+    "blue": "#0000FF",
+    "yellow": "#FFFF00",
+    "orange": "#FFA500",
+    "purple": "#800080",
+    "pink": "#FFC0CB",
+    "brown": "#A52A2A",
+    "black": "#000000",
+    "white": "#FFFFFF",
+    "gray": "#808080",
+    "silver": "#C0C0C0",
+    "gold": "#FFD700",
+    "violet": "#EE82EE",
+    "indigo": "#4B0082",
+    "turquoise": "#40E0D0",
+    "cyan": "#00FFFF",
+    "magenta": "#FF00FF",
+    "lime": "#00FF00",
+    "maroon": "#800000",
+    "navy": "#000080",
+}
 
 
 def fill_color():
-    colors = random.choices(COLORS, k=10)
+    colors = random.choices(list(COLORS.keys()), k=10)
     for _ in range(10):
-        color = colors[_]
-        Color.objects.create(name=fake.color_name(), color=color)
+        Color.objects.create(
+            name= colors[_],
+            color=COLORS[colors[_]],
+        )
 
 
 SIZES = [
