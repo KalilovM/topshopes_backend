@@ -14,11 +14,10 @@ from users.serializers import CustomerSerializer
 from posts.models import Post
 from posts.serializers import PostSerializer
 
-from pages.models import Page, PageNavigation, PageNavigationCategory
+from pages.models import Page, PageCategory
 from pages.serializers import (
     PageSerializer,
-    PageNavigationSerializer,
-    PageNavigationCategorySerializer,
+    PageCategorySerializer,
 )
 
 
@@ -110,23 +109,12 @@ class AdminPageViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
 
 
-class AdminPageNavigationViewSet(viewsets.ModelViewSet):
+class AdminPageCategoryViewSet(viewsets.ModelViewSet):
     """
-    Viewset to manage page navigations
+    Viewset to manage page categories
     Allowed: All methods
     """
 
-    queryset = PageNavigation.objects.all()
-    serializer_class = PageNavigationSerializer
-    permission_classes = [permissions.IsAdminUser]
-
-
-class AdminPageNavigationCategoryViewSet(viewsets.ModelViewSet):
-    """
-    Viewset to manage page navigation categories
-    Allowed: All methods
-    """
-
-    queryset = PageNavigationCategory.objects.all()
-    serializer_class = PageNavigationCategorySerializer
+    queryset = PageCategory.objects.all()
+    serializer_class = PageCategorySerializer
     permission_classes = [permissions.IsAdminUser]
