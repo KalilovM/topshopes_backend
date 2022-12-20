@@ -43,4 +43,4 @@ class Address(models.Model):
     phone = models.CharField(max_length=35)
 
     def __str__(self) -> str:
-        return self.user
+        return f"{self.user.email} - {self.street}"
