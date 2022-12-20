@@ -20,9 +20,8 @@ class CustomerSerializer(serializers.ModelSerializer):
             "phone",
             "avatar",
             "password",
-            "dateOfBirth",
             "verified",
-            "is_superuser"
+            "is_superuser",
         ]
 
 
