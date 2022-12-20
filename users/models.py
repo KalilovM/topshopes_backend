@@ -18,7 +18,6 @@ class Customer(AbstractUser):
         upload_to=PathAndRename("avatars/"), null=True, blank=True
     )
     # TODO: check default value of date of birth on creation or on app start
-    dateOfBirth = models.DateField(auto_now_add=True)
     verified = models.BooleanField(default=False)
     phone = models.CharField(max_length=30)
     is_seller = models.BooleanField(default=False)
