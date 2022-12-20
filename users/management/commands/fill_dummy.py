@@ -134,11 +134,12 @@ COLORS = {
 
 
 def fill_color():
-    colors = random.choices(list(COLORS.keys()), k=10)
+    names = list(COLORS.keys())
+    colors = list(COLORS.values())
     for _ in range(10):
         Color.objects.create(
-            name= colors[_],
-            color=COLORS[colors[_]],
+            name = names[_],
+            color = colors[_],
         )
 
 
