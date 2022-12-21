@@ -136,7 +136,7 @@ class ProductSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     sizes = CustomRelatedField(many=True, queryset=Size.objects.all())
     colors = CustomRelatedField(many=True, queryset=Color.objects.all())
-    shop = CommonRelatedField(model=Shop, serializer=ShopSerializer)
+    shop = CommonRelatedField(model=Shop, serializer=ShopSerializer, read_only=True)
     categories = CustomRelatedField(many=True, queryset=Category.objects.all())
     images = ImageSerializer(many=True, read_only=True)
     brand = CustomRelatedFieldWithImage(many=False, queryset=Brand.objects.all())
