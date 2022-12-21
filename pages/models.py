@@ -2,6 +2,7 @@ from django.db import models
 
 
 class PageCategory(models.Model):
+    id = models.CharField(max_length=50, primary_key=True)
     title = models.CharField(max_length=100)
 
     def __str__(self):
