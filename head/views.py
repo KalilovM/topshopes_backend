@@ -4,9 +4,10 @@ from shops.serializers import (
     BrandSerializer,
     BrandTypeSerializer,
     CategorySerializer,
-    ProductSerializer,
     ShopSerializer,
 )
+
+from head.serializers import AdminProductSerializer
 
 from users.models import Customer
 from users.serializers import CustomerSerializer
@@ -83,7 +84,7 @@ class AdminProductViewSet(viewsets.ModelViewSet):
     """
 
     queryset = Product.objects.all().prefetch_related("images")
-    serializer_class = ProductSerializer
+    serializer_class = AdminProductSerializer
     permission_classes = [permissions.IsAdminUser]
 
 
