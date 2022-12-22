@@ -21,6 +21,12 @@ from pages.serializers import (
     PageCategorySerializer,
 )
 
+from sliders.models import Slider, Slide
+from sliders.serializers import (
+    SliderSerializer,
+    SlideSerializer,
+)
+
 
 class AdminUsersViewSet(viewsets.ModelViewSet):
     """
@@ -118,4 +124,26 @@ class AdminPageCategoryViewSet(viewsets.ModelViewSet):
 
     queryset = PageCategory.objects.all()
     serializer_class = PageCategorySerializer
+    permission_classes = [permissions.IsAdminUser]
+
+
+class AdminSliderViewSet(viewsets.ModelViewSet):
+    """
+    Viewset to manage sliders
+    Allowed: All methods
+    """
+
+    queryset = Slider.objects.all()
+    serializer_class = SliderSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+
+class AdminSlideViewSet(viewsets.ModelViewSet):
+    """
+    Viewset to manage slides
+    Allowed: All methods
+    """
+
+    queryset = Slide.objects.all()
+    serializer_class = SlideSerializer
     permission_classes = [permissions.IsAdminUser]
