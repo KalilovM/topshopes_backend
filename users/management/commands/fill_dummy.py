@@ -1,5 +1,6 @@
 from orders.models import Order, OrderItem
 from django.core.management.base import BaseCommand
+from django.core.files.uploadedfile import SimpleUploadedFile
 from faker import Faker
 import random
 from users.models import Customer, Address
@@ -66,8 +67,159 @@ class Command(BaseCommand):
             fill_order()
             fill_order_item()
             fill_link()
+
+            fill_basic_data()
             # fill_review()
             self.stdout.write("Database filled with dummy data")
+
+
+def fill_basic_data():
+    user = Customer.objects.create(
+        first_name="John", last_name="Wick", email="client@mail.ru"
+    )
+
+    # create admin user
+    admin = Customer.objects.create(
+        first_name="Admin",
+        last_name="Admin",
+        email="admin@gmail.com",
+        is_superuser=True,
+        is_staff=True,
+        password="admin",
+    )
+
+    user.set_password("client")
+    Address.objects.create(
+        user=user,
+        country="Russia",
+        city="Moscow",
+        street="Lenina",
+    )
+    admin_shop = Shop.objects.create(
+        name="Admin's Shop",
+        user=admin,
+        address="Moscow, Lenina",
+        phone="+7 999 999 99 99 00",
+        email="adminshop@gmail.com",
+        cover_picture=SimpleUploadedFile(
+            name="cover.jpg",
+            content=open("tests/test_head/testimage.webp", "rb").read(),
+            content_type="image/jpeg",
+        ),
+        profile_picture=SimpleUploadedFile(
+            name="profile.jpg",
+            content=open("tests/test_head/testimage.webp", "rb").read(),
+            content_type="image/jpeg",
+        ),
+    )
+    shop = Shop.objects.create(
+        name="Client's Shop",
+        user=user,
+        address="Moscow, Lenina",
+        phone="+7 999 999 99 99",
+        email="client@gmail.com",
+        cover_picture=SimpleUploadedFile(
+            name="cover.jpg",
+            content=open("tests/test_head/testimage.webp", "rb").read(),
+            content_type="image/jpeg",
+        ),
+        profile_picture=SimpleUploadedFile(
+            name="profile.jpg",
+            content=open("tests/test_head/testimage.webp", "rb").read(),
+            content_type="image/jpeg",
+        ),
+    )
+
+    product = Product.objects.create(
+        title="Product",
+        price=100,
+        brand=Brand.objects.first(),
+        shop=admin_shop,
+        status="available",
+        discount=0,
+        thumbnail=SimpleUploadedFile(
+            name="product.jpg",
+            content=open("tests/test_head/testimage.webp", "rb").read(),
+            content_type="image/jpeg",
+        ),
+        rating=5,
+    )
+    product2 = Product.objects.create(
+        title="Product2",
+        price=100,
+        brand=Brand.objects.first(),
+        shop=admin_shop,
+        status="available",
+        discount=0,
+        thumbnail=SimpleUploadedFile(
+            name="product.jpg",
+            content=open("tests/test_head/testimage.webp", "rb").read(),
+            content_type="image/jpeg",
+        ),
+        rating=5,
+    )
+
+    product.sizes.add(Size.objects.first())
+    product.colors.add(Color.objects.first())
+    product.categories.add(Category.objects.first())
+    product2.sizes.add(Size.objects.first())
+    product2.colors.add(Color.objects.first())
+    product2.categories.add(Category.objects.first())
+    Image.objects.create(
+        product=product,
+        image=SimpleUploadedFile(
+            name="product.jpg",
+            content=open("tests/test_head/testimage.webp", "rb").read(),
+            content_type="image/jpeg",
+        ),
+    )
+    Image.objects.create(
+        product=product2,
+        image=SimpleUploadedFile(
+            name="product.jpg",
+            content=open("tests/test_head/testimage.webp", "rb").read(),
+            content_type="image/jpeg",
+        ),
+    )
+    order = Order.objects.create(
+        user=user,
+        shop=admin_shop,
+        tax=0,
+        discount=0,
+        shipping_address=user.addresses.first(),
+        status="PENDING",
+    )
+    OrderItem.objects.create(
+        product_image=SimpleUploadedFile(
+            name="product.jpg",
+            content=open("tests/test_head/testimage.webp", "rb").read(),
+            content_type="image/jpeg",
+        ),
+        product_name=product.title,
+        product_price=product.price,
+        product_quantity=1,
+        order=order,
+    )
+
+    order = Order.objects.create(
+        user=user,
+        shop=admin_shop,
+        tax=0,
+        discount=0,
+        shipping_address=user.addresses.first(),
+        status="PENDING",
+    )
+    OrderItem.objects.create(
+        product_image=SimpleUploadedFile(
+            name="product.jpg",
+            content=open("tests/test_head/testimage.webp", "rb").read(),
+            content_type="image/jpeg",
+        ),
+        product_name=product2.title,
+        product_price=product2.price,
+        product_quantity=1,
+        order=order,
+    )
 
 
 def fill_customer():
@@ -138,8 +290,8 @@ def fill_color():
     colors = list(COLORS.values())
     for _ in range(10):
         Color.objects.create(
-            name = names[_],
-            color = colors[_],
+            name=names[_],
+            color=colors[_],
         )
 
 
