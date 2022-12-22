@@ -27,3 +27,20 @@ class Page(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class SiteSettings(models.Model):
+    email = models.EmailField()
+    support_email = models.EmailField()
+    header_phone = models.CharField(max_length=100)
+    footer_phone = models.CharField(max_length=100)
+    short_description = models.CharField(max_length=255)
+    address = models.CharField(max_length=155)
+    facebook = models.CharField(max_length=100)
+    twitter = models.CharField(max_length=100)
+    youtube = models.CharField(max_length=100)
+    gmail = models.CharField(max_length=100)
+    instagram = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.email

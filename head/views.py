@@ -1,4 +1,5 @@
 from rest_framework import permissions, viewsets
+from rest_framework import mixins
 from shops.models import Brand, BrandType, Category, Product, Shop
 from shops.serializers import (
     BrandSerializer,
@@ -15,10 +16,11 @@ from users.serializers import CustomerSerializer
 from posts.models import Post
 from posts.serializers import PostSerializer
 
-from pages.models import Page, PageCategory
+from pages.models import Page, PageCategory, SiteSettings
 from pages.serializers import (
     PageSerializer,
     PageCategorySerializer,
+    SiteSettingsSerializer,
 )
 
 from sliders.models import Slider, Slide
@@ -146,4 +148,17 @@ class AdminSlideViewSet(viewsets.ModelViewSet):
 
     queryset = Slide.objects.all()
     serializer_class = SlideSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+
+class AdminSiteSettingsViewSet(
+    mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
+):
+    """
+    Viewset to manage site settings
+    Allowed: GET, PUT, PATCH
+    """
+
+    queryset = SiteSettings.objects.all()
+    serializer_class = SiteSettingsSerializer
     permission_classes = [permissions.IsAdminUser]

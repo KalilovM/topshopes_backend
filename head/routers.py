@@ -10,6 +10,7 @@ from head.views import (
     AdminPostViewSet,
     AdminPageCategoryViewSet,
     AdminPageViewSet,
+    AdminSiteSettingsViewSet,
     AdminSliderViewSet,
     AdminSlideViewSet,
 )
@@ -26,3 +27,4 @@ router.register(r"page/categories", AdminPageCategoryViewSet)
 router.register(r"pages", AdminPageViewSet)
 router.register(r"sliders/slides", AdminSlideViewSet)
 router.register(r"sliders", AdminSliderViewSet)
+router.register(r"settings", AdminSiteSettingsViewSet)
