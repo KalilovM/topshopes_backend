@@ -2,6 +2,9 @@ from django.contrib import admin
 from .models import (
     Link,
     Shop,
+)
+
+from products.models import (
     Size,
     Color,
     BrandType,

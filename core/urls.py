@@ -50,6 +50,8 @@ urlpatterns = (
         # auth routes
         path("api/auth/login/", TokenObtainPairView.as_view(), name="token_create"),
         path("api/auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+        # pages routes
+        path("api/", include("pages.urls"), name="pages_base_API"),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

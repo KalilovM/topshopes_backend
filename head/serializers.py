@@ -1,8 +1,10 @@
 from rest_framework import serializers
 from core.mixins import CommonRelatedField
 from shops.mixins import CustomRelatedField, CustomRelatedFieldWithImage
-from shops.models import Size, Color, Category, Brand, Shop, Product
-from shops.serializers import ImageSerializer, ShopSerializer
+from shops.models import Shop
+from products.models import Product, Size, Color, Brand, Category
+from shops.serializers import ShopSerializer
+from products.serializers import ImageSerializer
 
 
 class AdminProductSerializer(serializers.ModelSerializer):

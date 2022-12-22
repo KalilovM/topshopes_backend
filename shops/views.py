@@ -1,7 +1,5 @@
 from rest_framework import mixins, permissions, viewsets
-from .models import (
-    Link,
-    Shop,
+from products.models import (
     Size,
     Color,
     BrandType,
@@ -11,10 +9,17 @@ from .models import (
     Product,
     Review,
 )
+from .models import (
+    Link,
+    Shop,
+)
 from .serializers import (
     LinkSerializer,
     ShopSerializer,
     SingleShopSerializer,
+)
+
+from products.serializers import (
     SizeSerializer,
     ColorSerializer,
     BrandSerializer,

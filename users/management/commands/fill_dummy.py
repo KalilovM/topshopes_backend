@@ -4,16 +4,15 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from faker import Faker
 import random
 from users.models import Customer, Address
-from shops.models import (
-    Shop,
-    Color,
-    Size,
-    Link,
+from shops.models import Shop, Link
+from products.models import (
     Product,
-    Image,
+    Size,
+    Color,
     Brand,
     Category,
     BrandType,
+    Image,
     Review,
 )
 

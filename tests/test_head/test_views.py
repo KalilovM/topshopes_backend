@@ -8,7 +8,8 @@ from model_bakery import baker
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 
-from shops.models import Category, Color, Size, Product, Brand, Shop, BrandType, Image
+from shops.models import Shop
+from products.models import Product, Size, Color, Brand, Category, BrandType, Image
 from tests.factories import ProductFactory
 from users.models import Customer
 

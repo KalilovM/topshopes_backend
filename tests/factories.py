@@ -2,7 +2,8 @@ import factory
 from django.core.files.base import ContentFile
 from faker import Factory
 
-from shops.models import Product, Shop, Color, Size, Category, Brand, BrandType, Image
+from shops.models import Shop
+from products.models import Product, Size, Color, Brand, Category, BrandType, Image
 from users.models import Customer, Address
 
 faker = Factory.create()
