@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from shops.models import Brand
+from products.models import Brand
 
 
 class CustomRelatedField(serializers.RelatedField):

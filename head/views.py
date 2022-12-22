@@ -1,11 +1,14 @@
 from rest_framework import permissions, viewsets
 from rest_framework import mixins
-from shops.models import Brand, BrandType, Category, Product, Shop
+from shops.models import Shop
+from products.models import Product, Brand, Category, BrandType
 from shops.serializers import (
+    ShopSerializer,
+)
+from products.serializers import (
     BrandSerializer,
     BrandTypeSerializer,
     CategorySerializer,
-    ShopSerializer,
 )
 
 from head.serializers import AdminProductSerializer
