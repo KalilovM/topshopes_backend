@@ -74,7 +74,7 @@ class Size(models.Model):
     Product size model
     """
 
-    name = models.CharField(max_length=15, verbose_name="Product's size")
+    name = models.CharField(max_length=15, verbose_name="Product's size", unique=True)
 
     def __str__(self):
         return self.name
