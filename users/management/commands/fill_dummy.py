@@ -312,7 +312,7 @@ SIZES = [
 def fill_size():
 
     for _ in range(10):
-        Size.objects.create(name=fake.random_element(SIZES))
+        Size.objects.create(name=SIZES[_])
 
 
 LINK_NAMES = [
