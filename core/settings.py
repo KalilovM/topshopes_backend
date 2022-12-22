@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "head.apps.HeadConfig",
     "pages.apps.PagesConfig",
     "posts.apps.PostsConfig",
+    "sliders.apps.SlidersConfig",
 ]
 
 MIDDLEWARE = [
