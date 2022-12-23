@@ -1,6 +1,8 @@
 from django.db import models
 from autoslug import AutoSlugField
 
+from core.helpers import PathAndRename
+
 
 class PageCategory(models.Model):
     id = AutoSlugField(populate_from="title", primary_key=True)
@@ -41,6 +43,8 @@ class SiteSettings(models.Model):
     youtube = models.CharField(max_length=100)
     gmail = models.CharField(max_length=100)
     instagram = models.CharField(max_length=100)
+    map = models.CharField(max_length=255)
+    logo = models.ImageField(upload_to=PathAndRename("site_settings/logos/"))
 
     def __str__(self):
         return self.email
