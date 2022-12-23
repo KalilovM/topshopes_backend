@@ -100,7 +100,7 @@ class TestAdminProductsViewset:
         brand_set: Brand,
         brandtype_set: BrandType,
     ):
-        product = ProductFactory.create(
+        ProductFactory.create(
             title="testProd",
             brand=brand_set,
             shop=shop_set,

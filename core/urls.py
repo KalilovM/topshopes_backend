@@ -20,39 +20,39 @@ schema_view = get_schema_view(
     permission_classes=[permissions.AllowAny],
 )
 
-urlpatterns = (
-    [
-        # swagger
-        re_path(
-            r"^api(?P<format>\.json|\.yaml)$",
-            schema_view.without_ui(cache_timeout=0),
-            name="schema-json",
-        ),
-        re_path(
-            r"^api/$",
-            schema_view.with_ui("swagger", cache_timeout=0),
-            name="schema-swagger-ui",
-        ),
-        re_path(
-            r"^redoc/$",
-            schema_view.with_ui("redoc", cache_timeout=0),
-            name="schema-redoc",
-        ),
-        # django admin
-        path("admin/", admin.site.urls),
-        # website admin's routes
-        path("api/admin/", include("head.urls"), name="admin_base_API"),
-        # app routes
-        path("api/", include("users.urls"), name="users_base_API"),
-        path("api/", include("orders.urls"), name="orders_base_API"),
-        path("api/", include("shops.urls"), name="shops_base_API"),
-        path("api/", include("posts.urls"), name="posts_base_API"),
-        # auth routes
-        path("api/auth/login/", TokenObtainPairView.as_view(), name="token_create"),
-        path("api/auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-        # pages routes
-        path("api/", include("pages.urls"), name="pages_base_API"),
-    ]
-    + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-)
+urlpatterns = [
+    # swagger
+    re_path(
+        r"^api(?P<format>\.json|\.yaml)$",
+        schema_view.without_ui(cache_timeout=0),
+        name="schema-json",
+    ),
+    re_path(
+        r"^api/$",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
+    re_path(
+        r"^redoc/$",
+        schema_view.with_ui("redoc", cache_timeout=0),
+        name="schema-redoc",
+    ),
+    # django admin
+    path("admin/", admin.site.urls),
+    # website admin's routes
+    path("api/admin/", include("head.urls"), name="admin_base_API"),
+    # app routes
+    path("api/", include("users.urls"), name="users_base_API"),
+    path("api/", include("orders.urls"), name="orders_base_API"),
+    path("api/", include("products.urls"), name="products_base_API"),
+    path("api/", include("shops.urls"), name="shops_base_API"),
+    path("api/", include("posts.urls"), name="posts_base_API"),
+    # auth routes
+    path("api/auth/login/", TokenObtainPairView.as_view(), name="token_create"),
+    path("api/auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    # pages routes
+    path("api/", include("pages.urls"), name="pages_base_API"),
+]
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

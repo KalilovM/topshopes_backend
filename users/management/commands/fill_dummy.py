@@ -84,9 +84,8 @@ def fill_basic_data():
         email="admin@gmail.com",
         is_superuser=True,
         is_staff=True,
-        password="admin",
     )
-
+    admin.set_password("admin")
     user.set_password("client")
     Address.objects.create(
         user=user,
