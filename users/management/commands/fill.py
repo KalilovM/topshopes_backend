@@ -140,6 +140,7 @@ def fill_basic_data():
         title="Product",
         brand=Brand.objects.first(),
         shop=admin_shop,
+        category=Category.objects.first(),
         rating=5,
     )
 
@@ -160,6 +161,7 @@ def fill_basic_data():
     product2 = Product.objects.create(
         title="Product2",
         brand=Brand.objects.first(),
+        category=Category.objects.first(),
         shop=admin_shop,
         rating=5,
     )
@@ -385,6 +387,7 @@ def fill_product():
             title=fake.random_element(PRODUCT_TITLES),
             brand=fake.random_element(Brand.objects.all()),
             shop=fake.random_element(Shop.objects.all()),
+            category=fake.random_element(Category.objects.all()),
             unit=fake.random_element(UNITS),
             published=fake.boolean(),
         )
