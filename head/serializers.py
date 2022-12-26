@@ -51,7 +51,7 @@ class AdminCustomerSerializer(serializers.ModelSerializer):
     Serializer Customer for admin only
     """
 
-    roles = RoleSerializer
+    roles = RoleSerializer(many=True, read_only=True)
 
     class Meta:
         model = Customer
