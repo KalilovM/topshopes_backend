@@ -38,6 +38,7 @@ class CustomerSerializer(serializers.ModelSerializer):
             "email",
             "phone",
             "avatar",
+            "roles"
         ]
 
 
