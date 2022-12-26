@@ -96,7 +96,7 @@ class AdminProductViewSet(viewsets.ModelViewSet):
     Allowed: All methods
     """
 
-    queryset = Product.objects.all().prefetch_related("images")
+    queryset = Product.objects.all().prefetch_related("variants")
     serializer_class = AdminProductSerializer
     permission_classes = [permissions.IsAdminUser]
 

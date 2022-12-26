@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
-from products.models import (Brand, Category, Color, Product, ProductVariant,
-                             Size)
+from products.models import Brand, Category, Color, Product, ProductVariant, Size
 from products.serializers import ImageSerializer, ProductVariantSerializer
 from shops.models import Shop
 
@@ -25,7 +24,6 @@ class AdminProductSerializer(serializers.ModelSerializer):
     """
 
     brand = AdminBrandSerializer(read_only=True)
-    images = ImageSerializer(many=True, read_only=True)
     shop = AdminShopSerializer(read_only=True)
     variants = ProductVariantSerializer(read_only=True, many=True)
 
@@ -39,7 +37,6 @@ class AdminProductSerializer(serializers.ModelSerializer):
             "shop",
             "title",
             "brand",
-            "images",
             "rating",
             "unit",
             "published",
