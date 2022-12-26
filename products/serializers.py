@@ -174,7 +174,6 @@ class ProductSerializer(serializers.ModelSerializer):
             "shop",
             "title",
             "brand",
-            "images",
             "category",
             "rating",
             "unit",
