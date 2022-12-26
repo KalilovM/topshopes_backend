@@ -19,7 +19,7 @@ class Customer(AbstractUser):
     avatar = models.ImageField(
         upload_to=PathAndRename("avatars/"), null=True, blank=True
     )
-    # TODO: check default value of date of birth on creation or on app start
+    roles = models.ManyToManyField(to="roles.Roles", related_name="users")
     verified = models.BooleanField(default=False)
     phone = models.CharField(max_length=30)
 

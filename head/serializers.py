@@ -3,6 +3,8 @@ from rest_framework import serializers
 from products.models import Brand, Category, Color, Product, ProductVariant, Size
 from products.serializers import ImageSerializer, ProductVariantSerializer
 from shops.models import Shop
+from users.models import Customer
+from roles.serializers import RoleSerializer
 
 
 class AdminShopSerializer(serializers.ModelSerializer):
@@ -41,4 +43,25 @@ class AdminProductSerializer(serializers.ModelSerializer):
             "unit",
             "published",
             "variants",
+        ]
+
+
+class AdminCustomerSerializer(serializers.ModelSerializer):
+    """
+    Serializer Customer for admin only
+    """
+
+    roles = RoleSerializer
+
+    class Meta:
+        model = Customer
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "phone",
+            "avatar",
+            "roles",
+            "is_superuser",
         ]
