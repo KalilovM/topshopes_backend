@@ -7,6 +7,7 @@ from .views import (
     ShopProductViewSet,
     ProductViewSet,
     SizeViewSet,
+    ProductVariantViewSet,
 )
 
 router = routers.SimpleRouter()
@@ -14,6 +15,7 @@ router = routers.SimpleRouter()
 router.register(r"products/sizes", SizeViewSet, basename="size")
 router.register(r"products/colors", ColorViewSet, basename="color")
 router.register(r"products/images", ImageViewSet, basename="image")
+router.register(r"products/variants", ProductVariantViewSet, basename="variant")
 router.register(r"products", ShopProductViewSet, basename="product")
 # routes for all users
 router.register(r"shops/categories", CategoryViewSet, basename="category")

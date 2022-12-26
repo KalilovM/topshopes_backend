@@ -13,6 +13,7 @@ from head.views import (
     AdminSiteSettingsViewSet,
     AdminSliderViewSet,
     AdminSlideViewSet,
+    AdminProductVariantViewSet
 )
 
 router = routers.SimpleRouter()
@@ -21,6 +22,7 @@ router.register(r"shops", AdminShopViewSet)
 router.register(r"categories", AdminCategoryViewSet)
 router.register(r"brand/type", AdminBrandTypeViewSet)
 router.register(r"brand", AdminBrandViewSet)
+router.register(r"products/variants", AdminProductVariantViewSet)
 router.register(r"products", AdminProductViewSet)
 router.register(r"posts", AdminPostViewSet)
 router.register(r"page/categories", AdminPageCategoryViewSet)

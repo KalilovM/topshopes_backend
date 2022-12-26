@@ -1,7 +1,7 @@
 from rest_framework import permissions, viewsets
 from rest_framework import mixins
 from shops.models import Shop
-from products.models import Product, Brand, Category, BrandType
+from products.models import Product, Brand, Category, BrandType, ProductVariant
 from shops.serializers import (
     ShopSerializer,
 )
@@ -9,6 +9,8 @@ from products.serializers import (
     BrandSerializer,
     BrandTypeSerializer,
     CategorySerializer,
+    ProductVariantSerializer,
+    CreateProductVariantSerializer,
 )
 
 from head.serializers import AdminProductSerializer
@@ -168,3 +170,18 @@ class AdminSiteSettingsViewSet(
     queryset = SiteSettings.objects.all()
     serializer_class = SiteSettingsSerializer
     permission_classes = [permissions.IsAdminUser]
+
+
+class AdminProductVariantViewSet(viewsets.ModelViewSet):
+    """
+    Viewset to manage product variants
+    Allowed: All methods
+    """
+
+    queryset = ProductVariant.objects.all()
+    permission_classes = [permissions.IsAdminUser]
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CreateProductVariantSerializer
+        return ProductVariantSerializer
