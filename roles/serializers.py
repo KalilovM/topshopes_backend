@@ -1,4 +1,4 @@
-from models import Role
+from .models import Role
 from rest_framework import serializers
 
 
