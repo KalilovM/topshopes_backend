@@ -2,7 +2,7 @@ from django.db.transaction import atomic
 from rest_framework import serializers
 from rest_framework.serializers import Field
 
-from products.models import Product
+from products.models import ProductVariant
 from shops.models import Shop
 from shops.serializers import ShopSerializer
 from users.serializers import Customer, CustomerSerializer
@@ -19,6 +19,12 @@ class OrderItemSerializer(serializers.ModelSerializer):
     product_image = serializers.ReadOnlyField()
     product_name = serializers.ReadOnlyField()
     product_price = serializers.ReadOnlyField()
+    order = serializers.PrimaryKeyRelatedField(
+        queryset=Order.objects.all(), write_only=True
+    )
+    product_variant = serializers.PrimaryKeyRelatedField(
+        queryset=ProductVariant.objects.all(), write_only=True
+    )
 
     class Meta:
         model = OrderItem
@@ -27,6 +33,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
             "product_name",
             "product_price",
             "product_quantity",
+            "product_variant",
+            "order",
         ]
 
     @atomic
@@ -34,10 +42,12 @@ class OrderItemSerializer(serializers.ModelSerializer):
         """
         Getting data form product and fill other fields
         """
-        product = Product.objects.get(id=validated_data["product"])
-        validated_data["product_image"] = product.thumbnail
-        validated_data["product_name"] = product.title
-        validated_data["product_price"] = product.price
+        product_variant = ProductVariant.objects.get(
+            id=validated_data["product_variant"]
+        )
+        validated_data["product_image"] = product_variant.thumbnail
+        validated_data["product_name"] = product_variant.product.title
+        validated_data["product_price"] = product_variant.price
         super().create(validated_data)
 
 

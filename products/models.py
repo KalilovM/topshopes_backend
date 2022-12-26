@@ -37,13 +37,13 @@ class Image(models.Model):
     Product image model
     """
 
-    product = models.ForeignKey(
-        "Product", on_delete=models.CASCADE, related_name="images"
+    product_variant = models.ForeignKey(
+        "ProductVariant", on_delete=models.CASCADE, related_name="images"
     )
     image = models.ImageField(upload_to=PathAndRename("products/gallery/"))
 
     def __str__(self):
-        return f"{self.pk} {self.product}"
+        return f"{self.pk} {self.product_variant}"
 
 
 class Category(MPTTModel):
@@ -175,6 +175,9 @@ class ProductVariant(models.Model):
         self.change_status()
         self.get_discount_price()
         super(ProductVariant, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.product.title} {self.color} {self.size}"
 
 
 class Product(models.Model):
