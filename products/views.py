@@ -1,4 +1,5 @@
 from rest_framework import mixins, viewsets, permissions
+from rest_framework.decorators import action
 
 from products.models import (
     Size,
@@ -12,6 +13,7 @@ from products.models import (
 )
 
 from products.serializers import (
+    CreateProductSerializer,
     SizeSerializer,
     ColorSerializer,
     BrandSerializer,
@@ -32,7 +34,7 @@ class ProductViewSet(
     """
 
     queryset = Product.objects.prefetch_related("images").all()
-    serializer_class = ProductSerializer
+    serializer_class = CreateProductSerializer
 
 
 class ShopProductViewSet(viewsets.ModelViewSet):
@@ -40,7 +42,6 @@ class ShopProductViewSet(viewsets.ModelViewSet):
     Viewset allows the owner of shop to edit products
     """
 
-    serializer_class = ProductSerializer
     # Add new permission is owner
     permission_classes = [permissions.IsAuthenticated]
 
@@ -57,6 +58,9 @@ class ShopProductViewSet(viewsets.ModelViewSet):
         On create product set shop to user's
         """
         serializer.save(shop=self.request.user.shop)  # type: ignore
+
+    def get_serializer_class(self):
+        return super().get_serializer_class()
 
 
 class SizeViewSet(viewsets.ModelViewSet):

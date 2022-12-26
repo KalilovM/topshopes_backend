@@ -1,5 +1,6 @@
 from rest_framework import routers
-from orders.views import OrderViewSet, OrderItemViewSet
+
+from orders.views import OrderItemViewSet, OrderViewSet
 
 router = routers.SimpleRouter()
 router.register(r"orders", OrderViewSet, basename="orders")

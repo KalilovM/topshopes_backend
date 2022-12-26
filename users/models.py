@@ -1,7 +1,9 @@
-from django.db import models
-from django.contrib.auth.models import AbstractUser
-from typing import List
 import uuid
+from typing import List
+
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+
 from core.helpers import PathAndRename
 from users.managers import CustomManager
 
@@ -13,14 +15,13 @@ class Customer(AbstractUser):
 
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     username = None
-    email = models.CharField(max_length=50, unique=True)
+    email = models.EmailField(max_length=100, unique=True)
     avatar = models.ImageField(
         upload_to=PathAndRename("avatars/"), null=True, blank=True
     )
     # TODO: check default value of date of birth on creation or on app start
     verified = models.BooleanField(default=False)
     phone = models.CharField(max_length=30)
-    is_seller = models.BooleanField(default=False)
 
     USERNAME_FIELD: str = "email"
     REQUIRED_FIELDS: List[str] = []

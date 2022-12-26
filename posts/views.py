@@ -1,8 +1,8 @@
-from rest_framework import permissions
-from posts.serializers import PostSerializer
-from posts.models import Post
+from rest_framework import mixins, permissions
 from rest_framework.viewsets import GenericViewSet
-from rest_framework import mixins
+
+from posts.models import Post
+from posts.serializers import PostSerializer
 
 
 class PostViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet):

@@ -1,18 +1,9 @@
 from rest_framework import serializers
-from core.mixins import CommonRelatedField
-from shops.mixins import CustomRelatedField, CustomRelatedFieldWithImage
-from shops.models import Shop
+from rest_framework.serializers import Field
+
+from products.models import (Brand, BrandType, Category, Color, Image, Product,
+                             ProductVariant, Review, Size)
 from users.serializers import CustomerSerializer
-from products.models import (
-    Size,
-    Color,
-    BrandType,
-    Image,
-    Category,
-    Brand,
-    Product,
-    Review,
-)
 
 
 class SizeSerializer(serializers.ModelSerializer):
@@ -21,11 +12,9 @@ class SizeSerializer(serializers.ModelSerializer):
     Return all fields
     """
 
-    id = serializers.ReadOnlyField()
-
     class Meta:
         model = Size
-        fields = "__all__"
+        fields = ["id", "name"]
 
 
 class ColorSerializer(serializers.ModelSerializer):
@@ -34,11 +23,9 @@ class ColorSerializer(serializers.ModelSerializer):
     Return all fields
     """
 
-    id = serializers.ReadOnlyField()
-
     class Meta:
         model = Color
-        fields = "__all__"
+        fields = ["id", "name", "color"]
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -46,8 +33,6 @@ class BrandSerializer(serializers.ModelSerializer):
     Brand serializer able to select fields to represent
     Return all fields
     """
-
-    id = serializers.ReadOnlyField()
 
     class Meta:
         model = Brand
@@ -59,8 +44,6 @@ class BrandTypeSerializer(serializers.ModelSerializer):
     Serialzier for brand type
     Return all fields
     """
-
-    id = serializers.ReadOnlyField()
 
     class Meta:
         model = BrandType
@@ -75,7 +58,7 @@ class ImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Image
-        fields = ["id", "image"]
+        fields = ["id", "image", "product"]
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -83,8 +66,6 @@ class CategorySerializer(serializers.ModelSerializer):
     Category serializer
     Return id, name, icon, image, slug, parent, descirption, featured fields
     """
-
-    id = serializers.ReadOnlyField()
 
     class Meta:
         model = Category
@@ -100,23 +81,81 @@ class CategorySerializer(serializers.ModelSerializer):
         ]
 
 
+class ReviewSerializer(serializers.ModelSerializer):
+    """
+    Review serializer
+    Return all fields
+    """
+
+    customer = CustomerSerializer(read_only=True)
+
+    class Meta:
+        model = Review
+        fields = "__all__"
+
+
+class ProductVariantSerializer(serializers.ModelSerializer):
+    """
+    Serializer to Product variant read_only
+    """
+
+    color = ColorSerializer(read_only=True)
+    size = SizeSerializer(read_only=True)
+
+    class Meta:
+        model = ProductVariant
+        fields = [
+            "id",
+            "color",
+            "size",
+            "thumbnail",
+            "status",
+            "stock",
+            "price",
+            "discount",
+            "discount_price",
+        ]
+
+
+class CreateProductVariantSerializer(serializers.ModelSerializer):
+    """
+    Serializer to Product variant read_only
+    """
+
+    size: Field = serializers.PrimaryKeyRelatedField(
+        write_only=True, many=True, queryset=Size.objects.all()
+    )
+    color: Field = serializers.PrimaryKeyRelatedField(
+        many=True, write_only=True, queryset=Color.objects.all()
+    )
+
+    class Meta:
+        model = ProductVariant
+        fields = "__all__"
+
+    def validate_discount(self, value):
+        if 0 <= value <= 100:
+            return value
+
+        return serializers.ValidationError(
+            "dicsount should be more or equal 0 and less or equal 100"
+        )
+
+
 class ProductSerializer(serializers.ModelSerializer):
     from shops.serializers import ShopSerializer
 
     """
-    Product serialzier
+    Product serialzier to read_only
     Return necessary fields for list view
     """
 
-    id = serializers.ReadOnlyField()
-    sizes = CustomRelatedField(many=True, queryset=Size.objects.all())
-    colors = CustomRelatedField(many=True, queryset=Color.objects.all())
-    shop = CommonRelatedField(model=Shop, serializer=ShopSerializer, read_only=True)
-    categories = CustomRelatedField(many=True, queryset=Category.objects.all())
+    shop = ShopSerializer(read_only=True)
+    category = CategorySerializer(read_only=True)
     images = ImageSerializer(many=True, read_only=True)
-    brand = CustomRelatedFieldWithImage(many=False, queryset=Brand.objects.all())
-
-    # reviews = ReviewSerializer(many=True)
+    brand = BrandSerializer(read_only=True)
+    reviews = ReviewSerializer(many=True)
+    variants = ProductVariantSerializer(many=True)
 
     class Meta:
         model = Product
@@ -126,30 +165,27 @@ class ProductSerializer(serializers.ModelSerializer):
             "shop",
             "title",
             "brand",
-            "price",
-            "sizes",
-            "colors",
-            "discount",
-            "thumbnail",
             "images",
-            "categories",
-            "status",
+            "category",
+            "rating",
+            "unit",
+            "published",
+            "variants",
+            "reviews",
+        ]
+
+
+class CreateProductSerializer(serializers.ModelSerializer):
+    """
+    Product serialzier to write_only
+    Return necessary fields for list view
+    """
+
+    class Meta:
+        model = Product
+        fields = [
+            "title",
             "rating",
             "unit",
             "published",
         ]
-
-
-class ReviewSerializer(serializers.ModelSerializer):
-    """
-    Review serializer
-    Return all fields
-    """
-
-    id = serializers.ReadOnlyField()
-    customer = CustomerSerializer(read_only=True)
-    product = ProductSerializer(read_only=True)
-
-    class Meta:
-        model = Review
-        fields = "__all__"

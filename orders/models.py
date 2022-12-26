@@ -1,7 +1,9 @@
-from decimal import Decimal
-from typing import Tuple, Dict
 import uuid
+from decimal import Decimal
+from typing import Dict, Tuple
+
 from django.db import models
+
 from core.helpers import PathAndRename
 
 
@@ -15,6 +17,9 @@ class OrderItem(models.Model):
     product_name = models.CharField(max_length=100)
     product_price = models.DecimalField(max_digits=10, decimal_places=2)
     product_quantity = models.PositiveIntegerField()
+    product = models.ForeignKey(
+        "products.Product", on_delete=models.CASCADE, related_name="order_items"
+    )
     order = models.ForeignKey("Order", on_delete=models.CASCADE, related_name="items")
 
     def __str__(self):
