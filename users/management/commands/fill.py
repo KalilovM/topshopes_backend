@@ -14,6 +14,7 @@ from products.models import (
     BrandType,
     Image,
     Review,
+    ProductVariant,
 )
 
 DJANGO_SETTINGS_MODULE = "core.settings"
@@ -377,36 +378,21 @@ UNITS = [
 
 
 def fill_product():
-    indexes = [i[0] for i in Product.STATUSES]
-    for _ in range(10):
-        product = Product.objects.create(
+    for _ in range(99):
+        Product.objects.create(
             title=fake.random_element(PRODUCT_TITLES),
             brand=fake.random_element(Brand.objects.all()),
             shop=fake.random_element(Shop.objects.all()),
-            price=fake.pyint(),
-            status=fake.random_element(indexes),
-            rating=fake.pyint(),
             unit=fake.random_element(UNITS),
-            discount=fake.pyint(),
-            thumbnail=fake.image_url(),
+            published=fake.boolean(),
         )
-        product.colors.set(fake.random_elements(Color.objects.all()))
-        product.sizes.set(fake.random_elements(Size.objects.all()))
-        product.categories.set(fake.random_elements(Category.objects.all()))
-        product.colors.set(fake.random_elements(Color.objects.all()))
-        product.colors.set(fake.random_elements(Color.objects.all()))
-        product.sizes.set(fake.random_elements(Size.objects.all()))
-        product.categories.set(fake.random_elements(Category.objects.all()))
-        product.sizes.set(fake.random_elements(Size.objects.all()))
-        product.categories.set(fake.random_elements(Category.objects.all()))
-        product.save()
 
 
 def fill_image():
     for _ in range(10):
         Image.objects.create(
             image=fake.image_url(),
-            product=fake.random_element(Product.objects.all()),
+            product_variant=fake.random_element(ProductVariant.objects.all()),
         )
 
 
