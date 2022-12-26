@@ -37,7 +37,7 @@ class ProductViewSet(
     Only get method allowed
     """
 
-    queryset = Product.objects.prefetch_related("images").all()
+    queryset = Product.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = ProductSerializer
 
@@ -78,7 +78,7 @@ class ShopProductViewSet(viewsets.ModelViewSet):
         """
         Returns only current user's shop products
         """
-        return Product.objects.prefetch_related("images", "variants").filter(
+        return Product.objects.prefetch_related("variants").filter(
             shop=self.request.user.shop  # type: ignore
         )
 
