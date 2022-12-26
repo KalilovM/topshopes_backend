@@ -1,5 +1,6 @@
 from rest_framework import mixins, viewsets, permissions
-from rest_framework.decorators import action
+from core.permissions import IsOwner, HasShop
+
 
 from products.models import (
     Size,
@@ -10,6 +11,7 @@ from products.models import (
     Brand,
     Product,
     Review,
+    ProductVariant,
 )
 
 from products.serializers import (
@@ -22,6 +24,8 @@ from products.serializers import (
     CategorySerializer,
     ProductSerializer,
     ReviewSerializer,
+    ProductVariantSerializer,
+    CreateProductVariantSerializer,
 )
 
 
@@ -34,7 +38,32 @@ class ProductViewSet(
     """
 
     queryset = Product.objects.prefetch_related("images").all()
-    serializer_class = CreateProductSerializer
+    permission_classes = [permissions.AllowAny]
+    serializer_class = ProductSerializer
+
+
+class ProductVariantViewSet(
+    mixins.CreateModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
+):
+    """
+    Product variant viewset to create product variants
+    Only create method allowed
+    """
+
+    permission_classes = [permissions.IsAuthenticated, HasShop, IsOwner]
+
+    def get_queryset(self):
+        """
+        Returns only current user's shop products
+        """
+        return ProductVariant.objects.filter(
+            product__shop=self.request.user.shop  # type: ignore
+        )
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CreateProductVariantSerializer
+        return ProductVariantSerializer
 
 
 class ShopProductViewSet(viewsets.ModelViewSet):
@@ -43,13 +72,13 @@ class ShopProductViewSet(viewsets.ModelViewSet):
     """
 
     # Add new permission is owner
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwner, HasShop]
 
     def get_queryset(self):
         """
         Returns only current user's shop products
         """
-        return Product.objects.prefetch_related("images").filter(
+        return Product.objects.prefetch_related("images", "variants").filter(
             shop=self.request.user.shop  # type: ignore
         )
 
@@ -60,7 +89,9 @@ class ShopProductViewSet(viewsets.ModelViewSet):
         serializer.save(shop=self.request.user.shop)  # type: ignore
 
     def get_serializer_class(self):
-        return super().get_serializer_class()
+        if self.action == "create":
+            return CreateProductSerializer
+        return ProductSerializer
 
 
 class SizeViewSet(viewsets.ModelViewSet):
@@ -70,7 +101,7 @@ class SizeViewSet(viewsets.ModelViewSet):
 
     queryset = Size.objects.all()
     serializer_class = SizeSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, HasShop]
 
 
 class ColorViewSet(viewsets.ModelViewSet):
@@ -80,7 +111,7 @@ class ColorViewSet(viewsets.ModelViewSet):
 
     queryset = Color.objects.all()
     serializer_class = ColorSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, HasShop]
 
 
 class BrandTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):

@@ -1,14 +1,23 @@
 from rest_framework import serializers
 from rest_framework.serializers import Field
 
-from products.models import (Brand, BrandType, Category, Color, Image, Product,
-                             ProductVariant, Review, Size)
+from products.models import (
+    Brand,
+    BrandType,
+    Category,
+    Color,
+    Image,
+    Product,
+    ProductVariant,
+    Review,
+    Size,
+)
 from users.serializers import CustomerSerializer
 
 
 class SizeSerializer(serializers.ModelSerializer):
     """
-    Size serialzier
+    Size serializer
     Return all fields
     """
 
@@ -41,7 +50,7 @@ class BrandSerializer(serializers.ModelSerializer):
 
 class BrandTypeSerializer(serializers.ModelSerializer):
     """
-    Serialzier for brand type
+    Serializer for brand type
     Return all fields
     """
 
@@ -58,13 +67,13 @@ class ImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Image
-        fields = ["id", "image", "product"]
+        fields = ["id", "image", "product_variant"]
 
 
 class CategorySerializer(serializers.ModelSerializer):
     """
     Category serializer
-    Return id, name, icon, image, slug, parent, descirption, featured fields
+    Return id, name, icon, image, slug, parent, description, featured fields
     """
 
     class Meta:
@@ -138,7 +147,7 @@ class CreateProductVariantSerializer(serializers.ModelSerializer):
             return value
 
         return serializers.ValidationError(
-            "dicsount should be more or equal 0 and less or equal 100"
+            "discount should be more or equal 0 and less or equal 100"
         )
 
 
@@ -146,7 +155,7 @@ class ProductSerializer(serializers.ModelSerializer):
     from shops.serializers import ShopSerializer
 
     """
-    Product serialzier to read_only
+    Product serializer to read_only
     Return necessary fields for list view
     """
 
@@ -154,8 +163,8 @@ class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
     images = ImageSerializer(many=True, read_only=True)
     brand = BrandSerializer(read_only=True)
-    reviews = ReviewSerializer(many=True)
-    variants = ProductVariantSerializer(many=True)
+    reviews = ReviewSerializer(many=True, read_only=True)
+    variants = ProductVariantSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
@@ -177,7 +186,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class CreateProductSerializer(serializers.ModelSerializer):
     """
-    Product serialzier to write_only
+    Product serializer to write_only
     Return necessary fields for list view
     """
 
