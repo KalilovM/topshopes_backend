@@ -161,7 +161,6 @@ class ProductSerializer(serializers.ModelSerializer):
 
     shop = ShopSerializer(read_only=True)
     category = CategorySerializer(read_only=True)
-    images = ImageSerializer(many=True, read_only=True)
     brand = BrandSerializer(read_only=True)
     reviews = ReviewSerializer(many=True, read_only=True)
     variants = ProductVariantSerializer(many=True, read_only=True)
