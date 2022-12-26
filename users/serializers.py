@@ -1,14 +1,30 @@
 from rest_framework import serializers
+from rest_framework.serializers import Field
 
-from .models import Customer, Address
+from .models import Address, Customer
+
+
+class CreateCustomerSerializer(serializers.ModelSerializer):
+    """
+    Serialzier to create customer
+    """
+
+    class Meta:
+        model = Customer
+        fields = [
+            "first_name",
+            "last_name",
+            "email",
+            "phone",
+            "avatar",
+            "password",
+        ]
 
 
 class CustomerSerializer(serializers.ModelSerializer):
     """
-    Serializer to customer
+    Serializer Customer to read_only
     """
-
-    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = Customer
@@ -19,17 +35,26 @@ class CustomerSerializer(serializers.ModelSerializer):
             "email",
             "phone",
             "avatar",
-            "password",
-            "verified",
-            "is_superuser",
         ]
+
+
+class CreateAddressSerializer(serializers.ModelSerializer):
+    """
+    Serializer to create addresses
+    """
+
+    user: Field = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = Address
+        fields = ["user", "country", "city", "street", "phone"]
 
 
 class AddressSerializer(serializers.ModelSerializer):
     """
-    Serializer for addresses
+    Serializer to read only addresses
     """
 
     class Meta:
         model = Address
-        fields = "__all__"
+        fields = ["id", "user", "country", "city", "street", "phone"]

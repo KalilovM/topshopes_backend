@@ -1,6 +1,5 @@
-from rest_framework import mixins
-from rest_framework import viewsets
-from rest_framework import permissions
+from rest_framework import mixins, permissions, viewsets
+
 from .models import SiteSettings
 from .serializers import SiteSettingsSerializer
 

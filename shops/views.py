@@ -1,18 +1,13 @@
 from rest_framework import mixins, permissions, viewsets
-from .models import (
-    Link,
-    Shop,
-)
-from .serializers import (
-    LinkSerializer,
-    ShopSerializer,
-    SingleShopSerializer,
-)
+
+from .models import Link, Shop
+from .serializers import (CreateShopSerializer, LinkSerializer, ShopSerializer,
+                          SingleShopSerializer)
 
 
 class MyShopViewSet(
     mixins.CreateModelMixin,
-    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
@@ -23,7 +18,12 @@ class MyShopViewSet(
     """
 
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = SingleShopSerializer
+    queryset = Shop.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CreateShopSerializer
+        return SingleShopSerializer
 
     def perform_create(self, serializer):
         """
@@ -31,11 +31,11 @@ class MyShopViewSet(
         """
         serializer.save(user=self.request.user)
 
-    def get_queryset(self):
+    def get_object(self):
         """
-        Returns only user's shop
+        Return only user's shop
         """
-        return Shop.objects.filter(user=self.request.user.pk)
+        return self.request.user.shop
 
 
 class ShopViewSet(
@@ -59,7 +59,8 @@ class LinkViewSet(
     viewsets.GenericViewSet,
 ):
     """
-    Viewset for only user's shop links and can edit
+    Viewset to control only user's shop links
+    Maximum 5 links per shop
     """
 
     serializer_class = LinkSerializer
@@ -72,4 +73,7 @@ class LinkViewSet(
         serializer.save(shop=self.request.user.shop)
 
     def get_queryset(self):
+        """
+        Return only user's shop links
+        """
         return Link.objects.filter(shop=self.request.user.shop)

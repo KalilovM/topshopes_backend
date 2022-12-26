@@ -1,25 +1,33 @@
 from rest_framework import serializers
-from core.mixins import CommonRelatedField
-from shops.mixins import CustomRelatedField, CustomRelatedFieldWithImage
+
+from products.models import (Brand, Category, Color, Product, ProductVariant,
+                             Size)
+from products.serializers import ImageSerializer, ProductVariantSerializer
 from shops.models import Shop
-from products.models import Product, Size, Color, Brand, Category
-from shops.serializers import ShopSerializer
-from products.serializers import ImageSerializer
+
+
+class AdminShopSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Shop
+        fields = ["id", "name"]
+
+
+class AdminBrandSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Brand
+        fields = ["id", "name", "image"]
 
 
 class AdminProductSerializer(serializers.ModelSerializer):
     """
-    Product serialzier
+    Product serialzier for read only
     Return necessary fields for list view
     """
 
-    id = serializers.ReadOnlyField()
-    sizes = CustomRelatedField(many=True, queryset=Size.objects.all())
-    colors = CustomRelatedField(many=True, queryset=Color.objects.all())
-    shop = CommonRelatedField(model=Shop, serializer=ShopSerializer, read_only=True)
-    categories = CustomRelatedField(many=True, queryset=Category.objects.all())
+    brand = AdminBrandSerializer(read_only=True)
     images = ImageSerializer(many=True, read_only=True)
-    brand = CustomRelatedFieldWithImage(many=False, queryset=Brand.objects.all())
+    shop = AdminShopSerializer(read_only=True)
+    variants = ProductVariantSerializer(read_only=True, many=True)
 
     # reviews = ReviewSerializer(many=True)
 
@@ -31,15 +39,9 @@ class AdminProductSerializer(serializers.ModelSerializer):
             "shop",
             "title",
             "brand",
-            "price",
-            "sizes",
-            "colors",
-            "discount",
-            "thumbnail",
             "images",
-            "categories",
-            "status",
             "rating",
             "unit",
             "published",
+            "variants",
         ]

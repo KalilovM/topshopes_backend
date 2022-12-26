@@ -8,3 +8,11 @@ class IsAnonymous(permissions.BasePermission):
 
     def has_permission(self, request, view):
         return request.user.is_anonymous
+
+
+# class HasShop(permissions.BasePermission):
+#     """
+#     Check has shop
+#     """
+#
+#     def has_permission(self,request,view):

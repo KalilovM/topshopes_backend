@@ -1,8 +1,9 @@
-from rest_framework.serializers import Serializer
-from .serializers import OrderItemSerializer, OrderSerializer
-from .models import Order, OrderItem
-from rest_framework.viewsets import GenericViewSet
+from django.db.transaction import atomic
 from rest_framework import mixins, permissions
+from rest_framework.viewsets import GenericViewSet
+
+from .models import Order, OrderItem
+from .serializers import OrderItemSerializer, OrderSerializer
 
 
 class OrderViewSet(
@@ -16,7 +17,6 @@ class OrderViewSet(
     Allow to get and create only
     """
 
-    serializer_class = OrderSerializer
     permission_classes = [
         permissions.IsAuthenticated,
     ]
@@ -31,11 +31,8 @@ class OrderViewSet(
             .filter(user=self.request.user.pk)
         )
 
-    def perform_create(self, serializer: Serializer):
-        """
-        On create set current user as order's user
-        """
-        serializer.save(user=self.request.user.pk)
+    def get_serializer_class(self):
+        return OrderSerializer(context={"request": self.request})
 
 
 class OrderItemViewSet(mixins.CreateModelMixin, GenericViewSet):

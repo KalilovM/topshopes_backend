@@ -1,11 +1,12 @@
 from django.contrib.auth.hashers import make_password
-from rest_framework import mixins
+from rest_framework import mixins, permissions
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from core.permissions import IsAnonymous
+
 from .models import Address, Customer
-from rest_framework import permissions
-from .serializers import AddressSerializer, CustomerSerializer
+from .serializers import (AddressSerializer, CreateAddressSerializer,
+                          CreateCustomerSerializer, CustomerSerializer)
 
 
 class CustomerViewSet(
@@ -18,7 +19,10 @@ class CustomerViewSet(
     Viewset to create,update and retrieve current user
     """
 
-    serializer_class = CustomerSerializer
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return CustomerSerializer
+        return CreateCustomerSerializer
 
     def get_permissions(self):
         """
@@ -48,9 +52,8 @@ class AddressViewSet(ModelViewSet):
     Address Viewset allowed all methods
     """
 
-    serializer_class = AddressSerializer
     permission_classes = [
-        permissions.IsAuthenticated,
+        permissions.IsAuthenticatedOrReadOnly,
     ]
 
     def get_queryset(self):
@@ -58,3 +61,8 @@ class AddressViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def get_serializer_class(self):
+        if self.action in ["create", "update", "partial_update"]:
+            return CreateAddressSerializer
+        return AddressSerializer

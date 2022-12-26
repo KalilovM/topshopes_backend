@@ -1,5 +1,5 @@
-from django.db import models
 from autoslug import AutoSlugField
+from django.db import models
 
 from core.helpers import PathAndRename
 
@@ -43,7 +43,7 @@ class SiteSettings(models.Model):
     youtube = models.CharField(max_length=100)
     gmail = models.CharField(max_length=100)
     instagram = models.CharField(max_length=100)
-    map = models.CharField(max_length=255)
+    map = models.TextField()
     logo = models.ImageField(upload_to=PathAndRename("site_settings/logos/"))
 
     def __str__(self):

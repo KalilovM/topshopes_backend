@@ -1,7 +1,7 @@
+from typing import Any, Optional
+
 from django.contrib.auth.hashers import make_password
-from typing import Optional, Any
 from django.contrib.auth.models import UserManager
-from django.db.models import Model
 
 
 class CustomManager(UserManager):
@@ -11,20 +11,20 @@ class CustomManager(UserManager):
 
     def create_user(
         self,
-        email: Optional[str] = ...,
-        password: Optional[str] = ...,
+        email: Optional[str],
+        password: Optional[str],
         **extra_fields: Any,
-    ) -> Model:
+    ):
         email = self.normalize_email(email)
-        user = self.model(email=email, password=password, **extra_fields)
-        user.password = make_password(password)
+        user = self.model(email=email, password=make_password(password), **extra_fields)
+
         user.save()
         return user
 
     def create_superuser(
         self,
-        email: Optional[str] = ...,
-        password: Optional[str] = ...,
+        email: Optional[str],
+        password: Optional[str],
         **extra_fields: Any,
     ) -> None:
         extra_fields.setdefault("is_staff", True)
