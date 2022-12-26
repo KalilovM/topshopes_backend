@@ -12,9 +12,9 @@ from .views import (
 
 router = routers.SimpleRouter()
 # routes for authorized users
-router.register(r"products/sizes", SizeViewSet, basename="size")
-router.register(r"products/colors", ColorViewSet, basename="color")
-router.register(r"products/images", ImageViewSet, basename="image")
+router.register(r"products/variants/sizes", SizeViewSet, basename="size")
+router.register(r"products/variants/colors", ColorViewSet, basename="color")
+router.register(r"products/variants/images", ImageViewSet, basename="image")
 router.register(r"products/variants", ProductVariantViewSet, basename="variant")
 router.register(r"products", ShopProductViewSet, basename="product")
 # routes for all users
