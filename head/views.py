@@ -13,7 +13,7 @@ from products.serializers import (
     CreateProductVariantSerializer,
 )
 
-from head.serializers import AdminProductSerializer
+from head.serializers import AdminProductSerializer, AdminCustomerSerializer
 
 from users.models import Customer
 from users.serializers import CustomerSerializer
@@ -35,14 +35,20 @@ from sliders.serializers import (
 )
 
 
-class AdminUsersViewSet(viewsets.ModelViewSet):
+class AdminUsersViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
     """
     Viewset to manage users
-    Allowed: All methods
+    Allowed: All methods without create
     """
 
     queryset = Customer.objects.all()
-    serializer_class = CustomerSerializer
+    serializer_class = AdminCustomerSerializer
     permission_classes = [permissions.IsAdminUser]
 
 

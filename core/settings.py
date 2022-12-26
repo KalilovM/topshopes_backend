@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "posts.apps.PostsConfig",
     "sliders.apps.SlidersConfig",
     "products.apps.ProductsConfig",
+    "roles.apps.RolesConfig",
 ]
 
 MIDDLEWARE = [
