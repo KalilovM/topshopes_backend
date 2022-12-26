@@ -203,6 +203,12 @@ class Product(models.Model):
         related_name="products",
         verbose_name="Product's shop",
     )
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.PROTECT,
+        null=True,
+        verbose_name="Product's category",
+    )
     rating = models.PositiveSmallIntegerField(null=True, blank=True, editable=False)
     unit = models.CharField(max_length=50)
     published = models.BooleanField(default=True)
