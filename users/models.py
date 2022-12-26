@@ -19,7 +19,7 @@ class Customer(AbstractUser):
     avatar = models.ImageField(
         upload_to=PathAndRename("avatars/"), null=True, blank=True
     )
-    roles = models.ManyToManyField(to="roles.Roles", related_name="users")
+    roles = models.ManyToManyField(to="roles.Role", related_name="users")
     verified = models.BooleanField(default=False)
     phone = models.CharField(max_length=30)
 
