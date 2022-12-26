@@ -74,29 +74,36 @@ class Command(BaseCommand):
 
 
 def fill_basic_data():
-    user = Customer.objects.create(
-        first_name="John", last_name="Wick", email="client@mail.ru"
+    # create superuser
+    admin = Customer.objects.create_superuser(
+        email="admin@gmail.com",
+        password="admin",
+    )
+    # create user
+    user = Customer.objects.create_user(
+        email="client@gmail.com",
+        password="user",
     )
 
-    # create admin user
-    admin = Customer.objects.create(
-        first_name="Admin",
-        last_name="Admin",
-        email="admin@gmail.com",
-        is_superuser=True,
-        is_staff=True,
-    )
-    admin.set_password("admin")
-    user.set_password("client")
     Address.objects.create(
-        user=user,
-        country="Russia",
+        user=Customer.objects.get(email="client@gmail.com"),
         city="Moscow",
+        country="Russia",
         street="Lenina",
+        phone="+7 999 999 99 99 00",
     )
+
+    Address.objects.create(
+        user=Customer.objects.get(email="admin@gmail.com"),
+        city="Moscow",
+        country="Russia",
+        street="Lenina",
+        phone="+7 999 999 99 99 00",
+    )
+
     admin_shop = Shop.objects.create(
         name="Admin's Shop",
-        user=admin,
+        user=Customer.objects.get(email="admin@gmail.com"),
         address="Moscow, Lenina",
         phone="+7 999 999 99 99 00",
         email="adminshop@gmail.com",
@@ -113,7 +120,7 @@ def fill_basic_data():
     )
     shop = Shop.objects.create(
         name="Client's Shop",
-        user=user,
+        user=Customer.objects.get(email="client@gmail.com"),
         address="Moscow, Lenina",
         phone="+7 999 999 99 99",
         email="client@gmail.com",
@@ -131,41 +138,48 @@ def fill_basic_data():
 
     product = Product.objects.create(
         title="Product",
-        price=100,
         brand=Brand.objects.first(),
         shop=admin_shop,
-        status="available",
-        discount=0,
-        thumbnail=SimpleUploadedFile(
-            name="product.jpg",
-            content=open("tests/test_head/testimage.webp", "rb").read(),
-            content_type="image/jpeg",
-        ),
-        rating=5,
-    )
-    product2 = Product.objects.create(
-        title="Product2",
-        price=100,
-        brand=Brand.objects.first(),
-        shop=admin_shop,
-        status="available",
-        discount=0,
-        thumbnail=SimpleUploadedFile(
-            name="product.jpg",
-            content=open("tests/test_head/testimage.webp", "rb").read(),
-            content_type="image/jpeg",
-        ),
         rating=5,
     )
 
-    product.sizes.add(Size.objects.first())
-    product.colors.add(Color.objects.first())
-    product.categories.add(Category.objects.first())
-    product2.sizes.add(Size.objects.first())
-    product2.colors.add(Color.objects.first())
-    product2.categories.add(Category.objects.first())
-    Image.objects.create(
+    variant = ProductVariant.objects.create(
+        color=Color.objects.first(),
+        size=Size.objects.first(),
         product=product,
+        price=100,
+        status="available",
+        discount=0,
+        thumbnail=SimpleUploadedFile(
+            name="product.jpg",
+            content=open("tests/test_head/testimage.webp", "rb").read(),
+            content_type="image/jpeg",
+        ),
+    )
+
+    product2 = Product.objects.create(
+        title="Product2",
+        brand=Brand.objects.first(),
+        shop=admin_shop,
+        rating=5,
+    )
+
+    variant2 = ProductVariant.objects.create(
+        color=Color.objects.first(),
+        size=Size.objects.first(),
+        product=product2,
+        price=100,
+        status="available",
+        discount=0,
+        thumbnail=SimpleUploadedFile(
+            name="product.jpg",
+            content=open("tests/test_head/testimage.webp", "rb").read(),
+            content_type="image/jpeg",
+        ),
+    )
+
+    Image.objects.create(
+        product_variant=variant,
         image=SimpleUploadedFile(
             name="product.jpg",
             content=open("tests/test_head/testimage.webp", "rb").read(),
@@ -173,7 +187,7 @@ def fill_basic_data():
         ),
     )
     Image.objects.create(
-        product=product2,
+        product_variant=variant2,
         image=SimpleUploadedFile(
             name="product.jpg",
             content=open("tests/test_head/testimage.webp", "rb").read(),
@@ -185,17 +199,11 @@ def fill_basic_data():
         shop=admin_shop,
         tax=0,
         discount=0,
-        shipping_address=user.addresses.first(),
+        shipping_address="Moscow, Lenina",
         status="PENDING",
     )
     OrderItem.objects.create(
-        product_image=SimpleUploadedFile(
-            name="product.jpg",
-            content=open("tests/test_head/testimage.webp", "rb").read(),
-            content_type="image/jpeg",
-        ),
-        product_name=product.title,
-        product_price=product.price,
+        product_variant=variant,
         product_quantity=1,
         order=order,
     )
@@ -205,17 +213,11 @@ def fill_basic_data():
         shop=admin_shop,
         tax=0,
         discount=0,
-        shipping_address=user.addresses.first(),
+        shipping_address="Moscow, Lenina",
         status="PENDING",
     )
     OrderItem.objects.create(
-        product_image=SimpleUploadedFile(
-            name="product.jpg",
-            content=open("tests/test_head/testimage.webp", "rb").read(),
-            content_type="image/jpeg",
-        ),
-        product_name=product2.title,
-        product_price=product2.price,
+        product_variant=variant2,
         product_quantity=1,
         order=order,
     )
@@ -386,14 +388,31 @@ def fill_product():
             unit=fake.random_element(UNITS),
             published=fake.boolean(),
         )
+    for _ in range(99):
+        product = Product.objects.all()[_]
+        for _ in range(random.randint(1, 6)):
+            ProductVariant.objects.create(
+                product=product,
+                status=ProductVariant.STATUSES[
+                    random.randint(0, len(ProductVariant.STATUSES) - 1)
+                ],
+                color=fake.random_element(Color.objects.all()),
+                size=fake.random_element(Size.objects.all()),
+                price=fake.random_int(min=1000, max=10000),
+                stock=fake.random_int(min=1, max=100),
+                discount=fake.random_int(min=0, max=100),
+                thumbnail=fake.image_url(),
+            )
 
 
 def fill_image():
-    for _ in range(10):
-        Image.objects.create(
-            image=fake.image_url(),
-            product_variant=fake.random_element(ProductVariant.objects.all()),
-        )
+    for _ in range(ProductVariant.objects.count()):
+        product = ProductVariant.objects.all()[_]
+        for _ in range(random.randint(1, 5)):
+            Image.objects.create(
+                image=fake.image_url(),
+                product_variant=product,
+            )
 
 
 BRAND_NAMES = [
@@ -562,9 +581,7 @@ def fill_order():
 def fill_order_item():
     for _ in range(10):
         OrderItem.objects.create(
-            product_image=fake.image_url(),
-            product_name=fake.random_element(PRODUCT_TITLES),
-            product_price=fake.pyint(),
-            product_quantity=fake.pyint(),
+            product_variant=ProductVariant.objects.all()[_],
+            product_quantity=fake.random_int(min=1, max=10),
             order=fake.random_element(Order.objects.all()),
         )

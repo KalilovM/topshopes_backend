@@ -83,7 +83,6 @@ class Size(models.Model):
     """
 
     name = models.CharField(max_length=15, verbose_name="Product's size", unique=True)
-    category = models.ForeignKey("products.Category", on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -169,7 +168,7 @@ class ProductVariant(models.Model):
             self.stock -= 1
 
     def get_discount_price(self):
-        self.discount_price = self.price - (self.price * self.discount_price / 100)
+        self.discount_price = self.price - (self.price * self.discount / 100)
 
     def save(self, *args, **kwargs):
         self.change_status()
