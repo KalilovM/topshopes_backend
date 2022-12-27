@@ -398,7 +398,7 @@ def fill_product():
                 product=product,
                 status=ProductVariant.STATUSES[
                     random.randint(0, len(ProductVariant.STATUSES) - 1)
-                ],
+                ][0],
                 color=fake.random_element(Color.objects.all()),
                 size=fake.random_element(Size.objects.all()),
                 price=fake.random_int(min=1000, max=10000),
