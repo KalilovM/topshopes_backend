@@ -1,10 +1,8 @@
 from rest_framework import serializers
 from rest_framework.serializers import Field
 
-from users.models import Customer
 from users.serializers import CustomerSerializer
 
-from products.serializers import ProductSerializer
 
 from .models import Link, Shop
 
@@ -40,6 +38,8 @@ class ShopSerializer(serializers.ModelSerializer):
 
 
 class SingleShopSerializer(serializers.ModelSerializer):
+    from products.serializers import ProductSerializer
+
     """
     Only single shop serializer
     Return only one shop with all fields
@@ -55,7 +55,6 @@ class SingleShopSerializer(serializers.ModelSerializer):
 
 
 class CreateShopSerializer(serializers.ModelSerializer):
-    from products.serializers import ProductSerializer
 
     """
     Serialize used to create shop only
