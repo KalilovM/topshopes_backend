@@ -128,7 +128,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
 
 class CreateProductVariantSerializer(serializers.ModelSerializer):
     """
-    Serializer to Product variant read_only
+    Serializer to Product variant write_only
     """
 
     size: Field = serializers.PrimaryKeyRelatedField(
