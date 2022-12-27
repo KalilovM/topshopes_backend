@@ -12,4 +12,4 @@ class SiteSettingsViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
 
     queryset = SiteSettings.objects.all()
     serializer_class = SiteSettingsSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
