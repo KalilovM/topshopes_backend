@@ -131,13 +131,6 @@ class CreateProductVariantSerializer(serializers.ModelSerializer):
     Serializer to Product variant write_only
     """
 
-    size: Field = serializers.PrimaryKeyRelatedField(
-        write_only=True, many=True, queryset=Size.objects.all()
-    )
-    color: Field = serializers.PrimaryKeyRelatedField(
-        many=True, write_only=True, queryset=Color.objects.all()
-    )
-
     class Meta:
         model = ProductVariant
         fields = "__all__"
