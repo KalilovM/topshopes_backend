@@ -27,7 +27,7 @@ class AdminProductSerializer(serializers.ModelSerializer):
 
     brand = AdminBrandSerializer(read_only=True)
     shop = AdminShopSerializer(read_only=True)
-    variants = ProductVariantSerializer(many=True)
+    variants = ProductVariantSerializer(read_only=True, many=True)
 
     # reviews = ReviewSerializer(many=True)
 
