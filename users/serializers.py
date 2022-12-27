@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from rest_framework.serializers import Field
 
-from .models import Address, Customer
 from roles.serializers import RoleSerializer
+
+from .models import Address, Customer
 
 
 class CreateCustomerSerializer(serializers.ModelSerializer):
@@ -38,7 +39,8 @@ class CustomerSerializer(serializers.ModelSerializer):
             "email",
             "phone",
             "avatar",
-            "roles"
+            "roles",
+            "is_superuser",
         ]
 
 
