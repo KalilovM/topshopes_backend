@@ -4,6 +4,8 @@ from rest_framework.serializers import Field
 from users.models import Customer
 from users.serializers import CustomerSerializer
 
+from products.serializers import ProductSerializer
+
 from .models import Link, Shop
 
 
@@ -37,6 +39,21 @@ class ShopSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class SingleShopSerializer(serializers.ModelSerializer):
+    """
+    Only single shop serializer
+    Return only one shop with all fields
+    """
+
+    user = CustomerSerializer(read_only=True)
+    links = LinkSerializer(many=True, read_only=True)
+    products = ProductSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Shop
+        fields = "__all__"
+
+
 class CreateShopSerializer(serializers.ModelSerializer):
     from products.serializers import ProductSerializer
 
@@ -58,20 +75,3 @@ class CreateShopSerializer(serializers.ModelSerializer):
             "cover_picture",
             "profile_picture",
         ]
-
-
-class SingleShopSerializer(serializers.ModelSerializer):
-    from products.serializers import ProductSerializer
-
-    """
-    Only single shop serializer
-    Return only one shop with all fields
-    """
-
-    user = CustomerSerializer(read_only=True)
-    links = LinkSerializer(many=True, read_only=True)
-    products = ProductSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Shop
-        fields = "__all__"

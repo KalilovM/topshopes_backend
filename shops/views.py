@@ -60,8 +60,12 @@ class ShopViewSet(
     """
 
     queryset = Shop.objects.all()
-    serializer_class = ShopSerializer
     permission_classes = [permissions.AllowAny]
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return SingleShopSerializer
+        return ShopSerializer
 
 
 @extend_schema(
