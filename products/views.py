@@ -1,4 +1,6 @@
 from rest_framework import mixins, viewsets, permissions
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
 from core.permissions import IsOwner, HasShop
 
 
@@ -42,6 +44,12 @@ class ProductViewSet(
     serializer_class = ProductSerializer
 
 
+@extend_schema(
+    description="Viewset to create product",
+    parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
+    responses={201: ProductVariantSerializer},
+    tags=["Products"],
+)
 class ProductVariantViewSet(
     mixins.CreateModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
 ):
@@ -66,6 +74,12 @@ class ProductVariantViewSet(
         return ProductVariantSerializer
 
 
+@extend_schema(
+    description="Viewset to edit user's shop",
+    parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
+    responses={200: ProductSerializer},
+    tags=["Shops"],
+)
 class ShopProductViewSet(viewsets.ModelViewSet):
     """
     Viewset allows the owner of shop to edit products
@@ -97,7 +111,9 @@ class ShopProductViewSet(viewsets.ModelViewSet):
         return ProductSerializer
 
 
-class SizeViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class SizeViewSet(
+    mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
+):
     """
     Size viewset every user can create own sizes for product
     """

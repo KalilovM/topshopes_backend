@@ -1,11 +1,20 @@
-from django.db.transaction import atomic
 from rest_framework import mixins, permissions
 from rest_framework.viewsets import GenericViewSet
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
 
 from .models import Order, OrderItem
 from .serializers import OrderItemSerializer, OrderSerializer
 
 
+@extend_schema(
+    description="Create order",
+    parameters=[
+        OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH),
+    ],
+    responses={201: OrderSerializer},
+    tags=["Orders"],
+)
 class OrderViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
@@ -25,14 +34,10 @@ class OrderViewSet(
         """
         On get method return only current user's orders
         """
-        return (
-            Order.objects.prefetch_related("items")
-            .all()
-            .filter(user=self.request.user.pk)
-        )
+        return Order.objects.prefetch_related("items").filter(user=self.request.user)
 
     def get_serializer_class(self):
-        return OrderSerializer(context={"request": self.request})
+        return OrderSerializer
 
 
 class OrderItemViewSet(mixins.CreateModelMixin, GenericViewSet):
@@ -48,6 +53,14 @@ class OrderItemViewSet(mixins.CreateModelMixin, GenericViewSet):
     ]
 
 
+@extend_schema(
+    description="Viewset for Shop's orders",
+    parameters=[
+        OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH),
+    ],
+    responses={200: OrderSerializer},
+    tags=["Orders"],
+)
 class ShopOrderViewSet(
     mixins.RetrieveModelMixin,
     mixins.ListModelMixin,
