@@ -21,13 +21,13 @@ class AdminBrandSerializer(serializers.ModelSerializer):
 
 class AdminProductSerializer(serializers.ModelSerializer):
     """
-    Product serialzier for read only
+    Product serializer for read only
     Return necessary fields for list view
     """
 
     brand = AdminBrandSerializer(read_only=True)
     shop = AdminShopSerializer(read_only=True)
-    variants = ProductVariantSerializer(read_only=True, many=True)
+    variants = ProductVariantSerializer(many=True)
 
     # reviews = ReviewSerializer(many=True)
 
