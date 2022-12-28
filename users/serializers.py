@@ -40,6 +40,7 @@ class CustomerSerializer(serializers.ModelSerializer):
             "phone",
             "avatar",
             "roles",
+            "verified",
             "is_superuser",
         ]
 
