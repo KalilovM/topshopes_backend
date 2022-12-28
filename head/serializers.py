@@ -7,6 +7,12 @@ from users.models import Customer
 from roles.serializers import RoleSerializer
 
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ["id", "name"]
+
+
 class AdminShopSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shop
@@ -49,6 +55,7 @@ class AdminProductSerializer(serializers.ModelSerializer):
     brand = AdminBrandSerializer(read_only=True)
     shop = AdminShopSerializer(read_only=True)
     variants = ProductVariantSerializer(read_only=True, many=True)
+    category = CategorySerializer(read_only=True)
 
     # reviews = ReviewSerializer(many=True)
 
