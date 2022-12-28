@@ -85,4 +85,5 @@ class AdminCustomerSerializer(serializers.ModelSerializer):
             "avatar",
             "roles",
             "is_superuser",
+            "verified",
         ]
