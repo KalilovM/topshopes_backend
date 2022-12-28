@@ -84,26 +84,14 @@ class CreateOrderSerializer(serializers.ModelSerializer):
     Order serializers for create only
     """
 
-    user = serializers.ReadOnlyField()
-    total_price = serializers.ReadOnlyField()
-    shop: Field = serializers.PrimaryKeyRelatedField(
-        write_only=True, queryset=Shop.objects.all()
-    )
-    items: Field = serializers.PrimaryKeyRelatedField(
-        write_only=True, many=True, queryset=OrderItem.objects.all()
-    )
-
     class Meta:
         model = Order
         fields = [
             "id",
-            "user",
             "shop",
-            "items",
             "tax",
             "created_at",
             "discount",
-            "total_price",
             "is_delivered",
             "shipping_address",
             "status",

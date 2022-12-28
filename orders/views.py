@@ -4,7 +4,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 
 from .models import Order, OrderItem
-from .serializers import OrderItemSerializer, OrderSerializer
+from .serializers import OrderItemSerializer, OrderSerializer, CreateOrderSerializer
 
 
 @extend_schema(
@@ -72,7 +72,6 @@ class ShopOrderViewSet(
     Can update and get only
     """
 
-    serializer_class = OrderSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
@@ -84,3 +83,8 @@ class ShopOrderViewSet(
             .all()
             .filter(shop=self.request.user.shop)
         )
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CreateOrderSerializer
+        return OrderSerializer
