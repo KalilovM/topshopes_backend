@@ -24,9 +24,12 @@ class AdminCreateProductSerializer(serializers.ModelSerializer):
     Product serializer for create and update
     """
 
+    id = serializers.ReadOnlyField()
+
     class Meta:
         model = Product
         fields = [
+            "id",
             "shop",
             "title",
             "brand",

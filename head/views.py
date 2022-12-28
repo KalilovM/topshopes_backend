@@ -13,10 +13,13 @@ from products.serializers import (
     CreateProductVariantSerializer,
 )
 
-from head.serializers import AdminProductSerializer, AdminCustomerSerializer, AdminCreateProductSerializer
+from head.serializers import (
+    AdminProductSerializer,
+    AdminCustomerSerializer,
+    AdminCreateProductSerializer,
+)
 
 from users.models import Customer
-from users.serializers import CustomerSerializer
 
 from posts.models import Post
 from posts.serializers import PostSerializer
