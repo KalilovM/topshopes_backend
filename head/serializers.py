@@ -19,6 +19,24 @@ class AdminBrandSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "image"]
 
 
+class AdminCreateProductSerializer(serializers.ModelSerializer):
+    """
+    Product serializer for create and update
+    """
+
+    class Meta:
+        model = Product
+        fields = [
+            "shop",
+            "title",
+            "brand",
+            "category",
+            "shop",
+            "unit",
+            "published",
+        ]
+
+
 class AdminProductSerializer(serializers.ModelSerializer):
     """
     Product serializer for read only

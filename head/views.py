@@ -13,7 +13,7 @@ from products.serializers import (
     CreateProductVariantSerializer,
 )
 
-from head.serializers import AdminProductSerializer, AdminCustomerSerializer
+from head.serializers import AdminProductSerializer, AdminCustomerSerializer, AdminCreateProductSerializer
 
 from users.models import Customer
 from users.serializers import CustomerSerializer
@@ -103,8 +103,12 @@ class AdminProductViewSet(viewsets.ModelViewSet):
     """
 
     queryset = Product.objects.all().prefetch_related("variants")
-    serializer_class = AdminProductSerializer
     permission_classes = [permissions.IsAdminUser]
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return AdminCreateProductSerializer
+        return AdminProductSerializer
 
 
 class AdminPostViewSet(viewsets.ModelViewSet):
