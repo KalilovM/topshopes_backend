@@ -61,6 +61,7 @@ class AdminProductSerializer(serializers.ModelSerializer):
             "title",
             "brand",
             "rating",
+            "category",
             "unit",
             "published",
             "variants",
