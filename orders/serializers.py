@@ -16,16 +16,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
     Returns all information
     """
 
-    product_image = serializers.ReadOnlyField()
-    product_name = serializers.ReadOnlyField()
-    product_price = serializers.ReadOnlyField()
-    order = serializers.PrimaryKeyRelatedField(
-        queryset=Order.objects.all(), write_only=True
-    )
-    product_variant = serializers.PrimaryKeyRelatedField(
-        queryset=ProductVariant.objects.all(), write_only=True
-    )
-
     class Meta:
         model = OrderItem
         fields = [
