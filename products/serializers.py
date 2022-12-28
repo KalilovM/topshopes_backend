@@ -108,6 +108,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
     Serializer to Product variant read_only
     """
 
+    id = serializers.ReadOnlyField()
     color = ColorSerializer(read_only=True)
     size = SizeSerializer(read_only=True)
 
