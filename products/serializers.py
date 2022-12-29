@@ -100,7 +100,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ["customer", "rating", "comment", "created_at", "product_variant"]
+        fields = ["customer", "rating", "comment", "product_variant"]
 
 
 class CreateReviewSerializer(serializers.ModelSerializer):
