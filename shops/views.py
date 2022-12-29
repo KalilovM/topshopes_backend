@@ -30,7 +30,7 @@ class MyShopViewSet(
     available all methods
     """
 
-    permission_classes = [permissions.IsAuthenticated, HasShop]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Shop.objects.all()
 
     def get_serializer_class(self):
