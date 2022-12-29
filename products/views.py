@@ -1,4 +1,5 @@
 from rest_framework import mixins, viewsets, permissions
+from orders.models import OrderItem
 from .services import buy_product
 from .models import ProductVariant
 from .serializers import ProductVariantSerializer
@@ -68,10 +69,10 @@ class ProductVariantViewSet(
 
     permission_classes = [permissions.IsAuthenticated, HasShop, IsOwner]
 
-    @extend_scheme(
+    @extend_schema(
         description="Buy product variant",
         parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
-        responses={201: ProductVariantSerializer},
+        responses={"message": "Product bought", "order_item": serializers.UUIDField},
     )
     @action(detail=True, methods=["post"])
     def buy(self, request, pk=None):
@@ -80,7 +81,9 @@ class ProductVariantViewSet(
         """
         product_variant = self.get_object()
         quantity = request.data.get("quantity", 1)
-        order_item = buy_product(product_variant, quantity)
+        order_item: OrderItem = buy_product(
+            product_variant, quantity, request.data["order_id"]
+        )
         return Response(
             {"message": "Product bought", "order_item": order_item.id},
             status=status.HTTP_201_CREATED,
