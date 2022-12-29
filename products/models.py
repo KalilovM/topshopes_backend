@@ -226,17 +226,25 @@ class Review(models.Model):
     Review for product
     """
 
+    RATINGS = (
+        (1, "1"),
+        (2, "2"),
+        (3, "3"),
+        (4, "4"),
+        (5, "5"),
+    )
+
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-    rating = models.IntegerField(default=5)
+    rating = models.IntegerField(default=5, choices=RATINGS)
     published = models.BooleanField(default=False)
     comment = models.TextField()
     customer = models.ForeignKey("users.Customer", on_delete=models.CASCADE)
-    product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name="reviews"
+    product_variant = models.ForeignKey(
+        ProductVariant, on_delete=models.CASCADE, related_name="reviews"
     )
 
     def __str__(self):
-        return f"{self.customer.email} {self.product.title}"
+        return f"{self.customer.email} {self.product_variant}"
 
     class Meta:
         ordering = ["rating"]
