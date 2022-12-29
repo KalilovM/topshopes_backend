@@ -92,15 +92,33 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
     """
-    Review serializer
-    Return all fields
+    Review serializer to read only
     """
 
     customer = CustomerSerializer(read_only=True)
+    product_variant = serializers.ReadOnlyField(source="product_variant.id")
 
     class Meta:
         model = Review
-        fields = "__all__"
+        fields = ["customer", "rating", "comment", "created_at", "product_variant"]
+
+
+class CreateReviewSerializer(serializers.ModelSerializer):
+    """
+    Review serializer to write only
+    """
+
+    class Meta:
+        model = Review
+        fields = ["rating", "comment", "product_variant"]
+
+    def validate_rating(self, value):
+        if 1 <= value <= 5:
+            return value
+
+        return serializers.ValidationError(
+            "Rating should be more or equal 1 and less or equal 5"
+        )
 
 
 class ProductVariantSerializer(serializers.ModelSerializer):
@@ -111,6 +129,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     color = ColorSerializer(read_only=True)
     size = SizeSerializer(read_only=True)
+    images = ImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = ProductVariant
@@ -124,6 +143,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
             "price",
             "discount",
             "discount_price",
+            "images",
         ]
 
 

@@ -1,4 +1,5 @@
 from rest_framework import mixins, viewsets, permissions
+from rest_framework import serializers
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from core.permissions import IsOwner, HasShop
@@ -28,6 +29,7 @@ from products.serializers import (
     ReviewSerializer,
     ProductVariantSerializer,
     CreateProductVariantSerializer,
+    CreateReviewSerializer,
 )
 
 
@@ -103,7 +105,7 @@ class ShopProductViewSet(viewsets.ModelViewSet):
         if self.request.user.shop is not None:
             serializer.save(shop=self.request.user.shop)  # type: ignore
 
-        raise ValueError("User has no shop")
+        raise serializers.ValidationError("Shop not found")
 
     def get_serializer_class(self):
         if self.action == "create":
@@ -178,8 +180,26 @@ class BrandViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 class ReviewViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
-    Viewset only to get in a list Reviews
+    Viewset to get current product reviews
     """
 
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        """
+        Returns only current product reviews
+        """
+        return Review.objects.filter(product=self.kwargs["product_pk"])
+
+    def perform_create(self, serializer):
+        """
+        On create review set user to current user
+        """
+        serializer.save(user=self.request.user)
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CreateReviewSerializer
+        return ReviewSerializer
