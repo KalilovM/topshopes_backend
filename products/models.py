@@ -159,19 +159,10 @@ class ProductVariant(models.Model):
         default=0, verbose_name="Product's discount"
     )
 
-    def change_status(self):
-        if self.stock == 0:
-            self.status = "unavailable"
-
-    def sell(self):
-        if self.stock >= 0:
-            self.stock -= 1
-
     def get_discount_price(self):
         self.discount_price = self.price - (self.price * self.discount / 100)
 
     def save(self, *args, **kwargs):
-        self.change_status()
         self.get_discount_price()
         super(ProductVariant, self).save(*args, **kwargs)
 
@@ -239,12 +230,12 @@ class Review(models.Model):
     published = models.BooleanField(default=False)
     comment = models.TextField()
     customer = models.ForeignKey("users.Customer", on_delete=models.CASCADE)
-    product_variant = models.ForeignKey(
-        ProductVariant, on_delete=models.CASCADE, related_name="reviews"
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="reviews"
     )
 
     def __str__(self):
-        return f"{self.customer.email} {self.product_variant}"
+        return f"{self.customer.email} {self.product.title}"
 
     class Meta:
         ordering = ["rating"]
