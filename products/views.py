@@ -71,7 +71,7 @@ class ProductVariantViewSet(
         )
 
     def get_serializer_class(self):
-        if self.action in ["create", "update"]:
+        if self.action in ["create", "update", "partial_update"]:
             return CreateProductVariantSerializer
         return ProductVariantSerializer
 
