@@ -3,8 +3,8 @@ from django.utils.text import slugify
 
 
 class Slider(models.Model):
-    title = models.CharField(max_length=100, db_index=True)
-    slug = models.SlugField(max_length=100, db_index=True)
+    title = models.CharField(max_length=100, db_index=True, unique=True)
+    slug = models.SlugField(max_length=100, db_index=True, null=True, blank=True)
 
     def __str__(self):
         return self.title
