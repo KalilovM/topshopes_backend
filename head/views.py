@@ -2,15 +2,21 @@ from rest_framework import mixins, permissions, viewsets
 
 from head.serializers import AdminCustomerSerializer, AdminProductSerializer
 from pages.models import Page, PageCategory, SiteSettings
-from pages.serializers import (PageCategorySerializer, PageSerializer,
-                               SiteSettingsSerializer)
+from pages.serializers import (
+    PageCategorySerializer,
+    PageSerializer,
+    SiteSettingsSerializer,
+)
 from posts.models import Post
 from posts.serializers import PostSerializer
 from products.models import Brand, BrandType, Category, Product, ProductVariant
-from products.serializers import (BrandSerializer, BrandTypeSerializer,
-                                  CategorySerializer,
-                                  CreateProductVariantSerializer,
-                                  ProductVariantSerializer)
+from products.serializers import (
+    BrandSerializer,
+    BrandTypeSerializer,
+    CategorySerializer,
+    CreateProductVariantSerializer,
+    ProductVariantSerializer,
+)
 from shops.models import Shop
 from shops.serializers import ShopSerializer
 from sliders.models import Slide, Slider
@@ -167,6 +173,9 @@ class AdminSiteSettingsViewSet(
     queryset = SiteSettings.objects.all()
     serializer_class = SiteSettingsSerializer
     permission_classes = [permissions.IsAdminUser]
+
+    def get_object(self):
+        return SiteSettings.objects.first()
 
 
 class AdminProductVariantViewSet(
