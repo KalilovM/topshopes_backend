@@ -171,7 +171,6 @@ class AdminSiteSettingsViewSet(
 
 class AdminProductVariantViewSet(
     mixins.RetrieveModelMixin,
-    mixins.ListModelMixin,
     mixins.UpdateModelMixin,
     viewsets.GenericViewSet,
 ):
