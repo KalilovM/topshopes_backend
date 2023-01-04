@@ -1,10 +1,11 @@
 from rest_framework import serializers
 
-from products.models import Brand, Category, Color, Product, ProductVariant, Size
+from products.models import (Brand, Category, Color, Product, ProductVariant,
+                             Size)
 from products.serializers import ImageSerializer, ProductVariantSerializer
+from roles.serializers import RoleSerializer
 from shops.models import Shop
 from users.models import Customer
-from roles.serializers import RoleSerializer
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -23,27 +24,6 @@ class AdminBrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
         fields = ["id", "name", "image"]
-
-
-class AdminCreateProductSerializer(serializers.ModelSerializer):
-    """
-    Product serializer for create and update
-    """
-
-    id = serializers.ReadOnlyField()
-
-    class Meta:
-        model = Product
-        fields = [
-            "id",
-            "shop",
-            "title",
-            "brand",
-            "category",
-            "shop",
-            "unit",
-            "published",
-        ]
 
 
 class AdminProductSerializer(serializers.ModelSerializer):
