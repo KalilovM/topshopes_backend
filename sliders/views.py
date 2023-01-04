@@ -1,7 +1,7 @@
 from rest_framework import mixins, permissions, viewsets
 
 from .models import Slider
-from .serializers import SliderSerializer
+from .serializers import SliderSerializer, CreateSliderSerializer
 
 
 class SliderViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
@@ -10,6 +10,10 @@ class SliderViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """
 
     queryset = Slider.objects.all()
-    serializer_class = SliderSerializer
     permission_classes = [permissions.AllowAny]
     lookup_field = "slug"
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CreateSliderSerializer
+        return SliderSerializer

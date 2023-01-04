@@ -1,4 +1,5 @@
 from rest_framework import mixins, permissions, viewsets
+from drf_spectacular.utils import extend_schema
 
 from head.serializers import AdminCustomerSerializer, AdminProductSerializer
 from pages.models import Page, PageCategory, SiteSettings
@@ -14,8 +15,6 @@ from products.serializers import (
     BrandSerializer,
     BrandTypeSerializer,
     CategorySerializer,
-    CreateProductVariantSerializer,
-    ProductVariantSerializer,
 )
 from shops.models import Shop
 from shops.serializers import ShopSerializer, SingleShopSerializer
@@ -150,6 +149,10 @@ class AdminPageCategoryViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
 
 
+@extend_schema(
+    description="Get all sliders with their slides",
+    responses={200: SliderSerializer(many=True)},
+)
 class AdminSliderViewSet(viewsets.ModelViewSet):
     """
     Viewset to manage sliders
