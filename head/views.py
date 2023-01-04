@@ -169,7 +169,12 @@ class AdminSiteSettingsViewSet(
     permission_classes = [permissions.IsAdminUser]
 
 
-class AdminProductVariantViewSet(viewsets.ModelViewSet):
+class AdminProductVariantViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+):
     """
     Viewset to manage product variants
     Allowed: All methods
@@ -179,6 +184,6 @@ class AdminProductVariantViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
 
     def get_serializer_class(self):
-        if self.action in ["create", "update", "partial_update"]:
+        if self.action in ["update", "partial_update"]:
             return CreateProductVariantSerializer
         return ProductVariantSerializer

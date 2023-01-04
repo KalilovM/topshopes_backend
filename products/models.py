@@ -134,7 +134,11 @@ class ProductVariant(models.Model):
     )
 
     size = models.ForeignKey(
-        "products.Size", on_delete=models.PROTECT, related_name="size"
+        "products.Size",
+        on_delete=models.PROTECT,
+        related_name="size",
+        null=True,
+        blank=True,
     )
 
     thumbnail = models.ImageField(
