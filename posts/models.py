@@ -10,7 +10,6 @@ class Post(models.Model):
     image = models.ImageField(
         upload_to=PathAndRename("posts_images/"), blank=True, null=True
     )
-    author = models.ForeignKey("users.Customer", on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
