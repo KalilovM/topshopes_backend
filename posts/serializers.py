@@ -3,7 +3,7 @@ from posts.models import Post
 
 
 class PostSerializer(serializers.ModelSerializer):
-    author = serializers.ReadOnlyField(source="customer.first_name")
+    author = serializers.ReadOnlyField()
 
     class Meta:
         model = Post
