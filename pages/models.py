@@ -32,19 +32,21 @@ class Page(models.Model):
 
 
 class SiteSettings(models.Model):
-    email = models.EmailField()
-    support_email = models.EmailField()
-    header_phone = models.CharField(max_length=100)
-    footer_phone = models.CharField(max_length=100)
-    short_description = models.CharField(max_length=255)
-    address = models.CharField(max_length=155)
-    facebook = models.CharField(max_length=100)
-    twitter = models.CharField(max_length=100)
-    youtube = models.CharField(max_length=100)
-    gmail = models.CharField(max_length=100)
-    instagram = models.CharField(max_length=100)
-    map = models.TextField()
-    logo = models.ImageField(upload_to=PathAndRename("site_settings/logos/"))
+    email = models.EmailField(null=True)
+    support_email = models.EmailField(null=True)
+    header_phone = models.CharField(max_length=100, null=True, blank=True)
+    footer_phone = models.CharField(max_length=100, null=True, blank=True)
+    short_description = models.CharField(max_length=255, null=True, blank=True)
+    address = models.CharField(max_length=155, null=True, blank=True)
+    facebook = models.CharField(max_length=100, null=True, blank=True)
+    twitter = models.CharField(max_length=100, null=True, blank=True)
+    youtube = models.CharField(max_length=100, null=True, blank=True)
+    gmail = models.CharField(max_length=100, null=True, blank=True)
+    instagram = models.CharField(max_length=100, null=True, blank=True)
+    map = models.TextField(null=True, blank=True)
+    logo = models.ImageField(
+        upload_to=PathAndRename("site_settings/logos/"), null=True, blank=True
+    )
 
     def __str__(self):
         return self.email
