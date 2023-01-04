@@ -1,41 +1,22 @@
-from rest_framework import permissions, viewsets
-from rest_framework import mixins
-from shops.models import Shop
-from products.models import Product, Brand, Category, BrandType, ProductVariant
-from shops.serializers import (
-    ShopSerializer,
-)
-from products.serializers import (
-    BrandSerializer,
-    BrandTypeSerializer,
-    CategorySerializer,
-    ProductVariantSerializer,
-    CreateProductVariantSerializer,
-)
+from rest_framework import mixins, permissions, viewsets
 
-from head.serializers import (
-    AdminProductSerializer,
-    AdminCustomerSerializer,
-    AdminCreateProductSerializer,
-)
-
-from users.models import Customer
-
+from head.serializers import (AdminCreateProductSerializer,
+                              AdminCustomerSerializer, AdminProductSerializer)
+from pages.models import Page, PageCategory, SiteSettings
+from pages.serializers import (PageCategorySerializer, PageSerializer,
+                               SiteSettingsSerializer)
 from posts.models import Post
 from posts.serializers import PostSerializer
-
-from pages.models import Page, PageCategory, SiteSettings
-from pages.serializers import (
-    PageSerializer,
-    PageCategorySerializer,
-    SiteSettingsSerializer,
-)
-
-from sliders.models import Slider, Slide
-from sliders.serializers import (
-    SliderSerializer,
-    SlideSerializer,
-)
+from products.models import Brand, BrandType, Category, Product, ProductVariant
+from products.serializers import (BrandSerializer, BrandTypeSerializer,
+                                  CategorySerializer,
+                                  CreateProductVariantSerializer,
+                                  ProductVariantSerializer)
+from shops.models import Shop
+from shops.serializers import ShopSerializer
+from sliders.models import Slide, Slider
+from sliders.serializers import SliderSerializer, SlideSerializer
+from users.models import Customer
 
 
 class AdminUsersViewSet(
@@ -99,18 +80,22 @@ class AdminBrandTypeViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
 
 
-class AdminProductViewSet(viewsets.ModelViewSet):
+class AdminProductViewSet(
+    mixins.ListModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
+):
     """
     Viewset to manage products
-    Allowed: All methods
+    Allowed: All methods without create
     """
 
     queryset = Product.objects.all().prefetch_related("variants")
     permission_classes = [permissions.IsAdminUser]
 
     def get_serializer_class(self):
-        if self.action == "create":
-            return AdminCreateProductSerializer
         return AdminProductSerializer
 
 
