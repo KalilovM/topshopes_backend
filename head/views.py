@@ -1,7 +1,6 @@
 from rest_framework import mixins, permissions, viewsets
 
-from head.serializers import (AdminCreateProductSerializer,
-                              AdminCustomerSerializer, AdminProductSerializer)
+from head.serializers import AdminCustomerSerializer, AdminProductSerializer
 from pages.models import Page, PageCategory, SiteSettings
 from pages.serializers import (PageCategorySerializer, PageSerializer,
                                SiteSettingsSerializer)

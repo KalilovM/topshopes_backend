@@ -1,18 +1,15 @@
 from rest_framework import serializers
-from rest_framework.serializers import Field
 
-from products.models import (
-    Brand,
-    BrandType,
-    Category,
-    Color,
-    Image,
-    Product,
-    ProductVariant,
-    Review,
-    Size,
-)
+from products.models import (Brand, BrandType, Category, Color, Image, Product,
+                             ProductVariant, Review, Size)
+from shops.models import Shop
 from users.serializers import CustomerSerializer
+
+
+class ShopProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Shop
+        fields = ["id", "name"]
 
 
 class SizeSerializer(serializers.ModelSerializer):
@@ -166,14 +163,13 @@ class CreateProductVariantSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    from shops.serializers import ShopSerializer
 
     """
     Product serializer to read_only
     Return necessary fields for list view
     """
 
-    shop = ShopSerializer(read_only=True)
+    shop = ShopProductSerializer(read_only=True)
     category = CategorySerializer(read_only=True)
     brand = BrandSerializer(read_only=True)
     reviews = ReviewSerializer(many=True, read_only=True)
