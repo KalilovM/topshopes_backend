@@ -14,8 +14,6 @@ class SlideSerializer(serializers.ModelSerializer):
 
 
 class SliderSerializer(serializers.ModelSerializer):
-    slides = SlideSerializer(many=True, read_only=True)
-
     class Meta:
         model = Slider
         fields = ["title", "slug"]
