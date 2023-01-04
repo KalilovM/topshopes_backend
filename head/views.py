@@ -159,6 +159,7 @@ class AdminSliderViewSet(viewsets.ModelViewSet):
     queryset = Slider.objects.all()
     serializer_class = SliderSerializer
     permission_classes = [permissions.IsAdminUser]
+    lookup_field = "slug"
 
 
 class AdminSlideViewSet(viewsets.ModelViewSet):
