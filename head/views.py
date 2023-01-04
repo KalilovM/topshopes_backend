@@ -2,23 +2,17 @@ from rest_framework import mixins, permissions, viewsets
 
 from head.serializers import AdminCustomerSerializer, AdminProductSerializer
 from pages.models import Page, PageCategory, SiteSettings
-from pages.serializers import (
-    PageCategorySerializer,
-    PageSerializer,
-    SiteSettingsSerializer,
-)
+from pages.serializers import (PageCategorySerializer, PageSerializer,
+                               SiteSettingsSerializer)
 from posts.models import Post
 from posts.serializers import PostSerializer
 from products.models import Brand, BrandType, Category, Product, ProductVariant
-from products.serializers import (
-    BrandSerializer,
-    BrandTypeSerializer,
-    CategorySerializer,
-    CreateProductVariantSerializer,
-    ProductVariantSerializer,
-)
+from products.serializers import (BrandSerializer, BrandTypeSerializer,
+                                  CategorySerializer,
+                                  CreateProductVariantSerializer,
+                                  ProductVariantSerializer)
 from shops.models import Shop
-from shops.serializers import ShopSerializer
+from shops.serializers import ShopSerializer, SingleShopSerializer
 from sliders.models import Slide, Slider
 from sliders.serializers import SliderSerializer, SlideSerializer
 from users.models import Customer
@@ -41,7 +35,13 @@ class AdminUsersViewSet(
     permission_classes = [permissions.IsAdminUser]
 
 
-class AdminShopViewSet(viewsets.ModelViewSet):
+class AdminShopViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.ListModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+):
     """
     Viewset to manage shops
     Allowed: All methods
@@ -50,6 +50,11 @@ class AdminShopViewSet(viewsets.ModelViewSet):
     queryset = Shop.objects.all()
     serializer_class = ShopSerializer
     permission_classes = [permissions.IsAdminUser]
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return SingleShopSerializer
+        return ShopSerializer
 
 
 class AdminCategoryViewSet(viewsets.ModelViewSet):
