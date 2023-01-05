@@ -15,7 +15,7 @@ class LinkSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Link
-        fields = ["name", "link"]
+        fields = ["id", "name", "link"]
 
     def create(self, validated_data):
         if Link.objects.filter(shop=validated_data["shop"]).count() > 5:
