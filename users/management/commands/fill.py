@@ -82,7 +82,7 @@ def fill_basic_data():
     # create user
     user = Customer.objects.create_user(
         email="client@gmail.com",
-        password="user",
+        password="client",
     )
 
     Address.objects.create(
