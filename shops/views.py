@@ -30,7 +30,6 @@ class MyShopViewSet(
     available all methods
     """
 
-    permission_classes = [permissions.IsAuthenticated]
     queryset = Shop.objects.all()
 
     def get_serializer_class(self):
@@ -43,6 +42,14 @@ class MyShopViewSet(
         On create set user to current user
         """
         serializer.save(user=self.request.user)
+
+    def get_permissions(self):
+        """
+        Set permissions
+        """
+        if self.action in ["create"]:
+            return [permissions.IsAuthenticated]
+        return [permissions.IsAuthenticated, HasShop]
 
     def get_object(self):
         """
@@ -87,7 +94,7 @@ class LinkViewSet(
     """
 
     serializer_class = LinkSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, HasShop]
 
     def perform_create(self, serializer):
         """

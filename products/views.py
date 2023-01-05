@@ -132,8 +132,6 @@ class ShopProductViewSet(viewsets.ModelViewSet):
         if self.request.user.shop is not None:
             serializer.save(shop=self.request.user.shop)  # type: ignore
 
-        raise serializers.ValidationError("Shop not found")
-
     def get_serializer_class(self):
         if self.action == "create":
             return CreateProductSerializer
