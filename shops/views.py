@@ -48,8 +48,8 @@ class MyShopViewSet(
         Set permissions
         """
         if self.action in ["create"]:
-            return [permissions.IsAuthenticated]
-        return [permissions.IsAuthenticated, HasShop]
+            return [permissions.IsAuthenticated()]
+        return [permissions.IsAuthenticated(), HasShop()]
 
     def get_object(self):
         """
