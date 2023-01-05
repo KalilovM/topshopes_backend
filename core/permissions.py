@@ -15,8 +15,10 @@ class HasShop(permissions.BasePermission):
     Check has shop
     """
 
+    message = "You don't have shop"
+
     def has_permission(self, request, view):
-        return request.user.shop is not None
+        return hasattr(request.user, "shop")
 
 
 class IsOwner(permissions.BasePermission):
