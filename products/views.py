@@ -131,6 +131,8 @@ class ShopProductViewSet(viewsets.ModelViewSet):
         """
         if self.request.user.shop is not None:
             serializer.save(shop=self.request.user.shop)  # type: ignore
+        else:
+            raise serializers.ValidationError("Shop not found")
 
     def get_serializer_class(self):
         if self.action == "create":
@@ -138,9 +140,7 @@ class ShopProductViewSet(viewsets.ModelViewSet):
         return ProductSerializer
 
 
-class SizeViewSet(
-    mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
-):
+class SizeViewSet(viewsets.ModelViewSet):
     """
     Size viewset every user can create own sizes for product
     """

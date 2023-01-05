@@ -1,7 +1,16 @@
 from rest_framework import serializers
 
-from products.models import (Brand, BrandType, Category, Color, Image, Product,
-                             ProductVariant, Review, Size)
+from products.models import (
+    Brand,
+    BrandType,
+    Category,
+    Color,
+    Image,
+    Product,
+    ProductVariant,
+    Review,
+    Size,
+)
 from shops.models import Shop
 from users.serializers import CustomerSerializer
 
@@ -206,3 +215,11 @@ class CreateProductSerializer(serializers.ModelSerializer):
             "unit",
             "published",
         ]
+
+    def validate_rating(self, value):
+        if 1 <= value <= 5:
+            return value
+
+        return serializers.ValidationError(
+            "Rating should be more or equal 1 and less or equal 5"
+        )
