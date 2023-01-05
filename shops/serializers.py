@@ -21,7 +21,7 @@ class LinkSerializer(serializers.ModelSerializer):
         if Link.objects.filter(shop=validated_data["shop"]).count() > 5:
             raise serializers.ValidationError("Can't create more than 5 links pre shop")
 
-        super().create(validated_data)
+        return super().create(validated_data)
 
 
 class ShopSerializer(serializers.ModelSerializer):
