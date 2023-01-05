@@ -10,6 +10,6 @@ class PostViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewS
     Post viewset for list and retrieve
     """
 
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
     serializer_class = PostSerializer
     queryset = Post.objects.all()
