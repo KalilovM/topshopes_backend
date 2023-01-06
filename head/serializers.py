@@ -1,8 +1,7 @@
 from rest_framework import serializers
 
-from products.models import (Brand, Category, Color, Product, ProductVariant,
-                             Size)
-from products.serializers import ImageSerializer, ProductVariantSerializer
+from products.models import Brand, Category, Product
+from products.serializers import ProductVariantSerializer
 from roles.serializers import RoleSerializer
 from shops.models import Shop
 from users.models import Customer
@@ -11,7 +10,7 @@ from users.models import Customer
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ["id", "name"]
+        fields = ["id", "name", "tax"]
 
 
 class AdminShopSerializer(serializers.ModelSerializer):

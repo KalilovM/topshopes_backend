@@ -5,8 +5,12 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from core.permissions import IsAnonymous
 
 from .models import Address, Customer
-from .serializers import (AddressSerializer, CreateAddressSerializer,
-                          CreateCustomerSerializer, CustomerSerializer)
+from .serializers import (
+    AddressSerializer,
+    CreateAddressSerializer,
+    CreateCustomerSerializer,
+    CustomerSerializer,
+)
 
 
 class CustomerViewSet(

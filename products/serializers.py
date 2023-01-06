@@ -4,43 +4,20 @@ from products.models import (
     Brand,
     BrandType,
     Category,
-    Color,
     Image,
     Product,
     ProductVariant,
-    Review,
-    Size,
+    ProductAttribute,
+    ProductAttributeValue,
 )
 from shops.models import Shop
-from users.serializers import CustomerSerializer
+from reviews.serializers import ReviewSerializer
 
 
 class ShopProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shop
         fields = ["id", "name"]
-
-
-class SizeSerializer(serializers.ModelSerializer):
-    """
-    Size serializer
-    Return all fields
-    """
-
-    class Meta:
-        model = Size
-        fields = ["id", "name"]
-
-
-class ColorSerializer(serializers.ModelSerializer):
-    """
-    Color serializer
-    Return all fields
-    """
-
-    class Meta:
-        model = Color
-        fields = ["id", "name", "color"]
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -96,130 +73,132 @@ class CategorySerializer(serializers.ModelSerializer):
         ]
 
 
-class ReviewSerializer(serializers.ModelSerializer):
+class ProductAttributeValueSerializer(serializers.ModelSerializer):
     """
-    Review serializer to read only
-    """
-
-    customer = CustomerSerializer(read_only=True)
-    product_variant = serializers.ReadOnlyField(source="product_variant.id")
-
-    class Meta:
-        model = Review
-        fields = ["customer", "rating", "comment", "product_variant"]
-
-
-class CreateReviewSerializer(serializers.ModelSerializer):
-    """
-    Review serializer to write only
+    Product attribute value serializer for read only
+    Return only name and product
     """
 
     class Meta:
-        model = Review
-        fields = ["rating", "comment", "product_variant"]
-
-    def validate_rating(self, value):
-        if 1 <= value <= 5:
-            return value
-
-        return serializers.ValidationError(
-            "Rating should be more or equal 1 and less or equal 5"
-        )
+        model = ProductAttributeValue
+        fields = ["id", "product_variant", "attribute", "value"]
 
 
-class ProductVariantSerializer(serializers.ModelSerializer):
+class CreateProductAttributeValueSerializer(serializers.ModelSerializer):
     """
-    Serializer to Product variant read_only
+    Product variant attribute value serializer for write only
+    Return only name and product
     """
-
-    id = serializers.ReadOnlyField()
-    color = ColorSerializer(read_only=True)
-    size = SizeSerializer(read_only=True)
-    images = ImageSerializer(many=True, read_only=True)
 
     class Meta:
-        model = ProductVariant
-        fields = [
-            "id",
-            "color",
-            "size",
-            "thumbnail",
-            "status",
-            "stock",
-            "price",
-            "discount",
-            "discount_price",
-            "images",
-        ]
+        model = ProductAttributeValue
+        fields = ["product_variant", "attribute", "value"]
+
+
+class CreateProductAttributeSerializer(serializers.ModelSerializer):
+    """
+    Product variant attribute serializer for write only
+    Return all fields
+    """
+
+    class Meta:
+        model = ProductAttribute
+        fields = ["name", "category"]
+
+
+class ProductAttributeSerializer(serializers.ModelSerializer):
+    """
+    Product variant attribute serializer for read only
+    Return all fields
+    """
+
+    class Meta:
+        model = ProductAttribute
+        fields = ["id", "name", "category"]
 
 
 class CreateProductVariantSerializer(serializers.ModelSerializer):
     """
-    Serializer to Product variant write_only
+    Product variant serializer for write only
+    Return all fields
     """
 
     class Meta:
         model = ProductVariant
-        fields = "__all__"
+        fields = [
+            "name",
+            "product",
+            "price",
+            "discount",
+            "quantity",
+            "thumbnail",
+        ]
 
-    def validate_discount(self, value):
-        if 0 <= value <= 100:
-            return value
 
-        return serializers.ValidationError(
-            "discount should be more or equal 0 and less or equal 100"
-        )
-
-
-class ProductSerializer(serializers.ModelSerializer):
-
+class ProductVariantSerializer(serializers.ModelSerializer):
     """
-    Product serializer to read_only
-    Return necessary fields for list view
+    Product variant serializer for read only
+    Return all fields
     """
 
-    shop = ShopProductSerializer(read_only=True)
-    category = CategorySerializer(read_only=True)
-    brand = BrandSerializer(read_only=True)
-    reviews = ReviewSerializer(many=True, read_only=True)
-    variants = ProductVariantSerializer(many=True, read_only=True)
+    image = ImageSerializer(many=True, read_only=True)
+    attribute_values = ProductAttributeValueSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Product
+        model = ProductVariant
         fields = [
             "id",
-            "slug",
-            "shop",
-            "title",
-            "brand",
-            "category",
-            "rating",
-            "unit",
-            "published",
-            "variants",
-            "reviews",
+            "name",
+            "price",
+            "discount",
+            "discount_price",
+            "quantity",
+            "thumbnail",
+            "attribute_values",
+            "images",
         ]
 
 
 class CreateProductSerializer(serializers.ModelSerializer):
     """
-    Product serializer to write_only
-    Return necessary fields for list view
+    Product serializer for write only
+    Return all fields
     """
 
     class Meta:
         model = Product
+        fields = ["name", "description", "category", "brand", "unit", "featured"]
+
+    def validate(self, data):
+        if Product.objects.filter(
+            name=data["name"], shop=self.context["request"].user.shop
+        ).exists():
+            raise serializers.ValidationError(
+                {"name": "Product with this name already exists"}
+            )
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    """
+    Product serializer for read only
+    """
+
+    variants = ProductVariantSerializer(many=True, read_only=True)
+    attributes = ProductAttributeSerializer(many=True, read_only=True)
+    reviews = ReviewSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Product
         fields = [
-            "title",
+            "id",
+            "name",
+            "shop",
+            "description",
+            "category",
             "rating",
+            "brand",
             "unit",
-            "published",
+            "featured",
+            "variants",
+            "reviews",
         ]
-
-    def validate_rating(self, value):
-        if 1 <= value <= 5:
-            return value
-
-        return serializers.ValidationError(
-            "Rating should be more or equal 1 and less or equal 5"
-        )

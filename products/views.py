@@ -1,8 +1,6 @@
 from rest_framework import mixins, viewsets, permissions
-from orders.models import OrderItem
 from .services import buy_product
-from .models import ProductVariant
-from .serializers import ProductVariantSerializer
+from orders.serializers import CreateOrderSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
@@ -11,32 +9,31 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 from core.permissions import IsOwner, HasShop
 
+from reviews.models import Review
+from reviews.serializers import CreateReviewSerializer, ReviewSerializer
+
 
 from products.models import (
-    Size,
-    Color,
     BrandType,
     Image,
     Category,
     Brand,
     Product,
-    Review,
     ProductVariant,
 )
 
 from products.serializers import (
     CreateProductSerializer,
-    SizeSerializer,
-    ColorSerializer,
     BrandSerializer,
     BrandTypeSerializer,
     ImageSerializer,
     CategorySerializer,
     ProductSerializer,
-    ReviewSerializer,
+    CreateProductAttributeSerializer,
     ProductVariantSerializer,
     CreateProductVariantSerializer,
-    CreateReviewSerializer,
+    CreateProductAttributeValueSerializer,
+    ProductAttributeValueSerializer,
 )
 
 
@@ -48,9 +45,47 @@ class ProductViewSet(
     Only get method allowed
     """
 
-    queryset = Product.objects.all()
+    queryset = Product.objects.all().prefetch_related("variants")
     permission_classes = [permissions.AllowAny]
     serializer_class = ProductSerializer
+
+    @extend_schema(
+        description="Create attribute for product",
+        parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
+        responses={201: CreateProductAttributeSerializer},
+        tags=["Products"],
+    )
+    @action(detail=True, methods=["post"])
+    def create_attribute(self, request, pk=None):
+        """
+        Create product attribute
+        """
+        product = self.get_object()
+        serializer = CreateProductAttributeSerializer(
+            data=request.data, context={"product": product}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @extend_schema(
+        description="Create review for product",
+        parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
+        responses={201: CreateReviewSerializer},
+        tags=["Reviews"],
+    )
+    @action(detail=True, methods=["post"])
+    def review(self, request, pk=None):
+        """
+        Review product
+        """
+        product = self.get_object()
+        serializer = CreateReviewSerializer(
+            data=request.data, context={"product": product}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @extend_schema(
@@ -70,9 +105,29 @@ class ProductVariantViewSet(
     permission_classes = [permissions.IsAuthenticated, HasShop, IsOwner]
 
     @extend_schema(
+        description="Create product variant attribute",
+        responses={201: CreateProductAttributeSerializer},
+        tags=["Product Attributes"],
+    )
+    @action(detail=True, methods=["post"])
+    def create_attribute_value(self, request, pk=None):
+        """
+        Create product variant attribute
+        """
+        product_variant = self.get_object()
+        serializer = CreateProductAttributeValueSerializer(
+            data=request.data, context={"product_variant": product_variant}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    # @extend_schema(description="Get list of attributes")
+    @extend_schema(
         description="Buy product variant",
         parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
-        responses={"message": "Product bought", "order_item": serializers.UUIDField},
+        responses={201: CreateOrderSerializer},
+        tags=["Orders"],
     )
     @action(detail=True, methods=["post"])
     def buy(self, request, pk=None):
@@ -80,14 +135,14 @@ class ProductVariantViewSet(
         Buy product variant
         """
         product_variant = self.get_object()
-        quantity = request.data.get("quantity", 1)
-        order_item: OrderItem = buy_product(
-            product_variant, quantity, request.data["order_id"]
+        data = buy_product(
+            product_variant=product_variant,
+            quantity=request.data["quantity"],
+            user=request.user,
+            address=request.data["address"],
+            shop=product_variant.product.shop,
         )
-        return Response(
-            {"message": "Product bought", "order_item": order_item.id},
-            status=status.HTTP_201_CREATED,
-        )
+        return Response(data, status=status.HTTP_201_CREATED)
 
     def get_queryset(self):
         """
@@ -95,7 +150,7 @@ class ProductVariantViewSet(
         """
         return ProductVariant.objects.filter(
             product__shop=self.request.user.shop  # type: ignore
-        )
+        ).prefetch_related("attributes", "images")
 
     def get_serializer_class(self):
         if self.action in ["create", "update", "partial_update"]:
@@ -138,26 +193,6 @@ class ShopProductViewSet(viewsets.ModelViewSet):
         if self.action == "create":
             return CreateProductSerializer
         return ProductSerializer
-
-
-class SizeViewSet(viewsets.ModelViewSet):
-    """
-    Size viewset every user can create own sizes for product
-    """
-
-    queryset = Size.objects.all()
-    serializer_class = SizeSerializer
-    permission_classes = [permissions.IsAuthenticated, HasShop]
-
-
-class ColorViewSet(viewsets.ModelViewSet):
-    """
-    Color viewset every user can create own color for product
-    """
-
-    queryset = Color.objects.all()
-    serializer_class = ColorSerializer
-    permission_classes = [permissions.IsAuthenticated, HasShop]
 
 
 class BrandTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):

@@ -1,4 +1,5 @@
-from orders.models import Order, OrderItem
+from orders.models import Order
+import itertools
 from django.core.management.base import BaseCommand
 from django.core.files.uploadedfile import SimpleUploadedFile
 from faker import Faker
@@ -7,21 +8,22 @@ from users.models import Customer, Address
 from shops.models import Shop, Link
 from products.models import (
     Product,
-    Size,
-    Color,
     Brand,
     Category,
     BrandType,
     Image,
-    Review,
     ProductVariant,
+    ProductAttribute,
+    ProductAttributeValue,
 )
+from reviews.models import Review
 
 DJANGO_SETTINGS_MODULE = "core.settings"
 
 fake: Faker = Faker()
 
 # run project with command: python manage.py fill_dummy --delete
+# create process done loading data
 
 
 class Command(BaseCommand):
@@ -45,29 +47,33 @@ class Command(BaseCommand):
             Category.objects.all().delete()
             Product.objects.all().delete()
             Order.objects.all().delete()
-            OrderItem.objects.all().delete()
             Link.objects.all().delete()
-            Color.objects.all().delete()
-            Size.objects.all().delete()
             Image.objects.all().delete()
             Review.objects.all().delete()
             self.stdout.write("All data deleted")
         else:
             self.stdout.write("Filling database with dummy data")
+            self.stdout.write("Filling customer")
             fill_customer()
+            self.stdout.write("Filling address")
             fill_address()
+            self.stdout.write("Filling brand type")
             fill_brand_type()
+            self.stdout.write("Filling brand")
             fill_brand()
+            self.stdout.write("Filling category")
             fill_category()
-            fill_color()
-            fill_size()
+            self.stdout.write("Filling shop")
             fill_shop()
+            self.stdout.write("Filling product")
             fill_product()
+            self.stdout.write("Filling image")
             fill_image()
+            self.stdout.write("Filling order")
             fill_order()
-            fill_order_item()
+            self.stdout.write("Filling link")
             fill_link()
-
+            self.stdout.write("Creating superuser and user")
             fill_basic_data()
             # fill_review()
             self.stdout.write("Database filled with dummy data")
@@ -118,7 +124,7 @@ def fill_basic_data():
             content_type="image/jpeg",
         ),
     )
-    shop = Shop.objects.create(
+    Shop.objects.create(
         name="Client's Shop",
         user=Customer.objects.get(email="client@gmail.com"),
         address="Moscow, Lenina",
@@ -137,7 +143,7 @@ def fill_basic_data():
     )
 
     product = Product.objects.create(
-        title="Product",
+        name="Product",
         brand=Brand.objects.first(),
         shop=admin_shop,
         category=Category.objects.first(),
@@ -145,12 +151,11 @@ def fill_basic_data():
     )
 
     variant = ProductVariant.objects.create(
-        color=Color.objects.first(),
-        size=Size.objects.first(),
         product=product,
         price=100,
         status="available",
         discount=0,
+        stock=100,
         thumbnail=SimpleUploadedFile(
             name="product.jpg",
             content=open("tests/test_head/testimage.webp", "rb").read(),
@@ -159,7 +164,7 @@ def fill_basic_data():
     )
 
     product2 = Product.objects.create(
-        title="Product2",
+        name="Product2",
         brand=Brand.objects.first(),
         category=Category.objects.first(),
         shop=admin_shop,
@@ -167,9 +172,8 @@ def fill_basic_data():
     )
 
     variant2 = ProductVariant.objects.create(
-        color=Color.objects.first(),
-        size=Size.objects.first(),
         product=product2,
+        stock=100,
         price=100,
         status="available",
         discount=0,
@@ -196,32 +200,22 @@ def fill_basic_data():
             content_type="image/jpeg",
         ),
     )
-    order = Order.objects.create(
+    Order.objects.create(
         user=user,
         shop=admin_shop,
-        tax=0,
-        discount=0,
-        shipping_address="Moscow, Lenina",
-        status="PENDING",
-    )
-    OrderItem.objects.create(
+        quantity=1,
         product_variant=variant,
-        product_quantity=1,
-        order=order,
+        address=user.addresses.first(),
+        status="Pending",
     )
 
-    order = Order.objects.create(
+    Order.objects.create(
         user=user,
         shop=admin_shop,
-        tax=0,
-        discount=0,
-        shipping_address="Moscow, Lenina",
-        status="PENDING",
-    )
-    OrderItem.objects.create(
+        quantity=3,
         product_variant=variant2,
-        product_quantity=1,
-        order=order,
+        address=user.addresses.first(),
+        status="Pending",
     )
 
 
@@ -236,15 +230,16 @@ def fill_customer():
 
 
 def fill_address():
-    users = random.choices(Customer.objects.all(), k=10)
-    for _ in range(10):
-        Address.objects.create(
-            user=users[_],
-            country=fake.country(),
-            city=fake.city(),
-            street=fake.street_name(),
-            phone=fake.phone_number(),
-        )
+    users = Customer.objects.all()
+    for _ in range(Customer.objects.count()):
+        for _ in range(random.randint(1, 3)):
+            Address.objects.create(
+                user=users[_],
+                country=fake.country(),
+                city=fake.city(),
+                street=fake.street_name(),
+                phone=fake.phone_number(),
+            )
 
 
 def fill_shop():
@@ -288,16 +283,6 @@ COLORS = {
 }
 
 
-def fill_color():
-    names = list(COLORS.keys())
-    colors = list(COLORS.values())
-    for _ in range(10):
-        Color.objects.create(
-            name=names[_],
-            color=colors[_],
-        )
-
-
 SIZES = [
     "XXXS",
     "XXS",
@@ -310,12 +295,6 @@ SIZES = [
     "XXXL",
     "XXXXL",
 ]
-
-
-def fill_size():
-
-    for _ in range(10):
-        Size.objects.create(name=SIZES[_])
 
 
 LINK_NAMES = [
@@ -367,6 +346,26 @@ PRODUCT_TITLES = [
     "Wallet",
     "Bag",
     "Watch",
+    "Orbital Keys",
+    "XPress Bottle",
+    "InstaPress",
+    "Uno Wear",
+    "Allure Kit",
+    "Swish Wallet",
+    "Onovo Supply",
+    "Sharpy Knife",
+    "Towlee",
+    "Rhino Case",
+    "Mono",
+    "Handy Mop",
+    "ONEset",
+    "Vortex Bottle",
+    "Terra Shsave",
+    "Gymr Kit",
+    "Villafy",
+    "Stickem",
+    "Snap It",
+    "Scruncho",
 ]
 
 UNITS = [
@@ -382,30 +381,49 @@ UNITS = [
 
 
 def fill_product():
-    for _ in range(99):
-        Product.objects.create(
-            title=fake.random_element(PRODUCT_TITLES),
+    attr_names = ["color", "size"]
+    shop_names = [shop.name for shop in Shop.objects.all()]
+    combinations = itertools.product(shop_names, PRODUCT_TITLES)
+    for combination in combinations:
+        product = Product.objects.create(
+            name=combination[1],
             brand=fake.random_element(Brand.objects.all()),
-            shop=fake.random_element(Shop.objects.all()),
+            shop=Shop.objects.get(name=combination[0]),
             category=fake.random_element(Category.objects.all()),
             unit=fake.random_element(UNITS),
-            published=fake.boolean(),
         )
-    for _ in range(99):
+        for _ in range(2):
+            attribute = ProductAttribute.objects.create(
+                name=attr_names[_], category=product.category
+            )
+            product.attributes.add(attribute)
+    for _ in range(Product.objects.count()):
         product = Product.objects.all()[_]
         for _ in range(random.randint(1, 6)):
-            ProductVariant.objects.create(
+            variant = ProductVariant.objects.create(
                 product=product,
-                status=ProductVariant.STATUSES[
-                    random.randint(0, len(ProductVariant.STATUSES) - 1)
+                status=ProductVariant.STATUS_CHOICES[
+                    random.randint(0, len(ProductVariant.STATUS_CHOICES) - 1)
                 ][0],
-                color=fake.random_element(Color.objects.all()),
-                size=fake.random_element(Size.objects.all()),
                 price=fake.random_int(min=1000, max=10000),
-                stock=fake.random_int(min=1, max=100),
+                stock=fake.random_int(min=20, max=100),
                 discount=fake.random_int(min=0, max=100),
                 thumbnail=fake.image_url(),
             )
+            for _ in range(2):
+                attribute = product.attributes.all()[_]
+                if attribute.name == "color":
+                    ProductAttributeValue.objects.create(
+                        attribute=attribute,
+                        value=fake.random_element(COLORS.values()),
+                        product_variant=variant,
+                    )
+                elif attribute.name == "size":
+                    ProductAttributeValue.objects.create(
+                        attribute=attribute,
+                        value=fake.random_element(SIZES),
+                        product_variant=variant,
+                    )
 
 
 def fill_image():
@@ -524,16 +542,19 @@ def fill_category():
             image=fake.image_url(),
             description=fake.text(),
             featured=fake.pybool(),
+            tax=fake.random_int(min=0, max=100),
         )
 
         if _ % 2 == 0:
+            parent = fake.random_element(Category.objects.all())
             Category.objects.create(
                 name=sub_name,
                 icon=fake.image_url(),
                 image=fake.image_url(),
                 description=fake.text(),
                 featured=fake.pybool(),
-                parent=fake.random_element(Category.objects.all()),
+                parent=parent,
+                tax=parent.tax,
             )
 
 
@@ -574,17 +595,9 @@ def fill_order():
         shop = Shop.objects.all()[2 - _]
         Order.objects.create(
             user=customer,
+            quantity=fake.random_int(min=1, max=10),
+            product_variant=ProductVariant.objects.order_by("?").first(),
+            address=customer.addresses.first(),
             shop=shop,
-            tax=fake.pyint(),
-            discount=fake.pyint(),
             status=fake.random_element(indexes),
-        )
-
-
-def fill_order_item():
-    for _ in range(10):
-        OrderItem.objects.create(
-            product_variant=ProductVariant.objects.all()[_],
-            product_quantity=fake.random_int(min=1, max=10),
-            order=fake.random_element(Order.objects.all()),
         )
