@@ -1,24 +1,12 @@
 import uuid
+from django.utils.text import slugify
 from decimal import Decimal
 
-from autoslug import AutoSlugField
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 
 from core.helpers import PathAndRename
 from shops.models import Shop
-
-
-class Color(models.Model):
-    """
-    Product color model
-    """
-
-    name = models.CharField(max_length=15, unique=True, verbose_name="Color's name")
-    color = models.CharField(max_length=20, unique=True, verbose_name="Color")
-
-    def __str__(self):
-        return self.name
 
 
 class BrandType(models.Model):
@@ -57,8 +45,9 @@ class Category(MPTTModel):
     )
     image = models.ImageField(upload_to=PathAndRename("category/images/"))
     name = models.CharField(max_length=50, verbose_name="Category name", unique=True)
-    slug = AutoSlugField(populate_from="name", editable=False)
+    slug = models.SlugField(max_length=255)
     description = models.TextField()
+    tax = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))
     parent = TreeForeignKey(
         "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
     )
@@ -69,23 +58,16 @@ class Category(MPTTModel):
             return f"{self.parent.name} {self.name} subcategory"
         return f"{self.name} category"
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = "Category"
         verbose_name_plural = "Categories"
 
     class MPTTMeta:
         order_insertion_by = ["name"]
-
-
-class Size(models.Model):
-    """
-    Product size model
-    """
-
-    name = models.CharField(max_length=15, verbose_name="Product's size", unique=True)
-
-    def __str__(self):
-        return self.name
 
 
 class Brand(models.Model):
@@ -97,9 +79,7 @@ class Brand(models.Model):
         default=uuid.uuid4, primary_key=True, verbose_name="Brand's id"
     )
     name = models.CharField(max_length=100, verbose_name="Brand's name", unique=True)
-    slug = AutoSlugField(
-        populate_from="name", unique=True, verbose_name="Brand's link", editable=False
-    )
+    slug = models.SlugField(max_length=255, unique=True)
     image = models.ImageField(
         upload_to=PathAndRename("brands/"), verbose_name="Brand's image"
     )
@@ -114,132 +94,139 @@ class Brand(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
     class Meta:
         ordering = ["name"]
 
 
-class ProductVariant(models.Model):
+class ProductAttribute(models.Model):
     """
-    Color, size and thumbnail variants of product
+    Product attribute model
     """
 
-    STATUSES = (
+    name = models.CharField(max_length=100, verbose_name="Attribute name")
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, related_name="attributes"
+    )
+
+    def __str__(self):
+        return f"{self.name}"
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = "Product attribute"
+        verbose_name_plural = "Product attributes"
+
+
+class Product(models.Model):
+    name = models.CharField(max_length=100, verbose_name="Product name")
+    slug = models.SlugField(max_length=255, unique=True)
+    description = models.TextField()
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, related_name="products"
+    )
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="products")
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, related_name="products")
+    unit = models.CharField(max_length=100, verbose_name="Product unit")
+    rating = models.DecimalField(
+        max_digits=2,
+        decimal_places=1,
+        default=Decimal(0.0),
+        verbose_name="Product rating",
+    )
+    attributes = models.ManyToManyField(ProductAttribute, related_name="products")
+    featured = models.BooleanField(default=False, verbose_name="Is featured?")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        slug = self.shop.name + "-" + self.name
+        self.slug = slugify(slug)
+        super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = "Product"
+        verbose_name_plural = "Products"
+
+
+class ProductVariant(models.Model):
+    STATUS_CHOICES = (
         ("available", "Available"),
         ("unavailable", "Unavailable"),
-        ("coming_soon", "Coming soon"),
     )
-
-    color = models.ForeignKey(
-        "products.Color", on_delete=models.PROTECT, related_name="variant"
-    )
-
-    size = models.ForeignKey(
-        "products.Size",
-        on_delete=models.PROTECT,
-        related_name="size",
-        null=True,
-        blank=True,
-    )
-
-    thumbnail = models.ImageField(
-        upload_to=PathAndRename("products/thumbnail/"),
-        verbose_name="Product's thumbnail",
-    )
-    stock = models.PositiveSmallIntegerField(default=0)
+    name = models.CharField(max_length=100, verbose_name="Product variant name")
     product = models.ForeignKey(
-        "products.Product", on_delete=models.CASCADE, related_name="variants"
+        Product, on_delete=models.CASCADE, related_name="variants"
     )
-    status = models.CharField(choices=STATUSES, max_length=20, default="available")
     price = models.DecimalField(
-        max_digits=10, decimal_places=2, verbose_name="Product's price"
+        max_digits=10, decimal_places=2, verbose_name="Product variant price"
+    )
+    discount = models.IntegerField(
+        verbose_name="Product variant discount", null=True, blank=True
     )
     discount_price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name="Product's discounted price",
-        editable=False,
+        verbose_name="Product variant discount price",
+        null=True,
+        blank=True,
     )
-    discount = models.PositiveSmallIntegerField(
-        default=0, verbose_name="Product's discount"
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default="available"
+    )
+    stock = models.IntegerField(verbose_name="Product variant quantity")
+    thumbnail = models.ImageField(
+        upload_to=PathAndRename("products/thumbnails/"),
+        verbose_name="Product variant thumbnail",
     )
 
-    def get_discount_price(self):
-        self.discount_price = self.price - (self.price * self.discount / 100)
+    def __str__(self):
+        return self.name
 
     def save(self, *args, **kwargs):
-        self.get_discount_price()
-        super(ProductVariant, self).save(*args, **kwargs)
+        # calculate discount price with category tax
+        self.price = self.price + (self.price * self.product.category.tax / 100)
+        if self.discount:
+            self.discount_price = self.price - (self.price * self.discount / 100)
+        else:
+            self.discount_price = None
 
-    def __str__(self):
-        return f"{self.product.title} {self.color} {self.size}"
-
-
-class Product(models.Model):
-    """
-    Product for shop model
-    """
-
-    id = models.UUIDField(
-        default=uuid.uuid4, primary_key=True, verbose_name="Product's id"
-    )
-    title = models.CharField(max_length=150, verbose_name="Product's title")
-    slug = AutoSlugField(
-        populate_from="title",
-        unique=True,
-        verbose_name="Link to product",
-        editable=False,
-    )
-    brand = models.ForeignKey(
-        Brand, on_delete=models.SET_NULL, null=True, verbose_name="Product's brand"
-    )
-    shop = models.ForeignKey(
-        Shop,
-        on_delete=models.CASCADE,
-        related_name="products",
-        verbose_name="Product's shop",
-    )
-    category = models.ForeignKey(
-        Category,
-        on_delete=models.PROTECT,
-        null=True,
-        verbose_name="Product's category",
-    )
-    rating = models.PositiveSmallIntegerField(null=True, blank=True, editable=False)
-    unit = models.CharField(max_length=50)
-    published = models.BooleanField(default=True)
-
-    # def get_rating(self):
-    #     self.objects.reviews.
-    #
-
-    def __str__(self):
-        return f"{self.shop.name} {self.title}"
-
-
-class Review(models.Model):
-    """
-    Review for product
-    """
-
-    RATINGS = (
-        (1, "1"),
-        (2, "2"),
-        (3, "3"),
-        (4, "4"),
-        (5, "5"),
-    )
-
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-    rating = models.IntegerField(default=5, choices=RATINGS)
-    published = models.BooleanField(default=False)
-    comment = models.TextField()
-    customer = models.ForeignKey("users.Customer", on_delete=models.CASCADE)
-    product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name="reviews"
-    )
-
-    def __str__(self):
-        return f"{self.customer.email} {self.product.title}"
+        if self.stock == 0:
+            self.status = "unavailable"
+        super().save(*args, **kwargs)
 
     class Meta:
-        ordering = ["rating"]
+        ordering = ["name"]
+        verbose_name = "Product variant"
+        verbose_name_plural = "Product variants"
+
+
+class ProductAttributeValue(models.Model):
+    """
+    Product attribute value model
+    """
+
+    product_variant = models.ForeignKey(
+        ProductVariant, on_delete=models.CASCADE, related_name="attribute_values"
+    )
+    attribute = models.ForeignKey(
+        ProductAttribute,
+        on_delete=models.CASCADE,
+        related_name="values",
+    )
+    value = models.CharField(max_length=100, verbose_name="Attribute value")
+
+    def __str__(self):
+        return f"{self.value}"
+
+    class Meta:
+        ordering = ["value"]
+        verbose_name = "Product attribute value"
+        verbose_name_plural = "Product attribute values"

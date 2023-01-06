@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "products.apps.ProductsConfig",
     "roles.apps.RolesConfig",
     "common.apps.CommonConfig",
+    "reviews.apps.ReviewsConfig",
 ]
 
 MIDDLEWARE = [

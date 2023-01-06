@@ -1,10 +1,11 @@
 from rest_framework import mixins, permissions
+from core.permissions import HasShop, IsOwner
 from rest_framework.viewsets import GenericViewSet
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 
-from .models import Order, OrderItem
-from .serializers import OrderItemSerializer, OrderSerializer, CreateOrderSerializer
+from .models import Order
+from .serializers import OrderSerializer, CreateOrderSerializer
 
 
 @extend_schema(
@@ -19,6 +20,8 @@ class OrderViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
     mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
     GenericViewSet,
 ):
     """
@@ -40,19 +43,6 @@ class OrderViewSet(
         return OrderSerializer
 
 
-class OrderItemViewSet(mixins.CreateModelMixin, GenericViewSet):
-    """
-    View to create Item for Order
-    Only create
-    """
-
-    serializer_class = OrderItemSerializer
-    queryset = OrderItem.objects.all()
-    permission_classes = [
-        permissions.IsAuthenticated,
-    ]
-
-
 @extend_schema(
     description="Viewset for Shop's orders",
     parameters=[
@@ -72,17 +62,13 @@ class ShopOrderViewSet(
     Can update and get only
     """
 
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, HasShop, IsOwner)
 
     def get_queryset(self):
         """
         Only current user's shop orders
         """
-        return (
-            Order.objects.prefetch_related("items")
-            .all()
-            .filter(shop=self.request.user.shop)
-        )
+        return Order.objects.all().filter(shop=self.request.user.shop)
 
     def get_serializer_class(self):
         if self.action == "create":
