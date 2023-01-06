@@ -44,12 +44,11 @@ class AdminProductSerializer(serializers.ModelSerializer):
             "id",
             "slug",
             "shop",
-            "title",
+            "name",
             "brand",
             "rating",
             "category",
             "unit",
-            "published",
             "variants",
         ]
 

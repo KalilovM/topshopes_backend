@@ -130,8 +130,8 @@ class CreateProductVariantSerializer(serializers.ModelSerializer):
             "product",
             "price",
             "discount",
-            "quantity",
             "thumbnail",
+            "stock",
         ]
 
 
@@ -141,7 +141,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
     Return all fields
     """
 
-    image = ImageSerializer(many=True, read_only=True)
+    images = ImageSerializer(many=True, read_only=True)
     attribute_values = ProductAttributeValueSerializer(many=True, read_only=True)
 
     class Meta:
@@ -152,7 +152,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
             "price",
             "discount",
             "discount_price",
-            "quantity",
+            "stock",
             "thumbnail",
             "attribute_values",
             "images",
@@ -201,4 +201,5 @@ class ProductSerializer(serializers.ModelSerializer):
             "featured",
             "variants",
             "reviews",
+            "attributes",
         ]
