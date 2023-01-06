@@ -40,6 +40,7 @@ class Order(models.Model):
         "users.Address", on_delete=models.CASCADE, related_name="orders"
     )
     created_at = models.DateTimeField(auto_now_add=True)
+    delivered_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.user} - {self.shop}"

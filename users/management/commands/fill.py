@@ -1,4 +1,5 @@
 from orders.models import Order
+import os
 import itertools
 from django.core.management.base import BaseCommand
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -19,7 +20,9 @@ from products.models import (
 from reviews.models import Review
 
 DJANGO_SETTINGS_MODULE = "core.settings"
-
+image_path = "tests/img/"
+image_list = os.listdir(image_path)
+image_list = [image_path + image for image in image_list]
 fake: Faker = Faker()
 
 # run project with command: python manage.py fill_dummy --delete
@@ -114,14 +117,18 @@ def fill_basic_data():
         phone="+7 999 999 99 99 00",
         email="adminshop@gmail.com",
         cover_picture=SimpleUploadedFile(
-            name="cover.jpg",
-            content=open("tests/test_head/testimage.webp", "rb").read(),
-            content_type="image/jpeg",
+            name="cover.webp",
+            content=open(
+                image_list[random.randint(0, len(image_list) - 1)], "rb"
+            ).read(),
+            content_type="image/webp",
         ),
         profile_picture=SimpleUploadedFile(
-            name="profile.jpg",
-            content=open("tests/test_head/testimage.webp", "rb").read(),
-            content_type="image/jpeg",
+            name="profile.webp",
+            content=open(
+                image_list[random.randint(0, len(image_list) - 1)], "rb"
+            ).read(),
+            content_type="image/webp",
         ),
     )
     Shop.objects.create(
@@ -131,14 +138,18 @@ def fill_basic_data():
         phone="+7 999 999 99 99",
         email="client@gmail.com",
         cover_picture=SimpleUploadedFile(
-            name="cover.jpg",
-            content=open("tests/test_head/testimage.webp", "rb").read(),
-            content_type="image/jpeg",
+            name="cover.webp",
+            content=open(
+                image_list[random.randint(0, len(image_list) - 1)], "rb"
+            ).read(),
+            content_type="image/webp",
         ),
         profile_picture=SimpleUploadedFile(
-            name="profile.jpg",
-            content=open("tests/test_head/testimage.webp", "rb").read(),
-            content_type="image/jpeg",
+            name="profile.webp",
+            content=open(
+                image_list[random.randint(0, len(image_list) - 1)], "rb"
+            ).read(),
+            content_type="image/webp",
         ),
     )
 
@@ -157,9 +168,11 @@ def fill_basic_data():
         discount=0,
         stock=100,
         thumbnail=SimpleUploadedFile(
-            name="product.jpg",
-            content=open("tests/test_head/testimage.webp", "rb").read(),
-            content_type="image/jpeg",
+            name="product.webp",
+            content=open(
+                image_list[random.randint(0, len(image_list) - 1)], "rb"
+            ).read(),
+            content_type="image/webp",
         ),
     )
 
@@ -178,26 +191,32 @@ def fill_basic_data():
         status="available",
         discount=0,
         thumbnail=SimpleUploadedFile(
-            name="product.jpg",
-            content=open("tests/test_head/testimage.webp", "rb").read(),
-            content_type="image/jpeg",
+            name="product.webp",
+            content=open(
+                image_list[random.randint(0, len(image_list) - 1)], "rb"
+            ).read(),
+            content_type="image/webp",
         ),
     )
 
     Image.objects.create(
         product_variant=variant,
         image=SimpleUploadedFile(
-            name="product.jpg",
-            content=open("tests/test_head/testimage.webp", "rb").read(),
-            content_type="image/jpeg",
+            name="product.webp",
+            content=open(
+                image_list[random.randint(0, len(image_list) - 1)], "rb"
+            ).read(),
+            content_type="image/webp",
         ),
     )
     Image.objects.create(
         product_variant=variant2,
         image=SimpleUploadedFile(
-            name="product.jpg",
-            content=open("tests/test_head/testimage.webp", "rb").read(),
-            content_type="image/jpeg",
+            name="product.webp",
+            content=open(
+                image_list[random.randint(0, len(image_list) - 1)], "rb"
+            ).read(),
+            content_type="image/webp",
         ),
     )
     Order.objects.create(
@@ -408,7 +427,13 @@ def fill_product():
                 price=fake.random_int(min=1000, max=10000),
                 stock=fake.random_int(min=20, max=100),
                 discount=fake.random_int(min=0, max=100),
-                thumbnail=fake.image_url(),
+                thumbnail=SimpleUploadedFile(
+                    image_list[_],
+                    open(
+                        image_list[random.randint(0, len(image_list) - 1)], "rb"
+                    ).read(),
+                    content_type="image/webp",
+                ),
             )
             for _ in range(2):
                 attribute = product.attributes.all()[_]
@@ -431,7 +456,13 @@ def fill_image():
         product = ProductVariant.objects.all()[_]
         for _ in range(random.randint(1, 5)):
             Image.objects.create(
-                image=fake.image_url(),
+                image=SimpleUploadedFile(
+                    image_list[_],
+                    open(
+                        image_list[random.randint(0, len(image_list) - 1)], "rb"
+                    ).read(),
+                    content_type="image/webp",
+                ),
                 product_variant=product,
             )
 

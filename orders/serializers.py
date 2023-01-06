@@ -19,11 +19,8 @@ class OrderSerializer(serializers.ModelSerializer):
             "id",
             "user",
             "shop",
-            "items",
             "created_at",
-            "discount",
             "total_price",
-            "is_delivered",
             "status",
             "delivered_at",
         ]
