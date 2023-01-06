@@ -161,7 +161,6 @@ class ProductVariant(models.Model):
         ("available", "Available"),
         ("unavailable", "Unavailable"),
     )
-    name = models.CharField(max_length=100, verbose_name="Product variant name")
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="variants"
     )
@@ -188,7 +187,7 @@ class ProductVariant(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return f"{self.product.name} variant"
 
     def save(self, *args, **kwargs):
         # calculate discount price with category tax
@@ -203,7 +202,7 @@ class ProductVariant(models.Model):
         super().save(*args, **kwargs)
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["product"]
         verbose_name = "Product variant"
         verbose_name_plural = "Product variants"
 
