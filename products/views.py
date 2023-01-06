@@ -49,13 +49,13 @@ class ProductViewSet(
     permission_classes = [permissions.AllowAny]
     serializer_class = ProductSerializer
 
+    @action(detail=True, methods=["post"])
     @extend_schema(
         description="Create attribute for product",
         parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
         responses={201: CreateProductAttributeSerializer},
         tags=["Products"],
     )
-    @action(detail=True, methods=["post"])
     def create_attribute(self, request, pk=None):
         """
         Create product attribute
@@ -68,13 +68,13 @@ class ProductViewSet(
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    @action(detail=True, methods=["post"])
     @extend_schema(
         description="Create review for product",
         parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
         responses={201: CreateReviewSerializer},
         tags=["Reviews"],
     )
-    @action(detail=True, methods=["post"])
     def review(self, request, pk=None):
         """
         Review product
@@ -104,12 +104,12 @@ class ProductVariantViewSet(
 
     permission_classes = [permissions.IsAuthenticated, HasShop, IsOwner]
 
+    @action(detail=True, methods=["post"])
     @extend_schema(
         description="Create product variant attribute",
         responses={201: CreateProductAttributeSerializer},
         tags=["Product Attributes"],
     )
-    @action(detail=True, methods=["post"])
     def create_attribute_value(self, request, pk=None):
         """
         Create product variant attribute
@@ -122,14 +122,13 @@ class ProductVariantViewSet(
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    # @extend_schema(description="Get list of attributes")
+    @action(detail=True, methods=["post"])
     @extend_schema(
         description="Buy product variant",
         parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
         responses={201: CreateOrderSerializer},
         tags=["Orders"],
     )
-    @action(detail=True, methods=["post"])
     def buy(self, request, pk=None):
         """
         Buy product variant
