@@ -1,6 +1,8 @@
 from django.contrib.auth.hashers import make_password
 from rest_framework import mixins, permissions
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from drf_spectacular.utils import extend_schema
+from drf_spectacular.contrib.drf_simplejwt import JWTAuthentication
 
 from core.permissions import IsAnonymous
 
@@ -13,6 +15,11 @@ from .serializers import (
 )
 
 
+@extend_schema(
+    description="CustomerViewSet to create,update and retrieve current user",
+    responses={200: CustomerSerializer},
+    tags=["Owner"],
+)
 class CustomerViewSet(
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
@@ -51,6 +58,14 @@ class CustomerViewSet(
         serializer.save(password=make_password(self.request.data["password"]))
 
 
+@extend_schema(
+    description="Address Viewset allowed all methods",
+    request=CreateAddressSerializer,
+    responses={200: AddressSerializer},
+    # request need to be authenticated
+    auth=JWTAuthentication(),
+    tags=["Owner"],
+)
 class AddressViewSet(ModelViewSet):
     """
     Address Viewset allowed all methods

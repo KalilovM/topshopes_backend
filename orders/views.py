@@ -13,6 +13,7 @@ from .serializers import OrderSerializer, CreateOrderSerializer
     parameters=[
         OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH),
     ],
+    request=CreateOrderSerializer,
     responses={201: OrderSerializer},
     tags=["Orders"],
 )

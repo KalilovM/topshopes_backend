@@ -2,7 +2,7 @@ from rest_framework import mixins, permissions, viewsets
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
 
-from core.permissions import HasShop
+from core.permissions import HasShop, IsOwner
 
 from .models import Link, Shop
 from .serializers import (
@@ -15,8 +15,9 @@ from .serializers import (
 
 @extend_schema(
     description="Viewset to edit user's shop",
+    request=CreateShopSerializer,
     responses={200: SingleShopSerializer},
-    tags=["Shops"],
+    tags=["Owner"],
 )
 class MyShopViewSet(
     mixins.CreateModelMixin,
@@ -58,6 +59,12 @@ class MyShopViewSet(
         return self.request.user.shop
 
 
+@extend_schema(
+    description="Viewset to get all Shops",
+    parameters=[OpenApiParameter("slug", OpenApiTypes.STR, OpenApiParameter.PATH)],
+    responses={200: ShopSerializer},
+    tags=["All"],
+)
 class ShopViewSet(
     mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
 ):
@@ -68,6 +75,7 @@ class ShopViewSet(
 
     queryset = Shop.objects.all()
     permission_classes = [permissions.AllowAny]
+    lookup_field = "slug"
 
     def get_serializer_class(self):
         if self.action == "retrieve":
@@ -79,7 +87,7 @@ class ShopViewSet(
     description="Viewset to control only user's shop links",
     parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
     responses={200: LinkSerializer},
-    tags=["Links"],
+    tags=["Owner"],
 )
 class LinkViewSet(
     mixins.ListModelMixin,
@@ -94,7 +102,7 @@ class LinkViewSet(
     """
 
     serializer_class = LinkSerializer
-    permission_classes = [permissions.IsAuthenticated, HasShop]
+    permission_classes = [permissions.IsAuthenticated, HasShop, IsOwner]
 
     def perform_create(self, serializer):
         """
