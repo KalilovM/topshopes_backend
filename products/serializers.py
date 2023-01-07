@@ -115,10 +115,17 @@ class CreateProductAttributeSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
+        product = Product.objects.get(id=self.context["product"].id)
+        if product.category != validated_data["category"]:
+            raise serializers.ValidationError(
+                {"detail": "Product category and attribute category must match"}
+            )
+        if product.shop.user != self.context["request"].user:
+            raise serializers.ValidationError(
+                {"detail": "You are not allowed to create product attribute"}
+            )
         product_attribute = ProductAttribute.objects.create(**validated_data)
-        Product.objects.get(id=self.context["product"].id).attributes.add(
-            product_attribute
-        )
+        product.attributes.add(product_attribute)
         return product_attribute
 
 
