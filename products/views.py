@@ -72,7 +72,7 @@ class ProductViewSet(
         """
         product = self.get_object()
         serializer = CreateReviewSerializer(
-            data=request.data, context={"product": product}
+            data=request.data, context={"product": product, "request": request}
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
