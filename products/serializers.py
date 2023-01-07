@@ -107,7 +107,7 @@ class CreateProductAttributeValueSerializer(serializers.ModelSerializer):
         product_variant = ProductVariant.objects.get(
             id=self.context["product_variant"].id
         )
-        if product_variant.product.shop.user != self.context["request"].user:
+        if product_variant.product.shop.user != self.context["user"]:
             raise serializers.ValidationError(
                 {"detail": "You are not allowed to create product attribute value"}
             )
