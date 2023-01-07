@@ -415,7 +415,6 @@ def fill_product():
             attribute = ProductAttribute.objects.create(
                 name=attr_names[_], category=product.category
             )
-            product.attributes.add(attribute)
     for _ in range(Product.objects.count()):
         product = Product.objects.all()[_]
         for _ in range(random.randint(1, 6)):
@@ -436,7 +435,7 @@ def fill_product():
                 ),
             )
             for _ in range(2):
-                attribute = product.attributes.all()[_]
+                attribute = product.category.attributes.all()[_]
                 if attribute.name == "color":
                     ProductAttributeValue.objects.create(
                         attribute=attribute,
