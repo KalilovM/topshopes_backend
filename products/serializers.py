@@ -111,6 +111,7 @@ class CreateProductAttributeValueSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"detail": "You are not allowed to create product attribute value"}
             )
+        validated_data["product_variant"] = product_variant
         product_attribute_value = ProductAttributeValue.objects.create(**validated_data)
         return product_attribute_value
 
