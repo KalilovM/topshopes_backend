@@ -2,7 +2,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework import mixins, permissions
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from drf_spectacular.utils import extend_schema
-from drf_spectacular.contrib.drf_simplejwt import JWTAuthentication
+
 
 from core.permissions import IsAnonymous
 
@@ -62,8 +62,6 @@ class CustomerViewSet(
     description="Address Viewset allowed all methods",
     request=CreateAddressSerializer,
     responses={200: AddressSerializer},
-    # request need to be authenticated
-    auth=JWTAuthentication(),
     tags=["Owner"],
 )
 class AddressViewSet(ModelViewSet):
