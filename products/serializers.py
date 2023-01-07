@@ -92,7 +92,27 @@ class CreateProductAttributeValueSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductAttributeValue
-        fields = ["product_variant", "attribute", "value"]
+        fields = ["attribute", "value"]
+
+    def validate(self, data):
+        if ProductAttributeValue.objects.filter(
+            attribute=data["attribute"], product_variant=self.context["product_variant"]
+        ).exists():
+            raise serializers.ValidationError(
+                {"detail": "Product attribute value already exists"}
+            )
+        return data
+
+    def create(self, validated_data):
+        product_variant = ProductVariant.objects.get(
+            id=self.context["product_variant"].id
+        )
+        if product_variant.product.shop.user != self.context["request"].user:
+            raise serializers.ValidationError(
+                {"detail": "You are not allowed to create product attribute value"}
+            )
+        product_attribute_value = ProductAttributeValue.objects.create(**validated_data)
+        return product_attribute_value
 
 
 class CreateProductAttributeSerializer(serializers.ModelSerializer):

@@ -137,7 +137,7 @@ class ProductVariantViewSet(
         """
         return ProductVariant.objects.filter(
             product__shop=self.request.user.shop  # type: ignore
-        ).prefetch_related("attributes", "images")
+        ).prefetch_related("attribute_values", "images")
 
     def get_serializer_class(self):
         if self.action in ["create", "update", "partial_update"]:
