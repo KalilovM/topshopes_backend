@@ -277,6 +277,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "rating",
             "price",
             "discount_price",
+            "discount",
             "thumbnail",
         ]
 
