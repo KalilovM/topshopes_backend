@@ -213,6 +213,11 @@ class ShopProductViewSet(viewsets.ModelViewSet):
                         "discount_price"
                     )[:1]
                 ),
+                discount=Subquery(
+                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                        "discount"
+                    )[:1]
+                ),
                 thumbnail=Subquery(
                     ProductVariant.objects.filter(product=OuterRef("pk")).values(
                         "thumbnail"

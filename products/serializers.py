@@ -264,7 +264,7 @@ class ProductSerializer(serializers.ModelSerializer):
     discount_price = serializers.DecimalField(
         read_only=True, max_digits=10, decimal_places=2
     )
-    thumbnail = serializers.ImageField(read_only=True, source="thumbnail.url")
+    thumbnail = serializers.ImageField(read_only=True)
 
     class Meta:
         model = Product
