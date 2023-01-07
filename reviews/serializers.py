@@ -26,9 +26,7 @@ class UserReviewSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    product_variant: Field = serializers.SlugRelatedField(
-        read_only=True, slug_field="name"
-    )
+    product_variant: Field = serializers.StringRelatedField()
     user = UserReviewSerializer(read_only=True)
 
     class Meta:
