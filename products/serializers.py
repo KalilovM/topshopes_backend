@@ -115,8 +115,10 @@ class CreateProductAttributeSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        validated_data["product"] = self.context["product"]
         product_attribute = ProductAttribute.objects.create(**validated_data)
+        Product.objects.get(id=self.context["product"].id).attributes.add(
+            product_attribute
+        )
         return product_attribute
 
 
