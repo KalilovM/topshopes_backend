@@ -186,7 +186,7 @@ class ProductVariant(models.Model):
     )
 
     def __str__(self):
-        return f"{self.product.name} variant"
+        return f"{self.attribute_values.first().value} - {self.attribute_values.last().value}"
 
     def save(self, *args, **kwargs):
         # calculate discount price with category tax

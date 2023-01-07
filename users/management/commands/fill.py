@@ -439,7 +439,7 @@ def fill_product():
                 if attribute.name == "color":
                     ProductAttributeValue.objects.create(
                         attribute=attribute,
-                        value=fake.random_element(COLORS.values()),
+                        value=fake.random_element(COLORS.keys()),
                         product_variant=variant,
                     )
                 elif attribute.name == "size":
