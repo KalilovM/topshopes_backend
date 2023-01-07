@@ -1,4 +1,5 @@
 from rest_framework import mixins, permissions, viewsets
+from drf_spectacular.utils import extend_schema
 
 from .models import Slider
 from .serializers import (
@@ -8,6 +9,11 @@ from .serializers import (
 )
 
 
+@extend_schema(
+    description="SliderViewSet to read_only",
+    responses={200: SliderSerializer},
+    tags=["All"],
+)
 class SliderViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """
     SliderViewSet to read_only

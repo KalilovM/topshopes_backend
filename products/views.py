@@ -75,7 +75,7 @@ class ProductViewSet(
     parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
     request=CreateProductVariantSerializer,
     responses={200: ProductVariantSerializer},
-    tags=["My Products"],
+    tags=["Owner"],
 )
 class ProductVariantViewSet(
     mixins.CreateModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
@@ -112,7 +112,7 @@ class ProductVariantViewSet(
         parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
         request=CreateOrderSerializer,
         responses={201: OrderSerializer},
-        tags=["Buy"],
+        tags=["Product webhooks"],
     )
     @action(
         detail=True,
@@ -151,7 +151,7 @@ class ProductVariantViewSet(
     parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
     request=CreateProductSerializer,
     responses={200: ProductSerializer},
-    tags=["My Products"],
+    tags=["Owner"],
 )
 class ShopProductViewSet(viewsets.ModelViewSet):
     """
@@ -189,6 +189,7 @@ class ShopProductViewSet(viewsets.ModelViewSet):
         parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
         request=CreateProductAttributeSerializer,
         responses={201: CreateProductAttributeSerializer},
+        tags=["Product webhooks"],
     )
     def create_attribute(self, request, pk=None):
         """

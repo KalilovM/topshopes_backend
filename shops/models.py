@@ -1,6 +1,6 @@
 import uuid
+from django.utils.text import slugify
 
-from autoslug import AutoSlugField
 from django.db import models
 
 from core.helpers import PathAndRename
@@ -18,13 +18,7 @@ class Shop(models.Model):
         default=uuid.uuid4, primary_key=True, verbose_name="Shop's id"
     )
     name = models.CharField(max_length=100, unique=True, verbose_name="Shop's name")
-    slug = AutoSlugField(
-        populate_from="name",
-        unique=True,
-        db_index=True,
-        verbose_name="Link to shop",
-        editable=False,
-    )
+    slug = models.SlugField(max_length=100, unique=True, verbose_name="Shop's slug", editable=False)
     user = models.OneToOneField(
         "users.Customer",
         on_delete=models.CASCADE,
@@ -44,6 +38,10 @@ class Shop(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
     class Meta:
         ordering = ["name"]

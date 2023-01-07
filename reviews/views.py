@@ -2,15 +2,14 @@ from rest_framework import mixins, viewsets
 from rest_framework import permissions
 from .models import Review
 from .serializers import CreateReviewSerializer, ReviewSerializer
-from drf_spectacular.utils import extend_schema, extend_schema_view
-from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema
 
 
 @extend_schema(
     description="Review viewset to get all reviews",
     request=CreateReviewSerializer,
     responses={201: ReviewSerializer},
-    tags=["Reviews"],
+    tags=["All"],
 )
 class ReviewViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
