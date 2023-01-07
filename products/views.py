@@ -51,26 +51,6 @@ class ProductViewSet(
 
     @action(detail=True, methods=["post"])
     @extend_schema(
-        description="Create attribute for product",
-        parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
-        request=CreateProductAttributeSerializer,
-        responses={201: CreateProductAttributeSerializer},
-        tags=["Products"],
-    )
-    def create_attribute(self, request, pk=None):
-        """
-        Create product attribute
-        """
-        product = self.get_object()
-        serializer = CreateProductAttributeSerializer(
-            data=request.data, context={"product": product}
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    @action(detail=True, methods=["post"])
-    @extend_schema(
         description="Create review for product",
         parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
         request=CreateReviewSerializer,
@@ -201,6 +181,26 @@ class ShopProductViewSet(viewsets.ModelViewSet):
         if self.action == "create":
             return CreateProductSerializer
         return ProductSerializer
+
+    @action(detail=True, methods=["post"])
+    @extend_schema(
+        description="Create attribute for product",
+        parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
+        request=CreateProductAttributeSerializer,
+        responses={201: CreateProductAttributeSerializer},
+        tags=["Products"],
+    )
+    def create_attribute(self, request, pk=None):
+        """
+        Create product attribute
+        """
+        product = self.get_object()
+        serializer = CreateProductAttributeSerializer(
+            data=request.data, context={"product": product}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @extend_schema(
