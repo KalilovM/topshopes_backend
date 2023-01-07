@@ -208,7 +208,14 @@ class CreateProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ["name", "description", "category", "brand", "unit", "featured"]
+        fields = [
+            "name",
+            "description",
+            "category",
+            "brand",
+            "unit",
+            "featured",
+        ]
 
     def validate(self, data):
         if Product.objects.filter(
@@ -231,7 +238,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = [
-            "id",
+            "slug",
             "name",
             "shop",
             "description",

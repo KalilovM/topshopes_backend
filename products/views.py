@@ -54,7 +54,7 @@ class ProductViewSet(
         description="Create review for product",
         request=CreateReviewSerializer,
         responses={201: ReviewSerializer},
-        tags=["Reviews"],
+        tags=["Product webhooks"],
     )
     @action(detail=True, methods=["post"])
     def review(self, request, pk=None):
@@ -75,7 +75,7 @@ class ProductViewSet(
     parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
     request=CreateProductVariantSerializer,
     responses={200: ProductVariantSerializer},
-    tags=["My", "Variants"],
+    tags=["My Products"],
 )
 class ProductVariantViewSet(
     mixins.CreateModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
@@ -151,7 +151,7 @@ class ProductVariantViewSet(
     parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
     request=CreateProductSerializer,
     responses={200: ProductSerializer},
-    tags=["My", "Products"],
+    tags=["My Products"],
 )
 class ShopProductViewSet(viewsets.ModelViewSet):
     """
