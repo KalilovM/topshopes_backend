@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework import serializers
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema, OpenApiParameter, extend_schema_view
 from drf_spectacular.types import OpenApiTypes
 from core.permissions import IsOwner, HasShop
 
@@ -19,6 +19,8 @@ from products.models import (
     Brand,
     Product,
     ProductVariant,
+    ProductAttribute,
+    ProductAttributeValue,
 )
 
 from products.serializers import (
@@ -34,7 +36,9 @@ from products.serializers import (
     CreateProductVariantSerializer,
     CreateProductAttributeValueSerializer,
     ProductAttributeValueSerializer,
+    SingleCategorySerializer,
 )
+
 
 @extend_schema(
     description="Brand viewset to get all brands",
@@ -188,26 +192,6 @@ class ShopProductViewSet(viewsets.ModelViewSet):
             return CreateProductSerializer
         return ProductSerializer
 
-    @action(detail=True, methods=["post"])
-    @extend_schema(
-        description="Create attribute for product",
-        parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
-        request=CreateProductAttributeSerializer,
-        responses={201: CreateProductAttributeSerializer},
-        tags=["Product webhooks"],
-    )
-    def create_attribute(self, request, pk=None):
-        """
-        Create product attribute
-        """
-        product = self.get_object()
-        serializer = CreateProductAttributeSerializer(
-            data=request.data, context={"product": product}
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 
 @extend_schema(
     description="Brand Types for products",
@@ -248,20 +232,35 @@ class ImageViewSet(
     permission_classes = [permissions.IsAuthenticated]
 
 
-@extend_schema(
-    description="Categories for products",
-    parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
-    request=CategorySerializer,
-    responses={200: CategorySerializer},
-    tags=["All"],
+@extend_schema_view(
+    list=extend_schema(
+        description="Categories for products",
+        parameters=[OpenApiParameter("slug", OpenApiTypes.STR, OpenApiParameter.PATH)],
+        responses={200: CategorySerializer},
+        tags=["All"],
+    ),
+    retrieve=extend_schema(
+        description="Category for products",
+        parameters=[OpenApiParameter("slug", OpenApiTypes.STR, OpenApiParameter.PATH)],
+        responses={200: SingleCategorySerializer},
+        tags=["All"],
+    ),
 )
-class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class CategoryViewSet(
+    mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
+):
     """
     Viewset only to get in a list Categories
     """
 
     queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+    permission_classes = [permissions.IsAuthenticated, HasShop]
+    lookup_field = "slug"
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return CategorySerializer
+        return SingleCategorySerializer
 
 
 @extend_schema(

@@ -65,11 +65,6 @@ class CategorySerializer(serializers.ModelSerializer):
             "id",
             "name",
             "icon",
-            "image",
-            "slug",
-            "parent",
-            "description",
-            "featured",
         ]
 
 
@@ -250,5 +245,28 @@ class ProductSerializer(serializers.ModelSerializer):
             "featured",
             "variants",
             "reviews",
+            "attributes",
+        ]
+
+
+class SingleCategorySerializer(serializers.ModelSerializer):
+    """
+    Category serializer
+    Return id, name, icon, image, slug, parent, description, featured fields
+    """
+
+    attributes = ProductAttributeSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Category
+        fields = [
+            "id",
+            "name",
+            "icon",
+            "image",
+            "slug",
+            "parent",
+            "description",
+            "featured",
             "attributes",
         ]
