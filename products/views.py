@@ -36,7 +36,12 @@ from products.serializers import (
     ProductAttributeValueSerializer,
 )
 
-
+@extend_schema(
+    description="Brand viewset to get all brands",
+    parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
+    responses={200: ProductSerializer},
+    tags=["All"],
+)
 class ProductViewSet(
     mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
 ):
@@ -91,7 +96,7 @@ class ProductVariantViewSet(
         description="Create product variant attribute",
         request=CreateProductAttributeValueSerializer,
         responses={201: ProductAttributeSerializer},
-        tags=["Product Attributes"],
+        tags=["Product webhooks"],
     )
     @action(detail=True, methods=["post"])
     def create_attribute_value(self, request, pk=None):
@@ -248,7 +253,7 @@ class ImageViewSet(
     parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
     request=CategorySerializer,
     responses={200: CategorySerializer},
-    tags=["Products additions"],
+    tags=["All"],
 )
 class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
@@ -264,7 +269,7 @@ class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
     request=BrandSerializer,
     responses={200: BrandSerializer},
-    tags=["Products additions"],
+    tags=["All"],
 )
 class BrandViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
