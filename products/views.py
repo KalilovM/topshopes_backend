@@ -45,11 +45,11 @@ class ProductViewSet(
     Only get method allowed
     """
 
+    lookup_field = "slug"
     queryset = Product.objects.all().prefetch_related("variants")
     permission_classes = [permissions.AllowAny]
     serializer_class = ProductSerializer
 
-    @action(detail=True, methods=["post"])
     @extend_schema(
         description="Create review for product",
         parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
@@ -57,6 +57,7 @@ class ProductViewSet(
         responses={201: ReviewSerializer},
         tags=["Reviews"],
     )
+    @action(detail=True, methods=["post"])
     def review(self, request, pk=None):
         """
         Review product
@@ -100,7 +101,8 @@ class ProductVariantViewSet(
         """
         product_variant = self.get_object()
         serializer = CreateProductAttributeValueSerializer(
-            data=request.data, context={"product_variant": product_variant, "user": request.user}
+            data=request.data,
+            context={"product_variant": product_variant, "user": request.user},
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -157,7 +159,7 @@ class ShopProductViewSet(viewsets.ModelViewSet):
     Viewset allows the owner of shop to edit products
     """
 
-    # Add new permission is owner
+    lookup_field = "slug"
     permission_classes = [permissions.IsAuthenticated, IsOwner, HasShop]
 
     def get_queryset(self):
