@@ -6,11 +6,12 @@ from .models import Review
 class CreateReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = ("rating", "comment", "product_variant", "shop")
+        fields = ("rating", "comment", "product_variant")
 
     def create(self, validated_data):
         user = self.context["request"].user
-        review = Review.objects.create(user=user, **validated_data)
+        shop = self.context["product"].shop
+        review = Review.objects.create(user=user, shop=shop, **validated_data)
         return review
 
 
