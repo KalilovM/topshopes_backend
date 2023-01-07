@@ -52,7 +52,6 @@ class ProductViewSet(
 
     @extend_schema(
         description="Create review for product",
-        parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
         request=CreateReviewSerializer,
         responses={201: ReviewSerializer},
         tags=["Reviews"],
