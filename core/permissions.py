@@ -30,3 +30,14 @@ class IsOwner(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return obj.shop == request.user.shop
+
+
+class VariantOwner(permissions.BasePermission):
+    """
+    Check is owner
+    """
+
+    message = "You don't have permission to access this product variant"
+
+    def has_object_permission(self, request, view, obj):
+        return obj.product.shop == request.user.shop
