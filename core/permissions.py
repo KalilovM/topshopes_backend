@@ -26,5 +26,7 @@ class IsOwner(permissions.BasePermission):
     Check is owner
     """
 
+    message = "You don't have permission to access this shop's products"
+
     def has_object_permission(self, request, view, obj):
         return obj.shop == request.user.shop
