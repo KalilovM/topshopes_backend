@@ -188,7 +188,6 @@ class ShopProductViewSet(viewsets.ModelViewSet):
         parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
         request=CreateProductAttributeSerializer,
         responses={201: CreateProductAttributeSerializer},
-        tags=["Products"],
     )
     def create_attribute(self, request, pk=None):
         """
