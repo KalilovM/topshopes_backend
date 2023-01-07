@@ -137,7 +137,6 @@ class Product(models.Model):
         default=Decimal(0.0),
         verbose_name="Product rating",
     )
-    attributes = models.ManyToManyField(ProductAttribute, related_name="products")
     featured = models.BooleanField(default=False, verbose_name="Is featured?")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

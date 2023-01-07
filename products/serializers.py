@@ -145,7 +145,6 @@ class CreateProductAttributeSerializer(serializers.ModelSerializer):
                 {"detail": "You are not allowed to create product attribute"}
             )
         product_attribute = ProductAttribute.objects.create(**validated_data)
-        product.attributes.add(product_attribute)
         return product_attribute
 
 
