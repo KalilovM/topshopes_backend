@@ -1,15 +1,14 @@
 from rest_framework import mixins, viewsets, permissions
 from .services import buy_product
-from orders.serializers import CreateOrderSerializer
+from orders.serializers import CreateOrderSerializer, OrderSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework import serializers
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema, OpenApiParameter, extend_schema_view
 from drf_spectacular.types import OpenApiTypes
 from core.permissions import IsOwner, HasShop
 
-from reviews.models import Review
 from reviews.serializers import CreateReviewSerializer, ReviewSerializer
 
 
@@ -29,6 +28,7 @@ from products.serializers import (
     ImageSerializer,
     CategorySerializer,
     ProductSerializer,
+    ProductAttributeSerializer,
     CreateProductAttributeSerializer,
     ProductVariantSerializer,
     CreateProductVariantSerializer,
@@ -53,6 +53,7 @@ class ProductViewSet(
     @extend_schema(
         description="Create attribute for product",
         parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
+        request=CreateProductAttributeSerializer,
         responses={201: CreateProductAttributeSerializer},
         tags=["Products"],
     )
@@ -72,7 +73,8 @@ class ProductViewSet(
     @extend_schema(
         description="Create review for product",
         parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
-        responses={201: CreateReviewSerializer},
+        request=CreateReviewSerializer,
+        responses={201: ReviewSerializer},
         tags=["Reviews"],
     )
     def review(self, request, pk=None):
@@ -89,10 +91,11 @@ class ProductViewSet(
 
 
 @extend_schema(
-    description="Viewset to create product",
+    description="Product variant viewset to create product variants",
     parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
-    responses={201: ProductVariantSerializer},
-    tags=["Products"],
+    request=CreateProductVariantSerializer,
+    responses={200: ProductVariantSerializer},
+    tags=["My", "Variants"],
 )
 class ProductVariantViewSet(
     mixins.CreateModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
@@ -104,12 +107,13 @@ class ProductVariantViewSet(
 
     permission_classes = [permissions.IsAuthenticated, HasShop, IsOwner]
 
-    @action(detail=True, methods=["post"])
     @extend_schema(
         description="Create product variant attribute",
-        responses={201: CreateProductAttributeSerializer},
+        request=CreateProductAttributeValueSerializer,
+        responses={201: ProductAttributeSerializer},
         tags=["Product Attributes"],
     )
+    @action(detail=True, methods=["post"])
     def create_attribute_value(self, request, pk=None):
         """
         Create product variant attribute
@@ -122,12 +126,16 @@ class ProductVariantViewSet(
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=["post"])
     @extend_schema(
         description="Buy product variant",
         parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
-        responses={201: CreateOrderSerializer},
-        tags=["Orders"],
+        request=CreateOrderSerializer,
+        responses={201: OrderSerializer},
+        tags=["Buy"],
+    )
+    @action(
+        detail=True,
+        methods=["post"],
     )
     def buy(self, request, pk=None):
         """
@@ -160,8 +168,9 @@ class ProductVariantViewSet(
 @extend_schema(
     description="Viewset to edit user's shop",
     parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
+    request=CreateProductSerializer,
     responses={200: ProductSerializer},
-    tags=["Shops"],
+    tags=["My", "Products"],
 )
 class ShopProductViewSet(viewsets.ModelViewSet):
     """
@@ -194,6 +203,13 @@ class ShopProductViewSet(viewsets.ModelViewSet):
         return ProductSerializer
 
 
+@extend_schema(
+    description="Brand Types for products",
+    parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
+    request=BrandTypeSerializer,
+    responses={200: BrandTypeSerializer},
+    tags=["Products additions"],
+)
 class BrandTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     Viewset only to get in a list
@@ -204,6 +220,13 @@ class BrandTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
+@extend_schema(
+    description="Images for products variants",
+    parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
+    request=ImageSerializer,
+    responses={200: ImageSerializer},
+    tags=["Products additions"],
+)
 class ImageViewSet(
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
@@ -219,6 +242,13 @@ class ImageViewSet(
     permission_classes = [permissions.IsAuthenticated]
 
 
+@extend_schema(
+    description="Categories for products",
+    parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
+    request=CategorySerializer,
+    responses={200: CategorySerializer},
+    tags=["Products additions"],
+)
 class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     Viewset only to get in a list Categories
@@ -228,6 +258,13 @@ class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = CategorySerializer
 
 
+@extend_schema(
+    description="Brands for products",
+    parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
+    request=BrandSerializer,
+    responses={200: BrandSerializer},
+    tags=["Products additions"],
+)
 class BrandViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     Viewset only to get in a list Brands
@@ -235,30 +272,3 @@ class BrandViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
-
-
-class ReviewViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    """
-    Viewset to get current product reviews
-    """
-
-    queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
-    permission_classes = [permissions.AllowAny]
-
-    def get_queryset(self):
-        """
-        Returns only current product reviews
-        """
-        return Review.objects.filter(product=self.kwargs["product_pk"])
-
-    def perform_create(self, serializer):
-        """
-        On create review set user to current user
-        """
-        serializer.save(user=self.request.user)
-
-    def get_serializer_class(self):
-        if self.action == "create":
-            return CreateReviewSerializer
-        return ReviewSerializer

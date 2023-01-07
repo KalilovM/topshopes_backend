@@ -105,6 +105,20 @@ class CreateProductAttributeSerializer(serializers.ModelSerializer):
         model = ProductAttribute
         fields = ["name", "category"]
 
+    def validate(self, data):
+        if ProductAttribute.objects.filter(
+            name=data["name"], category=data["category"]
+        ).exists():
+            raise serializers.ValidationError(
+                {"detail": "Product attribute already exists"}
+            )
+        return data
+
+    def create(self, validated_data):
+        validated_data["product"] = self.context["product"]
+        product_attribute = ProductAttribute.objects.create(**validated_data)
+        return product_attribute
+
 
 class ProductAttributeSerializer(serializers.ModelSerializer):
     """

@@ -32,6 +32,7 @@ urlpatterns = [
     path("api/", include("users.urls"), name="users_base_API"),
     path("api/", include("orders.urls"), name="orders_base_API"),
     path("api/", include("products.urls"), name="products_base_API"),
+    path("api/", include("reviews.urls"), name="reviews_base_API"),
     path("api/", include("shops.urls"), name="shops_base_API"),
     path("api/", include("posts.urls"), name="posts_base_API"),
     # auth routes
