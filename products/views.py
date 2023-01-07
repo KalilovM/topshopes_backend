@@ -5,9 +5,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework import serializers
-from drf_spectacular.utils import extend_schema, OpenApiParameter, extend_schema_view
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
-from core.permissions import IsOwner, HasShop
+from core.permissions import IsOwner, HasShop, VariantOwner
 
 from reviews.serializers import CreateReviewSerializer, ReviewSerializer
 
@@ -85,7 +85,7 @@ class ProductVariantViewSet(
     Only create method allowed
     """
 
-    permission_classes = [permissions.IsAuthenticated, HasShop, IsOwner]
+    permission_classes = [permissions.IsAuthenticated, HasShop, VariantOwner]
 
     @extend_schema(
         description="Create product variant attribute",
