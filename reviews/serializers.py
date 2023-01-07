@@ -11,7 +11,8 @@ class CreateReviewSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context["request"].user
         shop = self.context["product"].shop
-        review = Review.objects.create(user=user, shop=shop, **validated_data)
+        product = self.context["product"]
+        review = Review.objects.create(user=user,product=product, shop=shop, **validated_data)
         return review
 
 
