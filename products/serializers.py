@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.serializers import Field
 
 from products.models import (
     Brand,
@@ -17,7 +18,7 @@ from reviews.serializers import ReviewSerializer
 class ShopProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shop
-        fields = ["id", "name"]
+        fields = ["id", "name", "slug"]
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -221,19 +222,9 @@ class CreateProductSerializer(serializers.ModelSerializer):
             )
 
 
-class ShopProductSerializer(serializers.ModelSerializer):
+class SingleProductSerializer(serializers.ModelSerializer):
     """
-    Shop serializer
-    """
-
-    class Meta:
-        model = Shop
-        fields = ["name", "slug"]
-
-
-class ProductSerializer(serializers.ModelSerializer):
-    """
-    Product serializer for read only
+    Single Product serializer for read only
     """
 
     variants = ProductVariantSerializer(many=True, read_only=True)
@@ -257,6 +248,35 @@ class ProductSerializer(serializers.ModelSerializer):
             "variants",
             "reviews",
             "attributes",
+        ]
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    """
+    Product serializer
+    """
+
+    shop = ShopProductSerializer(read_only=True)
+    category: Field = serializers.SlugRelatedField(
+        slug_field="name", queryset=Category.objects.all()
+    )
+    price = serializers.DecimalField(read_only=True, max_digits=10, decimal_places=2)
+    discount_price = serializers.DecimalField(
+        read_only=True, max_digits=10, decimal_places=2
+    )
+    thumbnail = serializers.ImageField(read_only=True, source="thumbnail.url")
+
+    class Meta:
+        model = Product
+        fields = [
+            "slug",
+            "name",
+            "shop",
+            "category",
+            "rating",
+            "price",
+            "discount_price",
+            "thumbnail",
         ]
 
 
