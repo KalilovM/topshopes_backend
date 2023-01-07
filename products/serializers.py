@@ -221,6 +221,16 @@ class CreateProductSerializer(serializers.ModelSerializer):
             )
 
 
+class ShopProductSerializer(serializers.ModelSerializer):
+    """
+    Shop serializer
+    """
+
+    class Meta:
+        model = Shop
+        fields = ["name", "slug"]
+
+
 class ProductSerializer(serializers.ModelSerializer):
     """
     Product serializer for read only
@@ -229,6 +239,7 @@ class ProductSerializer(serializers.ModelSerializer):
     variants = ProductVariantSerializer(many=True, read_only=True)
     attributes = ProductAttributeSerializer(many=True, read_only=True)
     reviews = ReviewSerializer(many=True, read_only=True)
+    shop = ShopProductSerializer(read_only=True)
 
     class Meta:
         model = Product
