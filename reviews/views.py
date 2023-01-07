@@ -4,7 +4,7 @@ from .models import Review
 from .serializers import CreateReviewSerializer, ReviewSerializer
 from drf_spectacular.utils import extend_schema
 
-
+# owner of shop review
 @extend_schema(
     description="Review viewset to get all reviews",
     request=CreateReviewSerializer,
