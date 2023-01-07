@@ -8,6 +8,7 @@ from rest_framework import serializers
 from drf_spectacular.utils import extend_schema, OpenApiParameter, extend_schema_view
 from drf_spectacular.types import OpenApiTypes
 from core.permissions import IsOwner, HasShop
+from django.db.models import Subquery, OuterRef
 
 from reviews.serializers import CreateReviewSerializer, ReviewSerializer
 
@@ -37,12 +38,12 @@ from products.serializers import (
     CreateProductAttributeValueSerializer,
     ProductAttributeValueSerializer,
     SingleCategorySerializer,
+    SingleProductSerializer,
 )
 
 
 @extend_schema(
     description="Brand viewset to get all brands",
-    parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
     responses={200: ProductSerializer},
     tags=["All"],
 )
@@ -55,9 +56,33 @@ class ProductViewSet(
     """
 
     lookup_field = "slug"
-    queryset = Product.objects.all().prefetch_related("variants")
     permission_classes = [permissions.AllowAny]
-    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        if self.action == "list":
+            return Product.objects.all().annotate(
+                price=Subquery(
+                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                        "price"
+                    )[:1]
+                ),
+                discount_price=Subquery(
+                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                        "discount_price"
+                    )[:1]
+                ),
+                thumbnail=Subquery(
+                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                        "thumbnail"
+                    )[:1]
+                ),
+            )
+        return Product.objects.all().prefetch_related("variants", "reviews")
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return SingleProductSerializer
+        return ProductSerializer
 
     @extend_schema(
         description="Create review for product",
@@ -174,8 +199,26 @@ class ShopProductViewSet(viewsets.ModelViewSet):
         """
         Returns only current user's shop products
         """
-        return Product.objects.prefetch_related("variants").filter(
-            shop=self.request.user.shop  # type: ignore
+        return (
+            Product.objects.prefetch_related("variants")
+            .filter(shop=self.request.user.shop)  # type: ignore
+            .annotate(
+                price=Subquery(
+                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                        "price"
+                    )[:1]
+                ),
+                discount_price=Subquery(
+                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                        "discount_price"
+                    )[:1]
+                ),
+                thumbnail=Subquery(
+                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                        "thumbnail"
+                    )[:1]
+                ),
+            )
         )
 
     def perform_create(self, serializer):
@@ -190,7 +233,12 @@ class ShopProductViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "create":
             return CreateProductSerializer
+        if self.action == "retrieve":
+            return SingleProductSerializer
         return ProductSerializer
+
+    def get_serializer_context(self):
+        return {"request": self.request}
 
 
 @extend_schema(
@@ -235,7 +283,6 @@ class ImageViewSet(
 @extend_schema_view(
     list=extend_schema(
         description="Categories for products",
-        parameters=[OpenApiParameter("slug", OpenApiTypes.STR, OpenApiParameter.PATH)],
         responses={200: CategorySerializer},
         tags=["All"],
     ),
@@ -265,7 +312,6 @@ class CategoryViewSet(
 
 @extend_schema(
     description="Brands for products",
-    parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
     request=BrandSerializer,
     responses={200: BrandSerializer},
     tags=["All"],
