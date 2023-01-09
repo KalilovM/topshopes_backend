@@ -10,7 +10,7 @@ from .serializers import PageCategorySerializer, SiteSettingsSerializer
     responses={200: PageCategorySerializer},
     tags=["All"],
 )
-class PageCategoriesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class PageCategoriesViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """
     Pages and categories to get only
     """
@@ -18,6 +18,7 @@ class PageCategoriesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = PageCategory.objects.all().prefetch_related("pages")
     serializer_class = PageCategorySerializer
     permission_classes = [permissions.AllowAny]
+    lookup_field = "slug"
 
 
 @extend_schema(
