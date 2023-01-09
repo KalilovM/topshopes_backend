@@ -130,6 +130,16 @@ class CreateProductSerializer(serializers.ModelSerializer):
             )
 
 
+class BrandReadSerializer(serializers.ModelSerializer):
+    """
+    Brand return only id, slug, name
+    """
+
+    class Meta:
+        model = Brand
+        fields = ["id", "slug", "name"]
+
+
 class SingleProductSerializer(serializers.ModelSerializer):
     """
     Single Product serializer for read only
@@ -139,6 +149,7 @@ class SingleProductSerializer(serializers.ModelSerializer):
     attributes = AttributeSerializer(many=True, read_only=True)
     reviews = ReviewSerializer(many=True, read_only=True)
     shop = ShopProductSerializer(read_only=True)
+    brand = BrandReadSerializer(read_only=True)
 
     class Meta:
         model = Product

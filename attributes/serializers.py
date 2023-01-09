@@ -5,11 +5,23 @@ from products.models import Product, ProductVariant
 from .models import Attribute, AttributeValue
 
 
+class AttributeReadSerializer(serializers.ModelSerializer):
+    """
+    Attribute return id and name
+    """
+
+    class Meta:
+        model = Attribute
+        fields = ["id", "name"]
+
+
 class AttributeValueSerializer(serializers.ModelSerializer):
     """
     Product attribute value serializer for read only
     Return only name and product
     """
+
+    attribute = AttributeReadSerializer(read_only=True)
 
     class Meta:
         model = AttributeValue
