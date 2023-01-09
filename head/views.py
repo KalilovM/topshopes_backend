@@ -1,21 +1,22 @@
-from rest_framework import mixins, permissions, viewsets
 from drf_spectacular.utils import extend_schema
+from rest_framework import mixins, permissions, viewsets
 
+from attributes.models import Attribute, AttributeValue
+from attributes.serializers import (AttributeSerializer,
+                                    AttributeValueSerializer,
+                                    CreateAttributeSerializer,
+                                    CreateAttributeValueSerializer)
 from head.serializers import AdminCustomerSerializer, AdminProductSerializer
 from pages.models import Page, PageCategory, SiteSettings
-from pages.serializers import (
-    PageCategorySerializer,
-    PageSerializer,
-    SiteSettingsSerializer,
-)
+from pages.serializers import (PageCategorySerializer, PageSerializer,
+                               SiteSettingsSerializer)
 from posts.models import Post
 from posts.serializers import PostSerializer
 from products.models import Brand, BrandType, Category, Product, ProductVariant
-from products.serializers import (
-    BrandSerializer,
-    BrandTypeSerializer,
-    CategorySerializer,
-)
+from products.serializers import (BrandSerializer, BrandTypeSerializer,
+                                  CategorySerializer,
+                                  CreateProductVariantSerializer,
+                                  ProductVariantSerializer)
 from shops.models import Shop
 from shops.serializers import ShopSerializer, SingleShopSerializer
 from sliders.models import Slide, Slider
@@ -209,3 +210,17 @@ class AdminProductVariantViewSet(
         if self.action in ["update", "partial_update"]:
             return CreateProductVariantSerializer
         return ProductVariantSerializer
+
+
+class AdminAttributeViewSet(viewsets.ModelViewSet):
+    """
+    Viewset for attributes
+    """
+
+    def get_queryset(self):
+        return Category.objects.attributes
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CreateAttributeSerializer
+        return AttributeSerializer

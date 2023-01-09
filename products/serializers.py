@@ -1,18 +1,12 @@
 from rest_framework import serializers
 from rest_framework.serializers import Field
 
-from products.models import (
-    Brand,
-    BrandType,
-    Category,
-    Image,
-    Product,
-    ProductVariant,
-    ProductAttribute,
-    ProductAttributeValue,
-)
-from shops.models import Shop
+from attributes.serializers import (AttributeSerializer,
+                                    AttributeValueSerializer)
+from products.models import (Brand, BrandType, Category, Image, Product,
+                             ProductVariant)
 from reviews.serializers import ReviewSerializer
+from shops.models import Shop
 
 
 class ShopProductSerializer(serializers.ModelSerializer):
@@ -64,96 +58,10 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = [
             "id",
+            "slug",
             "name",
             "icon",
         ]
-
-
-class ProductAttributeValueSerializer(serializers.ModelSerializer):
-    """
-    Product attribute value serializer for read only
-    Return only name and product
-    """
-
-    class Meta:
-        model = ProductAttributeValue
-        fields = ["id", "product_variant", "attribute", "value"]
-
-
-class CreateProductAttributeValueSerializer(serializers.ModelSerializer):
-    """
-    Product variant attribute value serializer for write only
-    Return only name and product
-    """
-
-    class Meta:
-        model = ProductAttributeValue
-        fields = ["attribute", "value"]
-
-    def validate(self, data):
-        if ProductAttributeValue.objects.filter(
-            attribute=data["attribute"], product_variant=self.context["product_variant"]
-        ).exists():
-            raise serializers.ValidationError(
-                {"detail": "Product attribute value already exists"}
-            )
-        return data
-
-    def create(self, validated_data):
-        product_variant = ProductVariant.objects.get(
-            id=self.context["product_variant"].id
-        )
-        if product_variant.product.shop.user != self.context["user"]:
-            raise serializers.ValidationError(
-                {"detail": "You are not allowed to create product attribute value"}
-            )
-        validated_data["product_variant"] = product_variant
-        product_attribute_value = ProductAttributeValue.objects.create(**validated_data)
-        return product_attribute_value
-
-
-class CreateProductAttributeSerializer(serializers.ModelSerializer):
-    """
-    Product variant attribute serializer for write only
-    Return all fields
-    """
-
-    class Meta:
-        model = ProductAttribute
-        fields = ["name", "category"]
-
-    def validate(self, data):
-        if ProductAttribute.objects.filter(
-            name=data["name"], category=data["category"]
-        ).exists():
-            raise serializers.ValidationError(
-                {"detail": "Product attribute already exists"}
-            )
-        return data
-
-    def create(self, validated_data):
-        product = Product.objects.get(id=self.context["product"].id)
-        if product.category != validated_data["category"]:
-            raise serializers.ValidationError(
-                {"detail": "Product category and attribute category must match"}
-            )
-        if product.shop.user != self.context["request"].user:
-            raise serializers.ValidationError(
-                {"detail": "You are not allowed to create product attribute"}
-            )
-        product_attribute = ProductAttribute.objects.create(**validated_data)
-        return product_attribute
-
-
-class ProductAttributeSerializer(serializers.ModelSerializer):
-    """
-    Product variant attribute serializer for read only
-    Return all fields
-    """
-
-    class Meta:
-        model = ProductAttribute
-        fields = ["id", "name", "category"]
 
 
 class CreateProductVariantSerializer(serializers.ModelSerializer):
@@ -180,7 +88,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
     """
 
     images = ImageSerializer(many=True, read_only=True)
-    attribute_values = ProductAttributeValueSerializer(many=True, read_only=True)
+    attribute_values = AttributeValueSerializer(many=True, read_only=True)
 
     class Meta:
         model = ProductVariant
@@ -228,7 +136,7 @@ class SingleProductSerializer(serializers.ModelSerializer):
     """
 
     variants = ProductVariantSerializer(many=True, read_only=True)
-    attributes = ProductAttributeSerializer(many=True, read_only=True)
+    attributes = AttributeSerializer(many=True, read_only=True)
     reviews = ReviewSerializer(many=True, read_only=True)
     shop = ShopProductSerializer(read_only=True)
 
@@ -288,7 +196,7 @@ class SingleCategorySerializer(serializers.ModelSerializer):
     Return id, name, icon, image, slug, parent, description, featured fields
     """
 
-    attributes = ProductAttributeSerializer(many=True, read_only=True)
+    attributes = AttributeSerializer(many=True, read_only=True)
 
     class Meta:
         model = Category
