@@ -5,6 +5,11 @@ from .models import PageCategory, SiteSettings
 from .serializers import PageCategorySerializer, SiteSettingsSerializer
 
 
+@extend_schema(
+    description="SiteSettings viewset to get all SiteSettings",
+    responses={200: PageCategorySerializer},
+    tags=["All"],
+)
 class PageCategoriesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     Pages and categories to get only
