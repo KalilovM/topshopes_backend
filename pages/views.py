@@ -1,7 +1,18 @@
-from rest_framework import mixins, permissions, viewsets
 from drf_spectacular.utils import extend_schema
-from .models import SiteSettings
-from .serializers import SiteSettingsSerializer
+from rest_framework import mixins, permissions, viewsets
+
+from .models import PageCategory, SiteSettings
+from .serializers import PageCategorySerializer, SiteSettingsSerializer
+
+
+class PageCategoriesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    Pages and categories to get only
+    """
+
+    queryset = PageCategory.objects.all().prefetch_related("pages")
+    serializer_class = PageCategorySerializer
+    permission_classes = [permissions.AllowAny]
 
 
 @extend_schema(
