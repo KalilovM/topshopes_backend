@@ -1,23 +1,18 @@
-from orders.models import Order
-import os
 import itertools
-from django.core.management.base import BaseCommand
-from django.core.files.uploadedfile import SimpleUploadedFile
-from faker import Faker
+import os
 import random
-from users.models import Customer, Address
-from shops.models import Shop, Link
-from products.models import (
-    Product,
-    Brand,
-    Category,
-    BrandType,
-    Image,
-    ProductVariant,
-    ProductAttribute,
-    ProductAttributeValue,
-)
+
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.management.base import BaseCommand
+from faker import Faker
+
+from attributes.models import Attribute, AttributeValue
+from orders.models import Order
+from products.models import (Brand, BrandType, Category, Image, Product,
+                             ProductVariant)
 from reviews.models import Review
+from shops.models import Link, Shop
+from users.models import Address, Customer
 
 DJANGO_SETTINGS_MODULE = "core.settings"
 image_path = "tests/img/"
@@ -412,7 +407,7 @@ def fill_product():
             unit=fake.random_element(UNITS),
         )
         for _ in range(2):
-            attribute = ProductAttribute.objects.create(
+            attribute = Attribute.objects.create(
                 name=attr_names[_], category=product.category
             )
     for _ in range(Product.objects.count()):
@@ -437,13 +432,13 @@ def fill_product():
             for _ in range(2):
                 attribute = product.category.attributes.all()[_]
                 if attribute.name == "color":
-                    ProductAttributeValue.objects.create(
+                    AttributeValue.objects.create(
                         attribute=attribute,
                         value=fake.random_element(COLORS.keys()),
                         product_variant=variant,
                     )
                 elif attribute.name == "size":
-                    ProductAttributeValue.objects.create(
+                    AttributeValue.objects.create(
                         attribute=attribute,
                         value=fake.random_element(SIZES),
                         product_variant=variant,
