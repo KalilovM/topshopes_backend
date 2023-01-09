@@ -1,5 +1,6 @@
-from django.urls import path
+from django.urls import include, path
 
+from .routers import router
 from .views import SiteSettingsViewSet
 
 urlpatterns = [
@@ -11,4 +12,5 @@ urlpatterns = [
             }
         ),
     ),
+    path("", include(router.urls)),
 ]
