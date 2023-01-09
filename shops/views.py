@@ -1,16 +1,12 @@
-from rest_framework import mixins, permissions, viewsets
-from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
+from rest_framework import mixins, permissions, viewsets
 
 from core.permissions import HasShop, IsOwner
 
 from .models import Link, Shop
-from .serializers import (
-    CreateShopSerializer,
-    LinkSerializer,
-    ShopSerializer,
-    SingleShopSerializer,
-)
+from .serializers import (CreateShopSerializer, LinkSerializer, ShopSerializer,
+                          SingleShopSerializer)
 
 
 @extend_schema(
@@ -75,7 +71,6 @@ class ShopViewSet(
 
     queryset = Shop.objects.all()
     permission_classes = [permissions.AllowAny]
-    lookup_field = "slug"
 
     def get_serializer_class(self):
         if self.action == "retrieve":

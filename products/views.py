@@ -37,7 +37,6 @@ class ProductViewSet(
     Only get method allowed
     """
 
-    lookup_field = "slug"
     permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
@@ -174,7 +173,6 @@ class ShopProductViewSet(viewsets.ModelViewSet):
     Viewset allows the owner of shop to edit products
     """
 
-    lookup_field = "slug"
     permission_classes = [permissions.IsAuthenticated, IsOwner, HasShop]
 
     def get_queryset(self):
@@ -289,7 +287,6 @@ class CategoryViewSet(
 
     queryset = Category.objects.all()
     permission_classes = [permissions.AllowAny]
-    lookup_field = "slug"
 
     def get_serializer_class(self):
         if self.action == "list":
