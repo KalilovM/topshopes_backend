@@ -1,11 +1,8 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins, permissions, viewsets
 
-from attributes.models import Attribute, AttributeValue
 from attributes.serializers import (AttributeSerializer,
-                                    AttributeValueSerializer,
-                                    CreateAttributeSerializer,
-                                    CreateAttributeValueSerializer)
+                                    CreateAttributeSerializer)
 from head.serializers import AdminCustomerSerializer, AdminProductSerializer
 from pages.models import Page, PageCategory, SiteSettings
 from pages.serializers import (PageCategorySerializer, PageSerializer,
