@@ -1,45 +1,27 @@
-from rest_framework import mixins, viewsets, permissions
-from .services import buy_product
-from orders.serializers import CreateOrderSerializer, OrderSerializer
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.decorators import action
-from rest_framework import serializers
-from drf_spectacular.utils import extend_schema, OpenApiParameter, extend_schema_view
+from django.db.models import OuterRef, Subquery
 from drf_spectacular.types import OpenApiTypes
-from core.permissions import IsOwner, HasShop
-from django.db.models import Subquery, OuterRef
+from drf_spectacular.utils import (OpenApiParameter, extend_schema,
+                                   extend_schema_view)
+from rest_framework import mixins, permissions, serializers, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
+from attributes.serializers import (AttributeSerializer,
+                                    CreateAttributeValueSerializer)
+from core.permissions import HasShop, IsOwner
+from orders.serializers import CreateOrderSerializer, OrderSerializer
+from products.models import (Brand, BrandType, Category, Image, Product,
+                             ProductVariant)
+from products.serializers import (BrandSerializer, BrandTypeSerializer,
+                                  CategorySerializer, CreateProductSerializer,
+                                  CreateProductVariantSerializer,
+                                  ImageSerializer, ProductSerializer,
+                                  ProductVariantSerializer,
+                                  SingleCategorySerializer,
+                                  SingleProductSerializer)
 from reviews.serializers import CreateReviewSerializer, ReviewSerializer
 
-
-from products.models import (
-    BrandType,
-    Image,
-    Category,
-    Brand,
-    Product,
-    ProductVariant,
-    ProductAttribute,
-    ProductAttributeValue,
-)
-
-from products.serializers import (
-    CreateProductSerializer,
-    BrandSerializer,
-    BrandTypeSerializer,
-    ImageSerializer,
-    CategorySerializer,
-    ProductSerializer,
-    ProductAttributeSerializer,
-    CreateProductAttributeSerializer,
-    ProductVariantSerializer,
-    CreateProductVariantSerializer,
-    CreateProductAttributeValueSerializer,
-    ProductAttributeValueSerializer,
-    SingleCategorySerializer,
-    SingleProductSerializer,
-)
+from .services import buy_product
 
 
 @extend_schema(
@@ -123,8 +105,8 @@ class ProductVariantViewSet(
 
     @extend_schema(
         description="Create product variant attribute",
-        request=CreateProductAttributeValueSerializer,
-        responses={201: ProductAttributeSerializer},
+        request=CreateAttributeValueSerializer,
+        responses={201: AttributeSerializer},
         tags=["Product webhooks"],
     )
     @action(detail=True, methods=["post"])
@@ -133,7 +115,7 @@ class ProductVariantViewSet(
         Create product variant attribute
         """
         product_variant = self.get_object()
-        serializer = CreateProductAttributeValueSerializer(
+        serializer = CreateAttributeValueSerializer(
             data=request.data,
             context={"product_variant": product_variant, "user": request.user},
         )
@@ -306,7 +288,7 @@ class CategoryViewSet(
     """
 
     queryset = Category.objects.all()
-    permission_classes = [permissions.IsAuthenticated, HasShop]
+    permission_classes = [permissions.AllowAny]
     lookup_field = "slug"
 
     def get_serializer_class(self):

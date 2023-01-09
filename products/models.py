@@ -1,8 +1,8 @@
 import uuid
-from django.utils.text import slugify
 from decimal import Decimal
 
 from django.db import models
+from django.utils.text import slugify
 from mptt.models import MPTTModel, TreeForeignKey
 
 from core.helpers import PathAndRename
@@ -102,25 +102,6 @@ class Brand(models.Model):
         ordering = ["name"]
 
 
-class ProductAttribute(models.Model):
-    """
-    Product attribute model
-    """
-
-    name = models.CharField(max_length=100, verbose_name="Attribute name")
-    category = models.ForeignKey(
-        Category, on_delete=models.CASCADE, related_name="attributes"
-    )
-
-    def __str__(self):
-        return f"{self.name}"
-
-    class Meta:
-        ordering = ["name"]
-        verbose_name = "Product attribute"
-        verbose_name_plural = "Product attributes"
-
-
 class Product(models.Model):
     name = models.CharField(max_length=100, verbose_name="Product name")
     slug = models.SlugField(max_length=255, unique=True)
@@ -189,7 +170,6 @@ class ProductVariant(models.Model):
         return f"{self.attribute_values.first().value} - {self.attribute_values.last().value}"
 
     def save(self, *args, **kwargs):
-        # calculate discount price with category tax
         self.price = self.price + (self.price * self.product.category.tax / 100)
         if self.discount:
             self.discount_price = self.price - (self.price * self.discount / 100)
@@ -204,27 +184,3 @@ class ProductVariant(models.Model):
         ordering = ["product"]
         verbose_name = "Product variant"
         verbose_name_plural = "Product variants"
-
-
-class ProductAttributeValue(models.Model):
-    """
-    Product attribute value model
-    """
-
-    product_variant = models.ForeignKey(
-        ProductVariant, on_delete=models.CASCADE, related_name="attribute_values"
-    )
-    attribute = models.ForeignKey(
-        ProductAttribute,
-        on_delete=models.CASCADE,
-        related_name="values",
-    )
-    value = models.CharField(max_length=100, verbose_name="Attribute value")
-
-    def __str__(self):
-        return f"{self.value}"
-
-    class Meta:
-        ordering = ["value"]
-        verbose_name = "Product attribute value"
-        verbose_name_plural = "Product attribute values"

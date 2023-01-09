@@ -1,10 +1,13 @@
+from typing import Dict
+
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from .models import ProductVariant
+
 from orders.serializers import CreateOrderSerializer
-from users.models import Customer, Address
 from shops.models import Shop
-from typing import Dict
+from users.models import Address, Customer
+
+from .models import ProductVariant
 
 
 def buy_product(

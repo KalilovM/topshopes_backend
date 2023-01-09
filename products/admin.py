@@ -1,15 +1,13 @@
 from django.contrib import admin
-from .models import (
+
+from .models import Brand, BrandType, Category, Image, Product, ProductVariant
+
+for model in [
     Product,
     Category,
     ProductVariant,
     Image,
     Brand,
     BrandType,
-    ProductAttribute,
-    ProductAttributeValue,
-)
-
-
-for model in [Product, Category, ProductVariant, Image, Brand, BrandType, ProductAttribute, ProductAttributeValue]:
+]:
     admin.site.register(model)
