@@ -21,6 +21,11 @@ class PageCategoriesViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     permission_classes = [permissions.AllowAny]
 
 
+@extend_schema(
+    description="SiteSettings viewset to get all SiteSettings",
+    responses={200: PageSerializer},
+    tags=["All"],
+)
 class PageViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """
     Page viewset to read only

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from products.models import Product, ProductVariant
+from products.models import Category, Product, ProductVariant
 
 from .models import Attribute, AttributeValue
 
@@ -21,7 +21,9 @@ class AttributeValueSerializer(serializers.ModelSerializer):
     Return only name and product
     """
 
-    attribute = AttributeReadSerializer(read_only=True)
+    attribute = serializers.SlugRelatedField(
+        slug_field="name", queryset=Attribute.objects.all()
+    )
 
     class Meta:
         model = AttributeValue
@@ -68,15 +70,11 @@ class CreateAttributeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Attribute
-        fields = ["name", "category"]
+        fields = ["name"]
 
     def validate(self, data):
-        if Attribute.objects.filter(
-            name=data["name"], category=data["category"]
-        ).exists():
-            raise serializers.ValidationError(
-                {"detail": "Product attribute already exists"}
-            )
+        if Category.objects.filter(attributes=data["id"]).exists():
+            raise serializers.ValidationError({"detail": "attribute already exists"})
         return data
 
     def create(self, validated_data):
@@ -101,4 +99,4 @@ class AttributeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Attribute
-        fields = ["id", "name", "category"]
+        fields = ["id", "name"]

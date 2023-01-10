@@ -24,10 +24,17 @@ from reviews.serializers import CreateReviewSerializer, ReviewSerializer
 from .services import buy_product
 
 
-@extend_schema(
-    description="Brand viewset to get all brands",
-    responses={200: ProductSerializer},
-    tags=["All"],
+@extend_schema_view(
+    list=extend_schema(
+        description="Get list of products",
+        responses={200: ProductSerializer},
+        tags=["All"],
+    ),
+    retrieve=extend_schema(
+        description="Get one product",
+        responses={200: SingleProductSerializer},
+        tags=["All"],
+    ),
 )
 class ProductViewSet(
     mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
