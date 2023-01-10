@@ -79,7 +79,7 @@ class ProductViewSet(
         tags=["Product webhooks"],
     )
     @action(detail=True, methods=["post"])
-    def review(self, request, slug=None):
+    def review(self, request, pk=None):
         """
         Review product
         """
