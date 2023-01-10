@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import Field
 
-from products.serializers import ProductSerializer
+from products.serializers import ProductSerializer, SingleProductSerializer
 from users.serializers import CustomerSerializer
 
 from .models import Link, Shop
@@ -46,7 +46,7 @@ class SingleShopSerializer(serializers.ModelSerializer):
 
     user = CustomerSerializer(read_only=True)
     links = LinkSerializer(many=True, read_only=True)
-    products = ProductSerializer(many=True, read_only=True)
+    products = SingleProductSerializer(read_only=True, many=True)
 
     class Meta:
         model = Shop

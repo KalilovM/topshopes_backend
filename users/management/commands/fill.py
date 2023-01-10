@@ -394,8 +394,10 @@ UNITS = [
 ]
 
 
+attr_names = ["color", "size"]
+
+
 def fill_product():
-    attr_names = ["color", "size"]
     shop_names = [shop.name for shop in Shop.objects.all()]
     combinations = itertools.product(shop_names, PRODUCT_TITLES)
     for combination in combinations:
@@ -406,10 +408,6 @@ def fill_product():
             category=fake.random_element(Category.objects.all()),
             unit=fake.random_element(UNITS),
         )
-        for _ in range(2):
-            attribute = Attribute.objects.create(
-                name=attr_names[_], category=product.category
-            )
     for _ in range(Product.objects.count()):
         product = Product.objects.all()[_]
         for _ in range(random.randint(1, 6)):
@@ -429,15 +427,15 @@ def fill_product():
                     content_type="image/webp",
                 ),
             )
-            for _ in range(2):
-                attribute = product.category.attributes.all()[_]
-                if attribute.name == "color":
+            attribute = product.category.attributes.all()
+            for i in attribute:
+                if i == "color":
                     AttributeValue.objects.create(
                         attribute=attribute,
                         value=fake.random_element(COLORS.keys()),
                         product_variant=variant,
                     )
-                elif attribute.name == "size":
+                elif i == "size":
                     AttributeValue.objects.create(
                         attribute=attribute,
                         value=fake.random_element(SIZES),
@@ -561,7 +559,7 @@ def fill_category():
     for _ in range(10):
         name = CATEGORY_NAMES[_]
         sub_name = SUB_CATEGORY_NAMES[_]
-        Category.objects.create(
+        category = Category.objects.create(
             name=name,
             icon=fake.image_url(),
             image=fake.image_url(),
@@ -569,6 +567,9 @@ def fill_category():
             featured=fake.pybool(),
             tax=fake.random_int(min=0, max=100),
         )
+        for _ in range(2):
+            attribute = Attribute.objects.create(name=attr_names[_])
+            category.attributes.add(attribute)
 
         if _ % 2 == 0:
             parent = fake.random_element(Category.objects.all())

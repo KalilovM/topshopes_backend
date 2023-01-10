@@ -48,6 +48,9 @@ class Category(MPTTModel):
     slug = models.SlugField(max_length=255)
     description = models.TextField()
     tax = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))
+    attributes = models.ManyToManyField(
+        "attributes.Attribute", related_name="attributes"
+    )
     parent = TreeForeignKey(
         "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
     )

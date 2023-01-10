@@ -7,9 +7,6 @@ class Attribute(models.Model):
     """
 
     name = models.CharField(max_length=100, verbose_name="Attribute name")
-    category = models.ForeignKey(
-        "products.Category", on_delete=models.CASCADE, related_name="attributes"
-    )
 
     def __str__(self):
         return f"{self.name}"
