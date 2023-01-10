@@ -1,8 +1,13 @@
+from django.db.models import OuterRef, Subquery
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import mixins, permissions, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from core.permissions import HasShop, IsOwner
+from products.models import Product, ProductVariant
+from products.serializers import ProductSerializer
 
 from .models import Link, Shop
 from .serializers import (CreateShopSerializer, LinkSerializer, ShopSerializer,
@@ -76,6 +81,35 @@ class ShopViewSet(
         if self.action == "retrieve":
             return SingleShopSerializer
         return ShopSerializer
+
+    @extend_schema(
+        description="Get shop products",
+        parameters=[OpenApiParameter("slug", OpenApiTypes.STR, OpenApiParameter.PATH)],
+        responses={200: ProductSerializer},
+        tags=["All"],
+    )
+    @action(detail=True, methods=["get"])
+    def products(self, request, pk=None):
+        products = Product.objects.filter(shop=pk).annotate(
+            price=Subquery(
+                ProductVariant.objects.filter(product=OuterRef("pk")).values("price")[
+                    :1
+                ]
+            ),
+            discount_price=Subquery(
+                ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                    "discount_price"
+                )[:1]
+            ),
+            thumbnail=Subquery(
+                ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                    "thumbnail"
+                )[:1]
+            ),
+        )
+        serializer = ProductSerializer(products, many=True)
+        print(serializer.data)
+        return Response(data=serializer.data)
 
 
 @extend_schema(

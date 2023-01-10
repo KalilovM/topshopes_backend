@@ -429,15 +429,15 @@ def fill_product():
             )
             attribute = product.category.attributes.all()
             for i in attribute:
-                if i == "color":
+                if i.name == "color":
                     AttributeValue.objects.create(
-                        attribute=attribute,
+                        attribute=i,
                         value=fake.random_element(COLORS.keys()),
                         product_variant=variant,
                     )
-                elif i == "size":
+                elif i.name == "size":
                     AttributeValue.objects.create(
-                        attribute=attribute,
+                        attribute=i,
                         value=fake.random_element(SIZES),
                         product_variant=variant,
                     )

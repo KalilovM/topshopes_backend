@@ -170,7 +170,7 @@ class ProductVariant(models.Model):
     )
 
     def __str__(self):
-        return f"{self.attribute_values.first().value} - {self.attribute_values.last().value}"
+        return self.product.name
 
     def save(self, *args, **kwargs):
         self.price = self.price + (self.price * self.product.category.tax / 100)
