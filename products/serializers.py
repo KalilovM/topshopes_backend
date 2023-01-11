@@ -54,13 +54,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = [
-            "id",
-            "slug",
-            "name",
-            "icon",
-            "attributes"
-        ]
+        fields = ["id", "slug", "name", "icon", "attributes"]
 
 
 class CreateProductVariantSerializer(serializers.ModelSerializer):
@@ -97,6 +91,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "price",
+            "overeall_price",
             "discount",
             "discount_price",
             "stock",
@@ -168,7 +163,6 @@ class SingleProductSerializer(serializers.ModelSerializer):
             "rating",
             "brand",
             "unit",
-            "overall_price",
             "featured",
             "variants",
             "reviews",
@@ -185,7 +179,9 @@ class ProductSerializer(serializers.ModelSerializer):
     category: Field = serializers.SlugRelatedField(
         slug_field="name", queryset=Category.objects.all()
     )
-    overall_price = serializers.DecimalField(read_only=True, max_digits=10, decimal_places=2)
+    overall_price = serializers.DecimalField(
+        read_only=True, max_digits=10, decimal_places=2
+    )
     discount_price = serializers.DecimalField(
         read_only=True, max_digits=10, decimal_places=2
     )
