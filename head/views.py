@@ -4,6 +4,7 @@ from rest_framework import mixins, permissions, viewsets
 from attributes.serializers import AttributeSerializer, CreateAttributeSerializer
 from head.serializers import AdminCustomerSerializer, AdminProductSerializer
 from pages.models import Page, PageCategory, SiteSettings
+from products.serializers import SingleCategorySerializer
 from pages.serializers import (
     PageCategorySerializer,
     PageSerializer,
@@ -73,8 +74,12 @@ class AdminCategoryViewSet(viewsets.ModelViewSet):
     """
 
     queryset = Category.objects.all()
-    serializer_class = CategorySerializer
     permission_classes = [permissions.IsAdminUser]
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return SingleCategorySerializer
+        return CategorySerializer
 
 
 class AdminBrandViewSet(viewsets.ModelViewSet):
@@ -216,21 +221,7 @@ class AdminProductVariantViewSet(
         return ProductVariantSerializer
 
 
-class AdminAttributeViewSet(viewsets.ModelViewSet):
-    """
-    Viewset for attributes
-    """
-
-    def get_queryset(self):
-        return Category.objects.attributes
-
-    def get_serializer_class(self):
-        if self.action == "create":
-            return CreateAttributeSerializer
-        return AttributeSerializer
-
-
-class AttributesViewset(viewsets.ModelViewSet):
+class AdminAttributesViewSet(viewsets.ModelViewSet):
     queryset = Attribute.objects.all()
     serializer_class = AttributeSerializer
     permission_classes = [permissions.IsAdminUser]
