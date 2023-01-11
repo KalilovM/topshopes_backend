@@ -59,6 +59,7 @@ class CategorySerializer(serializers.ModelSerializer):
             "slug",
             "name",
             "icon",
+            "attributes"
         ]
 
 
