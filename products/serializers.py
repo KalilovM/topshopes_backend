@@ -132,7 +132,7 @@ class CreateProductSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"name": "Product with this name already exists"}
             )
-        super().validate(data)
+        return super().validate(data)
 
 
 class BrandReadSerializer(serializers.ModelSerializer):
