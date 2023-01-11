@@ -98,6 +98,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
             "discount",
             "discount_price",
             "stock",
+            "status",
             "thumbnail",
             "attribute_values",
             "images",
