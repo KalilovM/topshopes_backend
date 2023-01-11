@@ -91,7 +91,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "price",
-            "overeall_price",
+            "overall_price",
             "discount",
             "discount_price",
             "stock",
