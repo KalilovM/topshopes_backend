@@ -163,6 +163,11 @@ class ProductVariant(models.Model):
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default="available"
     )
+    overall_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name="Product variant overall price",
+    )
     stock = models.IntegerField(verbose_name="Product variant quantity")
     thumbnail = models.ImageField(
         upload_to=PathAndRename("products/thumbnails/"),
@@ -173,9 +178,9 @@ class ProductVariant(models.Model):
         return self.product.name
 
     def save(self, *args, **kwargs):
-        self.price = self.price + (self.price * self.product.category.tax / 100)
+        self.overall_price = self.price + (self.price * self.product.category.tax / 100)
         if self.discount:
-            self.discount_price = self.price - (self.price * self.discount / 100)
+            self.discount_price = self.overall_price - (self.price * self.discount / 100)
         else:
             self.discount_price = None
 
