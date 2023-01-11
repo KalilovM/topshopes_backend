@@ -70,9 +70,12 @@ class CreateProductVariantSerializer(serializers.ModelSerializer):
     Return all fields
     """
 
+    id = serializers.ReadOnlyField()
+
     class Meta:
         model = ProductVariant
         fields = [
+            "id",
             "product",
             "price",
             "discount",
