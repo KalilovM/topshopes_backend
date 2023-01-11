@@ -17,13 +17,3 @@ class AttributeValueViewset(
     queryset = AttributeValue.objects.all()
     serializer_class = AttributeValueSerializer
     permission_classes = [permissions.IsAuthenticated, HasShop]
-
-
-class AttributesViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
-    """
-    Viewset to list all attributes
-    """
-
-    queryset = Attribute.objects.all()
-    serializer_class = AttributeSerializer
-    permission_classes = [permissions.AllowAny]

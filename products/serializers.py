@@ -1,10 +1,8 @@
 from rest_framework import serializers
 from rest_framework.serializers import Field
 
-from attributes.serializers import (AttributeSerializer,
-                                    AttributeValueSerializer)
-from products.models import (Brand, BrandType, Category, Image, Product,
-                             ProductVariant)
+from attributes.serializers import AttributeSerializer, AttributeValueSerializer
+from products.models import Brand, BrandType, Category, Image, Product, ProductVariant
 from reviews.serializers import ReviewSerializer
 from shops.models import Shop
 
@@ -169,6 +167,7 @@ class SingleProductSerializer(serializers.ModelSerializer):
             "rating",
             "brand",
             "unit",
+            "overall_price",
             "featured",
             "variants",
             "reviews",
@@ -185,7 +184,7 @@ class ProductSerializer(serializers.ModelSerializer):
     category: Field = serializers.SlugRelatedField(
         slug_field="name", queryset=Category.objects.all()
     )
-    price = serializers.DecimalField(read_only=True, max_digits=10, decimal_places=2)
+    overall_price = serializers.DecimalField(read_only=True, max_digits=10, decimal_places=2)
     discount_price = serializers.DecimalField(
         read_only=True, max_digits=10, decimal_places=2
     )
@@ -201,7 +200,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "shop",
             "category",
             "rating",
-            "price",
+            "overall_price",
             "discount_price",
             "discount",
             "thumbnail",

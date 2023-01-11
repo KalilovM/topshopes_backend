@@ -190,9 +190,9 @@ class ShopProductViewSet(viewsets.ModelViewSet):
             Product.objects.prefetch_related("variants")
             .filter(shop=self.request.user.shop)  # type: ignore
             .annotate(
-                price=Subquery(
+                overall_price=Subquery(
                     ProductVariant.objects.filter(product=OuterRef("pk")).values(
-                        "price"
+                        "overall_price"
                     )[:1]
                 ),
                 discount_price=Subquery(

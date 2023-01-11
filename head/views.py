@@ -1,19 +1,26 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins, permissions, viewsets
 
-from attributes.serializers import (AttributeSerializer,
-                                    CreateAttributeSerializer)
+from attributes.serializers import AttributeSerializer, CreateAttributeSerializer
 from head.serializers import AdminCustomerSerializer, AdminProductSerializer
 from pages.models import Page, PageCategory, SiteSettings
-from pages.serializers import (PageCategorySerializer, PageSerializer,
-                               SiteSettingsSerializer)
+from pages.serializers import (
+    PageCategorySerializer,
+    PageSerializer,
+    SiteSettingsSerializer,
+)
 from posts.models import Post
 from posts.serializers import PostSerializer
 from products.models import Brand, BrandType, Category, Product, ProductVariant
-from products.serializers import (BrandSerializer, BrandTypeSerializer,
-                                  CategorySerializer,
-                                  CreateProductVariantSerializer,
-                                  ProductVariantSerializer)
+from products.serializers import (
+    BrandSerializer,
+    BrandTypeSerializer,
+    CategorySerializer,
+    CreateProductVariantSerializer,
+    ProductVariantSerializer,
+)
+from attributes.models import Attribute
+from attributes.serializers import AttributeSerializer
 from shops.models import Shop
 from shops.serializers import ShopSerializer, SingleShopSerializer
 from sliders.models import Slide, Slider
@@ -221,3 +228,9 @@ class AdminAttributeViewSet(viewsets.ModelViewSet):
         if self.action == "create":
             return CreateAttributeSerializer
         return AttributeSerializer
+
+
+class AttributesViewset(viewsets.ModelViewSet):
+    queryset = Attribute.objects.all()
+    serializer_class = AttributeSerializer
+    permission_classes = [permissions.IsAdminUser]
