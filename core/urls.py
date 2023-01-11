@@ -2,10 +2,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
-from drf_spectacular.views import (SpectacularAPIView, SpectacularRedocView,
-                                   SpectacularSwaggerView)
-from rest_framework_simplejwt.views import (TokenObtainPairView,
-                                            TokenRefreshView)
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,
+)
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     # swagger
@@ -32,6 +34,7 @@ urlpatterns = [
     path("api/", include("reviews.urls"), name="reviews_base_API"),
     path("api/", include("shops.urls"), name="shops_base_API"),
     path("api/", include("posts.urls"), name="posts_base_API"),
+    path("api/", include("attributes.urls"), name="attributes_base_API"),
     # auth routes
     path("api/auth/login/", TokenObtainPairView.as_view(), name="token_create"),
     path("api/auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
