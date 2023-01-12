@@ -558,7 +558,6 @@ SUB_CATEGORY_NAMES = [
 def fill_category():
     for _ in range(2):
         attribute = Attribute.objects.create(name=attr_names[_])
-        category.attributes.add(attribute)
     for _ in range(10):
         name = CATEGORY_NAMES[_]
         sub_name = SUB_CATEGORY_NAMES[_]
