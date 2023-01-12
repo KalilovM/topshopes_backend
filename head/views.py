@@ -16,6 +16,7 @@ from products.models import Brand, BrandType, Category, Product, ProductVariant
 from products.serializers import (
     BrandSerializer,
     BrandTypeSerializer,
+    CreateCategorySerializer,
     CategorySerializer,
     CreateProductVariantSerializer,
     ProductVariantSerializer,
@@ -79,6 +80,8 @@ class AdminCategoryViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "retrieve":
             return SingleCategorySerializer
+        if self.action in ["update", "create", "partial_update"]:
+            return CreateCategorySerializer
         return CategorySerializer
 
 

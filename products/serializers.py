@@ -46,6 +46,21 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = ["id", "image", "product_variant"]
 
 
+class CreateCategorySerializer(serializers.ModelSerializer):
+    """
+    Serialzier to create category only
+    """
+    class Meta:
+        model = Category
+        fields = [
+            "name",
+            "description",
+            "icon",
+            "image",
+            "attributes",
+        ]
+
+
 class CategorySerializer(serializers.ModelSerializer):
     """
     Category serializer
