@@ -139,15 +139,6 @@ class CreateProductSerializer(serializers.ModelSerializer):
             "featured",
         ]
 
-    def validate(self, data):
-        if Product.objects.filter(
-                name=data["name"], shop=self.context["request"].user.shop
-        ).exists():
-            raise serializers.ValidationError(
-                {"name": "Product with this name already exists"}
-            )
-        return super().validate(data)
-
 
 class BrandReadSerializer(serializers.ModelSerializer):
     """
