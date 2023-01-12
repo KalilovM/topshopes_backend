@@ -147,6 +147,23 @@ class CreateProductSerializer(serializers.ModelSerializer):
         return super().validate(data)
 
 
+class ProductUpdateSerializer(serializers.ModelSerializer):
+    """
+    Products serializer for update only
+    """
+    class Meta:
+        model = Product
+        fields = [
+            "id",
+            "name",
+            "description",
+            "category",
+            "brand",
+            "unit",
+            "featured",
+        ]
+
+
 class BrandReadSerializer(serializers.ModelSerializer):
     """
     Brand return only id, slug, name
