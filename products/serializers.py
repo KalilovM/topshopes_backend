@@ -125,6 +125,7 @@ class CreateProductSerializer(serializers.ModelSerializer):
     Product serializer for write only
     Return all fields
     """
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
 
     class Meta:
         model = Product
