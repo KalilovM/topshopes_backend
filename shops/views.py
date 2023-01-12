@@ -10,8 +10,12 @@ from products.models import Product, ProductVariant
 from products.serializers import ProductSerializer
 
 from .models import Link, Shop
-from .serializers import (CreateShopSerializer, LinkSerializer, ShopSerializer,
-                          SingleShopSerializer)
+from .serializers import (
+    CreateShopSerializer,
+    LinkSerializer,
+    ShopSerializer,
+    SingleShopSerializer,
+)
 
 
 @extend_schema(
@@ -91,10 +95,10 @@ class ShopViewSet(
     @action(detail=True, methods=["get"])
     def products(self, request, pk=None):
         products = Product.objects.filter(shop=pk).annotate(
-            price=Subquery(
-                ProductVariant.objects.filter(product=OuterRef("pk")).values("price")[
-                    :1
-                ]
+            overall_price=Subquery(
+                ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                    "overall_price"
+                )[:1]
             ),
             discount_price=Subquery(
                 ProductVariant.objects.filter(product=OuterRef("pk")).values(
