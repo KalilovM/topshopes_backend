@@ -50,6 +50,7 @@ class CreateCategorySerializer(serializers.ModelSerializer):
     """
     Serialzier to create category only
     """
+
     class Meta:
         model = Category
         fields = [
@@ -139,29 +140,12 @@ class CreateProductSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         if Product.objects.filter(
-            name=data["name"], shop=self.context["request"].user.shop
+                name=data["name"], shop=self.context["request"].user.shop
         ).exists():
             raise serializers.ValidationError(
                 {"name": "Product with this name already exists"}
             )
         return super().validate(data)
-
-
-class ProductUpdateSerializer(serializers.ModelSerializer):
-    """
-    Products serializer for update only
-    """
-    class Meta:
-        model = Product
-        fields = [
-            "id",
-            "name",
-            "description",
-            "category",
-            "brand",
-            "unit",
-            "featured",
-        ]
 
 
 class BrandReadSerializer(serializers.ModelSerializer):
