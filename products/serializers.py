@@ -52,6 +52,8 @@ class CategorySerializer(serializers.ModelSerializer):
     Return id, name, icon, image, slug, parent, description, featured fields
     """
 
+    slug = serializers.ReadOnlyField()
+
     class Meta:
         model = Category
         fields = ["id", "slug", "name", "icon", "attributes"]
