@@ -18,9 +18,9 @@ from products.serializers import (BrandSerializer, BrandTypeSerializer,
                                   ImageSerializer, ProductSerializer,
                                   ProductVariantSerializer,
                                   SingleCategorySerializer,
+                                  ProductUpdateSerializer,
                                   SingleProductSerializer)
 from reviews.serializers import CreateReviewSerializer, ReviewSerializer
-
 from .services import buy_product
 
 
@@ -70,6 +70,8 @@ class ProductViewSet(
     def get_serializer_class(self):
         if self.action == "retrieve":
             return SingleProductSerializer
+        if self.action in ["update", "partial_update"]:
+            return ProductUpdateSerializer
         return ProductSerializer
 
     @extend_schema(
