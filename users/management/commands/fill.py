@@ -556,6 +556,9 @@ SUB_CATEGORY_NAMES = [
 
 
 def fill_category():
+    for _ in range(2):
+        attribute = Attribute.objects.create(name=attr_names[_])
+        category.attributes.add(attribute)
     for _ in range(10):
         name = CATEGORY_NAMES[_]
         sub_name = SUB_CATEGORY_NAMES[_]
@@ -568,8 +571,8 @@ def fill_category():
             tax=fake.random_int(min=0, max=100),
         )
         for _ in range(2):
-            attribute = Attribute.objects.create(name=attr_names[_])
-            category.attributes.add(attribute)
+            attr = Attribute.objects.all()[_]
+            category.attributes.add(attr)
 
         if _ % 2 == 0:
             parent = fake.random_element(Category.objects.all())
