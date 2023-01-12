@@ -6,7 +6,7 @@ class Attribute(models.Model):
     Product attribute model
     """
 
-    name = models.CharField(max_length=100, verbose_name="Attribute name")
+    name = models.CharField(max_length=100, verbose_name="Attribute name", unique=True)
 
     def __str__(self):
         return f"{self.name}"
