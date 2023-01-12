@@ -44,6 +44,7 @@ class AdminProductSerializer(serializers.ModelSerializer):
             "id",
             "slug",
             "shop",
+            "description",
             "name",
             "brand",
             "rating",
