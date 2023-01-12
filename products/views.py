@@ -222,7 +222,7 @@ class ShopProductViewSet(viewsets.ModelViewSet):
             raise serializers.ValidationError("Shop not found")
 
     def get_serializer_class(self):
-        if self.action == "create":
+        if self.action in ["create", "update", "partial_update"]:
             return CreateProductSerializer
         if self.action == "retrieve":
             return SingleProductSerializer
