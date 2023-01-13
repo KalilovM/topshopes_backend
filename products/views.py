@@ -2,6 +2,7 @@ from django.db.models import OuterRef, Subquery
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (OpenApiParameter, extend_schema,
                                    extend_schema_view)
+from rest_framework import filters
 from rest_framework import mixins, permissions, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -39,11 +40,14 @@ class ProductViewSet(
     mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
 ):
     """
-    Product viewset to get all products
+    Product view set to get all products
     Only get method allowed
     """
 
     permission_classes = [permissions.AllowAny]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ["name"]
+    ordering_fields = ["name"]
 
     def get_queryset(self):
         if self.action == "list":
