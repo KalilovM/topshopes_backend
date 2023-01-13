@@ -159,9 +159,9 @@ class ProductVariantViewSet(
         data = buy_product(
             product_variant=product_variant,
             quantity=request.data["quantity"],
-            user=request.user,
+            user=request.user.id,
             address=request.data["address"],
-            shop=product_variant.product.shop,
+            shop=product_variant.product.shop.id,
         )
         return Response(data, status=status.HTTP_201_CREATED)
 

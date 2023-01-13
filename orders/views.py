@@ -1,9 +1,9 @@
-from rest_framework import mixins, permissions
-from core.permissions import HasShop, IsOwner
-from rest_framework.viewsets import GenericViewSet
-from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+from rest_framework import mixins, permissions
+from rest_framework.viewsets import GenericViewSet
 
+from core.permissions import HasShop, IsOwner
 from .models import Order
 from .serializers import OrderSerializer, CreateOrderSerializer
 
@@ -73,5 +73,5 @@ class ShopOrderViewSet(
 
     def get_serializer_class(self):
         if self.action == "create":
-            return CreateOrderSerializer
+            return CreateOrderSerializer(context={"request": self.request})
         return OrderSerializer
