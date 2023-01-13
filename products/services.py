@@ -1,7 +1,7 @@
 from typing import Dict
 
 from django.db import transaction
-from rest_framework import serializers, status
+from rest_framework import serializers
 
 from orders.serializers import CreateOrderSerializer
 from shops.models import Shop
@@ -23,7 +23,7 @@ def buy_product(
     with transaction.atomic():
         # check if product is available
         if product_variant.stock < quantity:
-            raise serializers.ValidationError("Not enough quantity", status=status.HTTP_400_BAD_REQUEST)
+            raise serializers.ValidationError("Not enough quantity")
         # update product quantity
         product_variant.stock -= quantity
         product_variant.save()
