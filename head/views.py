@@ -1,10 +1,11 @@
 from drf_spectacular.utils import extend_schema
+from rest_framework import filters
 from rest_framework import mixins, permissions, viewsets
 
-from attributes.serializers import AttributeSerializer, CreateAttributeSerializer
+from attributes.models import Attribute
+from attributes.serializers import AttributeSerializer
 from head.serializers import AdminCustomerSerializer, AdminProductSerializer
 from pages.models import Page, PageCategory, SiteSettings
-from products.serializers import SingleCategorySerializer
 from pages.serializers import (
     PageCategorySerializer,
     PageSerializer,
@@ -21,8 +22,7 @@ from products.serializers import (
     CreateProductVariantSerializer,
     ProductVariantSerializer,
 )
-from attributes.models import Attribute
-from attributes.serializers import AttributeSerializer
+from products.serializers import SingleCategorySerializer
 from shops.models import Shop
 from shops.serializers import ShopSerializer, SingleShopSerializer
 from sliders.models import Slide, Slider
@@ -121,6 +121,9 @@ class AdminProductViewSet(
 
     queryset = Product.objects.all().prefetch_related("variants")
     permission_classes = [permissions.IsAdminUser]
+    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
+    search_fields = ["name"]
+    ordering_fields = ["name", "rating", "price", "created_at"]
 
     def get_serializer_class(self):
         return AdminProductSerializer
