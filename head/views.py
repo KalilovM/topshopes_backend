@@ -175,6 +175,8 @@ class AdminPageCategoryViewSet(viewsets.ModelViewSet):
     queryset = PageCategory.objects.all()
     serializer_class = PageCategorySerializer
     permission_classes = [permissions.IsAdminUser]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["title"]
 
 
 @extend_schema(
@@ -243,3 +245,5 @@ class AdminAttributesViewSet(viewsets.ModelViewSet):
     queryset = Attribute.objects.all()
     serializer_class = AttributeSerializer
     permission_classes = [permissions.IsAdminUser]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["name"]
