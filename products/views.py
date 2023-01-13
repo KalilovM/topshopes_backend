@@ -1,4 +1,5 @@
 from django.db.models import OuterRef, Subquery
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (OpenApiParameter, extend_schema,
                                    extend_schema_view)
@@ -45,8 +46,9 @@ class ProductViewSet(
     """
 
     permission_classes = [permissions.AllowAny]
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ["name"]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
+    filterset_fields = ["id"]
+    search_fields = ["name", "id"]
     ordering_fields = ["name", "rating", "overall_price", "created_at", "discount"]
 
     def get_queryset(self):

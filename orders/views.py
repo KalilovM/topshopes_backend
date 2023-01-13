@@ -38,7 +38,7 @@ class OrderViewSet(
         """
         On get method return only current user's orders
         """
-        return Order.objects.prefetch_related("items").filter(user=self.request.user)
+        return Order.objects.filter(user=self.request.user)
 
     def get_serializer_class(self):
         return OrderSerializer
