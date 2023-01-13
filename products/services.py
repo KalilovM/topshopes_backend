@@ -1,21 +1,20 @@
 from typing import Dict
 
-from django.core.exceptions import ValidationError
 from django.db import transaction
+from rest_framework import serializers, status
 
 from orders.serializers import CreateOrderSerializer
 from shops.models import Shop
 from users.models import Address, Customer
-
 from .models import ProductVariant
 
 
 def buy_product(
-    product_variant: ProductVariant,
-    quantity: int,
-    user: Customer,
-    address: Address,
-    shop: Shop,
+        product_variant: ProductVariant,
+        quantity: int,
+        user: Customer,
+        address: Address,
+        shop: Shop,
 ) -> Dict:
     """
     Buy product service function
@@ -24,7 +23,7 @@ def buy_product(
     with transaction.atomic():
         # check if product is available
         if product_variant.stock < quantity:
-            raise ValidationError("Not enough quantity")
+            raise serializers.ValidationError("Not enough quantity", status=status.HTTP_400_BAD_REQUEST)
         # update product quantity
         product_variant.stock -= quantity
         product_variant.save()
