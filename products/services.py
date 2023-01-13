@@ -22,6 +22,11 @@ def buy_product(
     # lock the database
     with transaction.atomic():
         # check if product is available
+        if type(quantity) != int:
+            try:
+                quantity = int(quantity)
+            except ValueError:
+                raise serializers.ValidationError("Invalid quantity")
         if product_variant.stock < quantity:
             raise serializers.ValidationError("Not enough quantity")
         # update product quantity
@@ -30,7 +35,7 @@ def buy_product(
         # create order
         order_item = CreateOrderSerializer(
             data={
-                "product_variant": product_variant,
+                "product_variant": product_variant.id,
                 "quantity": quantity,
                 "user": user,
                 "address": address,

@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from .models import Order
+
 from shops.serializers import ShopSerializer
 from users.serializers import CustomerSerializer
+from .models import Order
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -40,10 +41,6 @@ class CreateOrderSerializer(serializers.ModelSerializer):
             "quantity",
             "address",
         ]
-
-    def create(self, validated_data):
-        validated_data["user"] = self.context["request"].user
-        super().create(validated_data)
 
     def validate_quantity(self, value):
         if value <= 0:
