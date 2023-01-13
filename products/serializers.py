@@ -72,7 +72,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ["id", "slug", "name", "icon", "attributes"]
+        fields = ["id", "slug", "name", "icon", "attributes", "featured"]
 
 
 class CreateProductVariantSerializer(serializers.ModelSerializer):
