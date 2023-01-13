@@ -117,6 +117,9 @@ class ProductVariantViewSet(
 
     permission_classes = [permissions.IsAuthenticated, HasShop]
 
+    def get_object(self):
+        return ProductVariant.objects.get(pk=self.kwargs["pk"])
+
     @extend_schema(
         description="Create product variant attribute",
         request=CreateAttributeValueSerializer,
