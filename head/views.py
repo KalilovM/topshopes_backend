@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from rest_framework import filters
 from rest_framework import mixins, permissions, viewsets
@@ -76,6 +77,10 @@ class AdminCategoryViewSet(viewsets.ModelViewSet):
 
     queryset = Category.objects.all()
     permission_classes = [permissions.IsAdminUser]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
+    filterset_fields = ["featured"]
+    search_fields = ["name"]
+    ordering_fields = ["name"]
 
     def get_serializer_class(self):
         if self.action == "retrieve":
@@ -94,6 +99,10 @@ class AdminBrandViewSet(viewsets.ModelViewSet):
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
     permission_classes = [permissions.IsAdminUser]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
+    filterset_fields = ["featured"]
+    search_fields = ["name"]
+    ordering_fields = ["name"]
 
 
 class AdminBrandTypeViewSet(viewsets.ModelViewSet):
@@ -105,6 +114,9 @@ class AdminBrandTypeViewSet(viewsets.ModelViewSet):
     queryset = BrandType.objects.all()
     serializer_class = BrandTypeSerializer
     permission_classes = [permissions.IsAdminUser]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ["name"]
+    ordering_fields = ["name"]
 
 
 class AdminProductViewSet(

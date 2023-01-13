@@ -47,7 +47,7 @@ class ProductViewSet(
     permission_classes = [permissions.AllowAny]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["name"]
-    ordering_fields = ["name"]
+    ordering_fields = ["name", "rating", "price", "created_at", "discount"]
 
     def get_queryset(self):
         if self.action == "list":
@@ -60,6 +60,11 @@ class ProductViewSet(
                 discount_price=Subquery(
                     ProductVariant.objects.filter(product=OuterRef("pk")).values(
                         "discount_price"
+                    )[:1]
+                ),
+                discount=Subquery(
+                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                        "discount"
                     )[:1]
                 ),
                 thumbnail=Subquery(
