@@ -47,7 +47,7 @@ class ProductViewSet(
     permission_classes = [permissions.AllowAny]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["name"]
-    ordering_fields = ["name", "rating", "price", "created_at", "discount"]
+    ordering_fields = ["name", "rating", "overall_price", "created_at", "discount"]
 
     def get_queryset(self):
         if self.action == "list":

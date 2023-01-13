@@ -135,7 +135,7 @@ class AdminProductViewSet(
     permission_classes = [permissions.IsAdminUser]
     filter_backends = [filters.OrderingFilter, filters.SearchFilter]
     search_fields = ["name"]
-    ordering_fields = ["name", "rating", "price", "created_at"]
+    ordering_fields = ["name", "rating", "created_at"]
 
     def get_serializer_class(self):
         return AdminProductSerializer
