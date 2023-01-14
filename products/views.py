@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import OuterRef, Subquery
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
@@ -153,11 +154,12 @@ class ProductVariantViewSet(
         detail=True,
         methods=["post"],
     )
+    @transaction.atomic
     def buy(self, request, pk=None):
         """
         Buy product variant
         """
-        product_variant = self.get_object()
+        product_variant = ProductVariant.objects.select_for_update().get(pk=pk)
         data = buy_product(
             product_variant=product_variant,
             quantity=request.data["quantity"],
