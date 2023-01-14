@@ -25,6 +25,10 @@ class AdminBrandSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "image"]
 
 
+class AdminCategoryReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ["id", "name" ]
 class AdminProductSerializer(serializers.ModelSerializer):
     """
     Product serializer for read only
@@ -34,7 +38,7 @@ class AdminProductSerializer(serializers.ModelSerializer):
     brand = AdminBrandSerializer(read_only=True)
     shop = AdminShopSerializer(read_only=True)
     variants = ProductVariantSerializer(read_only=True, many=True)
-    category = CategorySerializer(read_only=True)
+    category = AdminCategoryReadSerializer(read_only=True)
 
     # reviews = ReviewSerializer(many=True)
 

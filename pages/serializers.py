@@ -3,17 +3,17 @@ from rest_framework import serializers
 from .models import Page, PageCategory, SiteSettings
 
 
-class PageSerializer(serializers.ModelSerializer):
+class PageCategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Page
+        model = PageCategory
         fields = "__all__"
 
 
-class PageCategorySerializer(serializers.ModelSerializer):
-    pages = PageSerializer(many=True, read_only=True)
+class PageSerializer(serializers.ModelSerializer):
+    category = PageCategorySerializer(read_only=True)
 
     class Meta:
-        model = PageCategory
+        model = Page
         fields = "__all__"
 
 
