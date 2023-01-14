@@ -47,7 +47,7 @@ class ProductViewSet(
 
     permission_classes = [permissions.AllowAny]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
-    filterset_fields = ["id"]
+    filterset_fields = ["id", "category"]
     search_fields = ["name", "id"]
     ordering_fields = ["name", "rating", "overall_price", "created_at", "discount"]
 
