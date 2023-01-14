@@ -22,7 +22,7 @@ def buy_product(
     """
     r = redis.Redis()
     # lock product variant quantity field
-    lock = r.lock(f'product_variant_{product_variant.id}_quantity', timeout=5)
+    lock = r.lock(f'product_variant_{product_variant.id}_quantity', timeout=1)
     try:
         if lock.acquire():
             if type(quantity) != int:
@@ -49,6 +49,4 @@ def buy_product(
 
     except LockError:
         raise serializers.ValidationError("Lock error")
-    except serializers.ValidationError:
-        raise serializers.ValidationError("Validation error")
 
