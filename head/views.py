@@ -46,6 +46,8 @@ class AdminUsersViewSet(
     queryset = Customer.objects.all()
     serializer_class = AdminCustomerSerializer
     permission_classes = [permissions.IsAdminUser]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["first_name"]
 
 
 class AdminShopViewSet(
