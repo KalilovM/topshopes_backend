@@ -22,3 +22,4 @@ pytest-django==4.5.2
 pytest-factoryboy==2.5.1
 python-dateutil==2.8.2
 python-decouple==3.6
+django-redis==5.2.0
