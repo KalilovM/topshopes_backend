@@ -22,7 +22,7 @@ def buy_product(
     """
     r = redis.Redis()
     # lock product variant quantity field
-    lock = r.lock(f'product_variant_{product_variant.id}_quantity', timeout=30)
+    lock = r.lock(f'product_variant_{product_variant.id}_quantity', timeout=5)
     try:
         if lock.acquire():
             if type(quantity) != int:
