@@ -24,7 +24,7 @@ def buy_product(
     # lock product variant quantity field
     lock = r.lock(f'product_variant_{product_variant.id}_quantity', timeout=30)
     try:
-        with lock.acquire():
+        if lock.acquire():
             if type(quantity) != int:
                 try:
                     quantity = int(quantity)
