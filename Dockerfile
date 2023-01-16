@@ -1,17 +1,18 @@
-FROM python:3.11
-RUN pip install --upgrade pip
-RUN pip install --upgrade setuptools
+FROM python:3.11.1-bullseye
 
-ENV PYTHONUNBUFFERED 1
-
-RUN mkdir /backend
 
 WORKDIR /backend
 
-ADD . /backend/
-
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+RUN apt-get update \
+    && apt-get install -y postgresql-server-dev-all gcc python3-dev musl-dev
+RUN pip install --upgrade pip
+COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-EXPOSE 8000
+COPY . .
+# EXPOSE 8000
 
-CMD python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000
+ENTRYPOINT ["/backend/entrypoint.sh"]
+# CMD python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000
