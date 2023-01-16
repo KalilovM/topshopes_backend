@@ -17,6 +17,12 @@ class PageSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class CreatePageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Page
+        fields = "__all__"
+
+
 class SiteSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteSettings

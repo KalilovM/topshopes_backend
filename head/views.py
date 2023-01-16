@@ -10,6 +10,7 @@ from pages.models import Page, PageCategory, SiteSettings
 from pages.serializers import (
     PageCategorySerializer,
     PageSerializer,
+    CreatePageSerializer,
     SiteSettingsSerializer,
 )
 from posts.models import Post
@@ -164,8 +165,12 @@ class AdminPageViewSet(viewsets.ModelViewSet):
     """
 
     queryset = Page.objects.all()
-    serializer_class = PageSerializer
     permission_classes = [permissions.IsAdminUser]
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CreatePageSerializer
+        return PageSerializer
 
 
 class AdminPageCategoryViewSet(viewsets.ModelViewSet):
