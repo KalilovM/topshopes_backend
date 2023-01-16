@@ -18,6 +18,7 @@ class BrandSerializer(serializers.ModelSerializer):
     Brand serializer able to select fields to represent
     Return all fields
     """
+    slug = serializers.ReadOnlyField()
 
     class Meta:
         model = Brand

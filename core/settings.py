@@ -18,7 +18,7 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 ALLOWED_HOSTS = config(
     "ALLOWED_HOSTS", cast=lambda v: [s.strip() for s in v.split(",")]
 )
-CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
+CORS_ORIGIN_ALLOW_ALL = True
 
 AUTH_USER_MODEL = "users.Customer"
 # Application definition
