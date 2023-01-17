@@ -151,6 +151,15 @@ class BrandReadSerializer(serializers.ModelSerializer):
         fields = ["id", "slug", "name"]
 
 
+class ProductCategorySerialzier(serializers.ModelSerializer):
+    """
+    Product category serializer
+    """
+
+    class Meta:
+        model = Category
+        fields = ["id", "name" ]
+
 class SingleProductSerializer(serializers.ModelSerializer):
     """
     Single Product serializer for read only
@@ -161,6 +170,7 @@ class SingleProductSerializer(serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True, read_only=True)
     shop = ShopProductSerializer(read_only=True)
     brand = BrandReadSerializer(read_only=True)
+    category = ProductCategorySerialzier(read_only=True)
 
     class Meta:
         model = Product
