@@ -60,6 +60,10 @@ class AdminProductSerializer(serializers.ModelSerializer):
             "category",
             "unit",
             "variants",
+            "thumbnail",
+            "discount",
+            "discount_price",
+            "overall_price",
         ]
 
 
