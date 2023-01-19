@@ -48,6 +48,7 @@ class CreateApplicationSerializer(serializers.ModelSerializer):
     """
     Serializer to create application
     """
+    customer = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Application

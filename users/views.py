@@ -72,7 +72,7 @@ class CustomerViewSet(
     def create_application(self, request, pk=None):
         serializer = CreateApplicationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save(user=request.user)
+        serializer.save(customer=request.user)
         try:
             email = EmailMessage(
                 "Application to become seller",
