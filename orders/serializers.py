@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from shops.serializers import ShopSerializer
-from users.serializers import CustomerSerializer
+from users.serializers import CustomerSerializer, AddressSerializer
 from .models import Order
 from products.serializers import ProductVariantSerializer, ProductSerializer
 
@@ -17,6 +17,7 @@ class OrderSerializer(serializers.ModelSerializer):
     shop = ShopSerializer(read_only=True)
     product_variant = ProductVariantSerializer(read_only=True)
     product = ProductSerializer(read_only=True, source="product_variant.product")
+    address = AddressSerializer(read_only=True)
 
     class Meta:
         model = Order
