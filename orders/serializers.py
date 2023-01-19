@@ -3,6 +3,8 @@ from rest_framework import serializers
 from shops.serializers import ShopSerializer
 from users.serializers import CustomerSerializer
 from .models import Order
+from products.serializers import ProductVariantSerializer, ProductSerializer
+
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -13,6 +15,8 @@ class OrderSerializer(serializers.ModelSerializer):
     user = CustomerSerializer(read_only=True)
     total_price = serializers.ReadOnlyField()
     shop = ShopSerializer(read_only=True)
+    product_variant = ProductVariantSerializer(read_only=True)
+    product = ProductSerializer(read_only=True, source="product_variant.product")
 
     class Meta:
         model = Order
@@ -24,6 +28,8 @@ class OrderSerializer(serializers.ModelSerializer):
             "total_price",
             "status",
             "delivered_at",
+            "product_variant",
+            "product",
         ]
 
 
