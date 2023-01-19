@@ -30,6 +30,7 @@ class OrderSerializer(serializers.ModelSerializer):
             "delivered_at",
             "product_variant",
             "product",
+            "quantity"
         ]
 
 
