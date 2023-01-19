@@ -83,7 +83,7 @@ class CustomerViewSet(
                 f"Owner {request.data['owner']} \n"
                 f"Bank account {request.data['bank_account']} \n"
                 f"BIK {request.data['bik']} \n",
-                request.user.email, settings.ADMINS_EMAIL)
+                settings.EMAIL_HOST_USER, "kalilov_m@auca.kg")
             email.attach(request.data['document'].name, request.data['document'].read(),
                          request.data['document'].content_type)
             email.send()
