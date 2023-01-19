@@ -2,7 +2,6 @@ from rest_framework import serializers
 
 from products.models import Brand, Category, Product
 from products.serializers import ProductVariantSerializer
-from roles.serializers import RoleSerializer
 from shops.models import Shop
 from users.models import Customer
 
@@ -28,7 +27,9 @@ class AdminBrandSerializer(serializers.ModelSerializer):
 class AdminCategoryReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ["id", "name" ]
+        fields = ["id", "name"]
+
+
 class AdminProductSerializer(serializers.ModelSerializer):
     """
     Product serializer for read only
@@ -39,6 +40,10 @@ class AdminProductSerializer(serializers.ModelSerializer):
     shop = AdminShopSerializer(read_only=True)
     variants = ProductVariantSerializer(read_only=True, many=True)
     category = AdminCategoryReadSerializer(read_only=True)
+    thumbnail = serializers.URLField(read_only=True)
+    discount = serializers.IntegerField()
+    discount_price = serializers.DecimalField(max_digits=10, decimal_places=2)
+    overall_price = serializers.DecimalField(max_digits=10, decimal_places=2)
 
     # reviews = ReviewSerializer(many=True)
 
@@ -63,8 +68,6 @@ class AdminCustomerSerializer(serializers.ModelSerializer):
     Serializer Customer for admin only
     """
 
-    roles = RoleSerializer(many=True, read_only=True)
-
     class Meta:
         model = Customer
         fields = [
@@ -74,7 +77,6 @@ class AdminCustomerSerializer(serializers.ModelSerializer):
             "email",
             "phone",
             "avatar",
-            "roles",
             "is_superuser",
-            "verified",
+            "is_seller"
         ]
