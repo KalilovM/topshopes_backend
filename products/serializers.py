@@ -76,6 +76,17 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ["id", "slug", "name", "icon", "attributes", "featured"]
 
 
+class CategoryReadOnlySerializer(serializers.ModelSerializer):
+    """
+    Category serializer
+    Return id, name
+    """
+
+    class Meta:
+        model = Category
+        fields = ["id", "name"]
+
+
 class CreateProductVariantSerializer(serializers.ModelSerializer):
     """
     Product variant serializer for write only
@@ -161,6 +172,7 @@ class SingleProductSerializer(serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True, read_only=True)
     shop = ShopProductSerializer(read_only=True)
     brand = BrandReadSerializer(read_only=True)
+    category = CategoryReadOnlySerializer(read_only=True)
 
     class Meta:
         model = Product

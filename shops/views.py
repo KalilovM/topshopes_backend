@@ -72,7 +72,8 @@ class MyShopViewSet(
     )
     @action(detail=True, methods=["get"])
     def get_shop_reviews(self, request, pk=None):
-        reviews = Review.objects.filter(shop=pk)
+        shop = self.get_object()
+        reviews = Review.objects.filter(shop=shop)
         serializer = ShopReviewSerializer(reviews, many=True)
         return Response(data=serializer.data)
 
