@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from core.permissions import HasShop, IsOwner
 from products.models import Product, ProductVariant
 from products.serializers import ProductSerializer
+from reviews.models import Review
+from reviews.serializers import ShopReviewSerializer
 
 from .models import Link, Shop
 from .serializers import (
@@ -62,6 +64,17 @@ class MyShopViewSet(
         Return only user's shop
         """
         return self.request.user.shop
+
+    @extend_schema(
+        description="Get shop reviews",
+        responses={200: ShopReviewSerializer},
+        tags=["Owner"],
+    )
+    @action(detail=True, methods=["get"])
+    def reviews(self, request, pk=None):
+        reviews = Review.objects.filter(shop=pk)
+        serializer = ShopReviewSerializer(reviews, many=True)
+        return Response(data=serializer.data)
 
 
 @extend_schema(

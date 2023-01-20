@@ -32,3 +32,16 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = "__all__"
+
+
+class ShopReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = (
+            "user",
+            "product_variant",
+            "product",
+            "rating",
+            "comment",
+            "created_at",
+        )
