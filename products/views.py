@@ -183,7 +183,6 @@ class ProductVariantViewSet(
 
 @extend_schema(
     description="Viewset to edit user's shop",
-    parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
     request=CreateProductSerializer,
     responses={200: ProductSerializer},
     tags=["Owner"],
@@ -232,7 +231,7 @@ class ShopProductViewSet(viewsets.ModelViewSet):
         """
         if request.data["category"]:
             product = self.get_object()
-            product.variants.attribute_values.all().delete()
+            ProductVariant.objects.filter(product=product).attribute_values.delete()
         super().update(request, *args, **kwargs)
     def perform_create(self, serializer):
         """
