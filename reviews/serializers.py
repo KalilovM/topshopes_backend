@@ -37,6 +37,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class ShopReviewSerializer(serializers.ModelSerializer):
     user = CustomerSerializer(read_only=True)
+    product = serializers.SlugRelatedField(many=False, read_only=True, slug_field="name")
     class Meta:
         model = Review
         fields = (
