@@ -170,8 +170,20 @@ class AdminProductViewSet(
                 ),
             )
         )
+
     def get_serializer_class(self):
         return AdminProductSerializer
+
+    def update(self, request, *args, **kwargs):
+        """
+        Update product
+        """
+        if request.data["category"]:
+            product = self.get_object()
+            variants = product.variants.all()
+            for variant in variants:
+                variant.attribute_values.all().delete()
+        return super().update(request, *args, **kwargs)
 
 
 class AdminPostViewSet(viewsets.ModelViewSet):
