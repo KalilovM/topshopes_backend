@@ -233,10 +233,7 @@ class ShopProductViewSet(viewsets.ModelViewSet):
         product = self.get_object()
         if request.data["category"] is not None:
             product.variants.attribute_values.all().delete()
-        serializer = self.get_serializer(product, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
+        return super().partial_update(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         """
