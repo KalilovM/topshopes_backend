@@ -226,15 +226,14 @@ class ShopProductViewSet(viewsets.ModelViewSet):
             )
         )
 
-    def partial_update(self, request, *args, **kwargs):
+    def update(self, request, *args, **kwargs):
         """
-        Partial update product
+        Update product
         """
-        product = self.get_object()
-        if request.data["category"] is not None:
+        if request.data["category"]:
+            product = self.get_object()
             product.variants.attribute_values.all().delete()
-        return super().partial_update(request, *args, **kwargs)
-
+        super().update(request, *args, **kwargs)
     def perform_create(self, serializer):
         """
         On create product set shop to user's
