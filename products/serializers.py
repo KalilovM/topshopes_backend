@@ -152,6 +152,7 @@ class CreateProductSerializer(serializers.ModelSerializer):
         ]
 
 
+
 class BrandReadSerializer(serializers.ModelSerializer):
     """
     Brand return only id, slug, name
