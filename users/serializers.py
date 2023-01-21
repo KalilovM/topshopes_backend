@@ -29,7 +29,6 @@ class CustomerSerializer(serializers.ModelSerializer):
     Serializer Customer to read_only
     """
 
-
     class Meta:
         model = Customer
         fields = [
