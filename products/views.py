@@ -231,7 +231,9 @@ class ShopProductViewSet(viewsets.ModelViewSet):
         """
         if request.data["category"]:
             product = self.get_object()
-            ProductVariant.objects.filter(product=product).attribute_values.delete()
+            variants = product.variants.all()
+            for variant in variants:
+                variant.attribute_values.all().delete()
         super().update(request, *args, **kwargs)
     def perform_create(self, serializer):
         """
