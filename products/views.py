@@ -234,7 +234,7 @@ class ShopProductViewSet(viewsets.ModelViewSet):
             variants = product.variants.all()
             for variant in variants:
                 variant.attribute_values.all().delete()
-        super().update(request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)
     def perform_create(self, serializer):
         """
         On create product set shop to user's
