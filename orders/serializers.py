@@ -6,7 +6,6 @@ from .models import Order
 from products.serializers import ProductVariantSerializer, ProductSerializer
 
 
-
 class OrderSerializer(serializers.ModelSerializer):
     """
     Order serializers for read only
@@ -50,6 +49,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
             "quantity",
             "address",
         ]
+
 
     def validate_quantity(self, value):
         if value <= 0:

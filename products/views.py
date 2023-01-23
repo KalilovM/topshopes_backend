@@ -149,6 +149,7 @@ class ProductVariantViewSet(
         responses={201: OrderSerializer},
         tags=["Product webhooks"],
     )
+
     @action(
         detail=True,
         methods=["post"],
@@ -183,6 +184,7 @@ class ProductVariantViewSet(
 
 @extend_schema(
     description="Viewset to edit user's shop",
+    parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
     request=CreateProductSerializer,
     responses={200: ProductSerializer},
     tags=["Owner"],
@@ -224,6 +226,7 @@ class ShopProductViewSet(viewsets.ModelViewSet):
                 ),
             )
         )
+
 
     def update(self, request, *args, **kwargs):
         """

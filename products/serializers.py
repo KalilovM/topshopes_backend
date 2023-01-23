@@ -87,6 +87,7 @@ class CategoryReadOnlySerializer(serializers.ModelSerializer):
         fields = ["id", "name"]
 
 
+
 class CreateProductVariantSerializer(serializers.ModelSerializer):
     """
     Product variant serializer for write only
@@ -152,7 +153,6 @@ class CreateProductSerializer(serializers.ModelSerializer):
         ]
 
 
-
 class BrandReadSerializer(serializers.ModelSerializer):
     """
     Brand return only id, slug, name
@@ -161,6 +161,7 @@ class BrandReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
         fields = ["id", "slug", "name"]
+
 
 
 class SingleProductSerializer(serializers.ModelSerializer):
@@ -174,6 +175,7 @@ class SingleProductSerializer(serializers.ModelSerializer):
     shop = ShopProductSerializer(read_only=True)
     brand = BrandReadSerializer(read_only=True)
     category = CategoryReadOnlySerializer(read_only=True)
+
 
     class Meta:
         model = Product
