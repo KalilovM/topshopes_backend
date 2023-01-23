@@ -10,5 +10,7 @@ db.sqlite3
 .idea
 .pytest_cache
 .vscode
-.env
 test.py
+.env
+staticfiles
+.env

@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
+
 from drf_spectacular.utils import extend_schema
 from core.permissions import IsAnonymous
 
@@ -19,6 +20,7 @@ from .serializers import (
 )
 
 from applications.serializers import CreateApplicationSerializer
+
 
 
 @extend_schema(
@@ -92,7 +94,6 @@ class CustomerViewSet(
             print(e)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 
 @extend_schema(
     description="Address Viewset allowed all methods",
