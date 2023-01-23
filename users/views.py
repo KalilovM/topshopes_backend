@@ -16,8 +16,9 @@ from .serializers import (
     CreateAddressSerializer,
     CreateCustomerSerializer,
     CustomerSerializer,
-    CreateApplicationSerializer,
 )
+
+from applications.serializers import CreateApplicationSerializer
 
 
 @extend_schema(
