@@ -110,11 +110,11 @@ class ProductViewSet(
     tags=["Owner"],
 )
 class ProductVariantViewSet(
-    mixins.CreateModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
+    mixins.CreateModelMixin, mixins.DestroyModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
 ):
     """
     Product variant viewset to create product variants
-    Only create method allowed
+    Allowed create update and destroy
     """
 
     permission_classes = [permissions.IsAuthenticated, HasShop]
@@ -235,6 +235,7 @@ class ShopProductViewSet(viewsets.ModelViewSet):
             for variant in variants:
                 variant.attribute_values.all().delete()
         return super().update(request, *args, **kwargs)
+
     def perform_create(self, serializer):
         """
         On create product set shop to user's
