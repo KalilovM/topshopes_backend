@@ -1,9 +1,6 @@
 from rest_framework import serializers
 from rest_framework.serializers import Field
-
-from roles.serializers import RoleSerializer
-
-from .models import Address, Customer
+from .models import Address, Customer, Seller
 
 
 class CreateCustomerSerializer(serializers.ModelSerializer):
@@ -28,8 +25,6 @@ class CustomerSerializer(serializers.ModelSerializer):
     Serializer Customer to read_only
     """
 
-    roles = RoleSerializer(many=True, read_only=True)
-
     class Meta:
         model = Customer
         fields = [
@@ -39,9 +34,8 @@ class CustomerSerializer(serializers.ModelSerializer):
             "email",
             "phone",
             "avatar",
-            "roles",
-            "verified",
             "is_superuser",
+            "is_seller"
         ]
 
 

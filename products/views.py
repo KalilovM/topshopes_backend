@@ -1,5 +1,4 @@
 from django.db.models import OuterRef, Subquery
-from django.db.transaction import atomic
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (OpenApiParameter, extend_schema,
@@ -111,11 +110,11 @@ class ProductViewSet(
     tags=["Owner"],
 )
 class ProductVariantViewSet(
-    mixins.CreateModelMixin,mixins.DestroyModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
+    mixins.CreateModelMixin, mixins.DestroyModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
 ):
     """
     Product variant viewset to create product variants
-    Only create method allowed
+    Allowed create update and destroy
     """
 
     permission_classes = [permissions.IsAuthenticated, HasShop]
@@ -150,7 +149,7 @@ class ProductVariantViewSet(
         responses={201: OrderSerializer},
         tags=["Product webhooks"],
     )
-    @atomic
+
     @action(
         detail=True,
         methods=["post"],
@@ -227,6 +226,18 @@ class ShopProductViewSet(viewsets.ModelViewSet):
                 ),
             )
         )
+
+
+    def update(self, request, *args, **kwargs):
+        """
+        Update product
+        """
+        if request.data["category"]:
+            product = self.get_object()
+            variants = product.variants.all()
+            for variant in variants:
+                variant.attribute_values.all().delete()
+        return super().update(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         """

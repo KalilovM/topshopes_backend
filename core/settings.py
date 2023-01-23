@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "common.apps.CommonConfig",
     "reviews.apps.ReviewsConfig",
     "attributes.apps.AttributesConfig",
+    "applications.apps.ApplicationsConfig",
 ]
 
 MIDDLEWARE = [
@@ -214,3 +215,12 @@ SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 
 CACHE_TTL = 60 * 1
+
+# Email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = False
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')

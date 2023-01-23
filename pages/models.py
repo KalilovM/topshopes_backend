@@ -43,7 +43,8 @@ class SiteSettings(models.Model):
     youtube = models.CharField(max_length=100, null=True, blank=True)
     gmail = models.CharField(max_length=100, null=True, blank=True)
     instagram = models.CharField(max_length=100, null=True, blank=True)
-    map = models.TextField(null=True, blank=True)
+    map = models.TextField(max_length=2000, null=True, blank=True)
+
     logo = models.ImageField(
         upload_to=PathAndRename("site_settings/logos/"), null=True, blank=True
     )

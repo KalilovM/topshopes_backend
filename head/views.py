@@ -1,4 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Subquery, OuterRef
 from drf_spectacular.utils import extend_schema
 from rest_framework import filters
 from rest_framework import mixins, permissions, viewsets
@@ -134,14 +135,55 @@ class AdminProductViewSet(
     Allowed: All methods without create
     """
 
-    queryset = Product.objects.all().prefetch_related("variants")
     permission_classes = [permissions.IsAdminUser]
     filter_backends = [filters.OrderingFilter, filters.SearchFilter]
     search_fields = ["name"]
     ordering_fields = ["name", "rating", "created_at"]
 
+    def get_queryset(self):
+        """
+        Returns only current user's shop products
+        """
+        return (
+            Product.objects.prefetch_related("variants")
+            .filter(shop=self.request.user.shop)  # type: ignore
+            .annotate(
+                overall_price=Subquery(
+                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                        "overall_price"
+                    )[:1]
+                ),
+                discount_price=Subquery(
+                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                        "discount_price"
+                    )[:1]
+                ),
+                discount=Subquery(
+                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                        "discount"
+                    )[:1]
+                ),
+                thumbnail=Subquery(
+                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                        "thumbnail"
+                    )[:1]
+                ),
+            )
+        )
+
     def get_serializer_class(self):
         return AdminProductSerializer
+
+    def update(self, request, *args, **kwargs):
+        """
+        Update product
+        """
+        if request.data["category"]:
+            product = self.get_object()
+            variants = product.variants.all()
+            for variant in variants:
+                variant.attribute_values.all().delete()
+        return super().update(request, *args, **kwargs)
 
 
 class AdminPostViewSet(viewsets.ModelViewSet):
@@ -184,6 +226,9 @@ class AdminPageCategoryViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     filter_backends = [filters.SearchFilter]
     search_fields = ["title"]
+
+    def get_object(self):
+        return SiteSettings.objects.first()
 
 
 @extend_schema(

@@ -1,12 +1,10 @@
 from rest_framework import serializers
-
 from .models import Page, PageCategory, SiteSettings
 
 
-
-class PageSerializer(serializers.ModelSerializer):
+class PageCategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Page
+        model = PageCategory
         fields = "__all__"
 
 class PageCategorySerializer(serializers.ModelSerializer):
@@ -14,6 +12,17 @@ class PageCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = PageCategory
         fields = "__all__"
+
+
+class PageSerializer(serializers.ModelSerializer):
+    category = PageCategorySerializer(read_only=True)
+
+
+class CreatePageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Page
+        fields = "__all__"
+
 
 
 class CreatePageSerializer(serializers.ModelSerializer):

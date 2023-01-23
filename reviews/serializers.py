@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from users.models import Customer
 from rest_framework.serializers import Field
+from users.serializers import CustomerSerializer
+
 from .models import Review
 
 
@@ -32,3 +34,17 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = "__all__"
+
+class ShopReviewSerializer(serializers.ModelSerializer):
+    user = CustomerSerializer(read_only=True)
+    product = serializers.SlugRelatedField(many=False, read_only=True, slug_field="name")
+    class Meta:
+        model = Review
+        fields = (
+            "user",
+            "product_variant",
+            "product",
+            "rating",
+            "comment",
+            "created_at",
+        )

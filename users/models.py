@@ -19,8 +19,6 @@ class Customer(AbstractUser):
     avatar = models.ImageField(
         upload_to=PathAndRename("avatars/"), null=True, blank=True
     )
-    roles = models.ManyToManyField(to="roles.Role", related_name="users")
-    verified = models.BooleanField(default=False)
     phone = models.CharField(max_length=30)
 
     USERNAME_FIELD: str = "email"
@@ -29,6 +27,15 @@ class Customer(AbstractUser):
 
     def __str__(self) -> str:
         return self.email
+
+
+class Seller(models.Model):
+    """
+    Seller model
+    """
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    roles = models.ManyToManyField(to="roles.Role", related_name="users")
+    verified = models.BooleanField(default=False)
 
 
 class Address(models.Model):
