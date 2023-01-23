@@ -193,16 +193,22 @@ SPECTACULAR_SETTINGS = {
 }
 
 # Redis
+REDIS_URL = config("REDIS_URL")
+REDIS_HOST = config("REDIS_HOST")
+REDIS_DB = 0
+REDIS_PORT = config("REDIS_PORT", cast=int)
 
-CACHES = {
-    "default": {
-        "BACKEND":"django_redis.cache.RedisCache",
-        "LOCATION":"redis://127.0.0.1:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+if REDIS_URL:
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": REDIS_URL,
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                "IGNORE_EXCEPTIONS": True,
+            },
         }
     }
-}
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"

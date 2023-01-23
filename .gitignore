@@ -12,3 +12,5 @@ db.sqlite3
 .vscode
 test.py
 .env
+staticfiles
+.env
