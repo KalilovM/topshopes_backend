@@ -71,7 +71,6 @@ class AdminCustomerSerializer(serializers.ModelSerializer):
     """
     Serializer Customer for admin only
     """
-
     class Meta:
         model = Customer
         fields = [

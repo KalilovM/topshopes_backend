@@ -22,6 +22,7 @@ from products.serializers import (BrandSerializer, BrandTypeSerializer,
                                   SingleCategorySerializer,
                                   SingleProductSerializer)
 from reviews.serializers import CreateReviewSerializer, ReviewSerializer
+from django.db.transaction import atomic
 from .services import buy_product
 
 
@@ -149,10 +150,12 @@ class ProductVariantViewSet(
         responses={201: OrderSerializer},
         tags=["Product webhooks"],
     )
+
     @action(
         detail=True,
         methods=["post"],
     )
+    @atomic
     def buy(self, request, pk=None):
         """
         Buy product variant
@@ -183,6 +186,7 @@ class ProductVariantViewSet(
 
 @extend_schema(
     description="Viewset to edit user's shop",
+    parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
     request=CreateProductSerializer,
     responses={200: ProductSerializer},
     tags=["Owner"],
@@ -224,6 +228,7 @@ class ShopProductViewSet(viewsets.ModelViewSet):
                 ),
             )
         )
+
 
     def update(self, request, *args, **kwargs):
         """

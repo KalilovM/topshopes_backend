@@ -1,6 +1,7 @@
 from typing import Dict
 import redis
 from redis.exceptions import LockError
+from django.conf import settings
 
 from rest_framework import serializers
 
@@ -9,6 +10,13 @@ from shops.models import Shop
 from users.models import Address, Customer
 from .models import ProductVariant
 
+
+
+r = redis.Redis(
+    host=settings.REDIS_HOST,
+    port=settings.REDIS_PORT,
+    db=settings.REDIS_DB
+)
 
 def buy_product(
         product_variant: ProductVariant,
@@ -20,7 +28,7 @@ def buy_product(
     """
     Buy product service function
     """
-    r = redis.Redis()
+
     # lock product variant quantity field
     lock = r.lock(f'product_variant_{product_variant.id}_quantity', timeout=1)
     try:

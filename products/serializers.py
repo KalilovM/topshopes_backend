@@ -60,6 +60,7 @@ class CreateCategorySerializer(serializers.ModelSerializer):
             "icon",
             "image",
             "attributes",
+            "tax",
         ]
 
 
@@ -73,7 +74,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ["id", "slug", "name", "icon", "attributes", "featured"]
+        fields = ["id", "slug", "name", "icon", "attributes", "featured","tax"]
 
 
 class CategoryReadOnlySerializer(serializers.ModelSerializer):
@@ -85,6 +86,7 @@ class CategoryReadOnlySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ["id", "name"]
+
 
 
 class CreateProductVariantSerializer(serializers.ModelSerializer):
@@ -152,7 +154,6 @@ class CreateProductSerializer(serializers.ModelSerializer):
         ]
 
 
-
 class BrandReadSerializer(serializers.ModelSerializer):
     """
     Brand return only id, slug, name
@@ -161,6 +162,7 @@ class BrandReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
         fields = ["id", "slug", "name"]
+
 
 
 class SingleProductSerializer(serializers.ModelSerializer):
@@ -174,6 +176,7 @@ class SingleProductSerializer(serializers.ModelSerializer):
     shop = ShopProductSerializer(read_only=True)
     brand = BrandReadSerializer(read_only=True)
     category = CategoryReadOnlySerializer(read_only=True)
+
 
     class Meta:
         model = Product

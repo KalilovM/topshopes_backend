@@ -22,4 +22,5 @@ urlpatterns = [
         MyShopViewSet.as_view({"get": "get_shop_reviews"}),
         name="my-shop-reviews",
     )
+
 ]

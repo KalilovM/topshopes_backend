@@ -142,11 +142,10 @@ class AdminProductViewSet(
 
     def get_queryset(self):
         """
-        Returns only current user's shop products
+        Returns all products
         """
         return (
             Product.objects.prefetch_related("variants")
-            .filter(shop=self.request.user.shop)  # type: ignore
             .annotate(
                 overall_price=Subquery(
                     ProductVariant.objects.filter(product=OuterRef("pk")).values(
@@ -226,6 +225,9 @@ class AdminPageCategoryViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     filter_backends = [filters.SearchFilter]
     search_fields = ["title"]
+
+    def get_object(self):
+        return SiteSettings.objects.first()
 
 
 @extend_schema(

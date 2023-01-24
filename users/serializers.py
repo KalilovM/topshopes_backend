@@ -39,8 +39,6 @@ class CustomerSerializer(serializers.ModelSerializer):
         ]
 
 
-
-
 class CreateAddressSerializer(serializers.ModelSerializer):
     """
     Serializer to create addresses
