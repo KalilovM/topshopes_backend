@@ -1,6 +1,7 @@
 from typing import Dict
 import redis
 from redis.exceptions import LockError
+from django.conf import settings
 
 from rest_framework import serializers
 

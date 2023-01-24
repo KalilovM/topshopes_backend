@@ -22,6 +22,7 @@ from products.serializers import (BrandSerializer, BrandTypeSerializer,
                                   SingleCategorySerializer,
                                   SingleProductSerializer)
 from reviews.serializers import CreateReviewSerializer, ReviewSerializer
+from django.db.transaction import atomic
 from .services import buy_product
 
 
@@ -154,6 +155,7 @@ class ProductVariantViewSet(
         detail=True,
         methods=["post"],
     )
+    @atomic
     def buy(self, request, pk=None):
         """
         Buy product variant

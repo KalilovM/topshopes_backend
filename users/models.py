@@ -20,6 +20,7 @@ class Customer(AbstractUser):
         upload_to=PathAndRename("avatars/"), null=True, blank=True
     )
     phone = models.CharField(max_length=30)
+    is_seller = models.BooleanField(default=False)
 
     USERNAME_FIELD: str = "email"
     REQUIRED_FIELDS: List[str] = []

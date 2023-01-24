@@ -60,6 +60,7 @@ class CreateCategorySerializer(serializers.ModelSerializer):
             "icon",
             "image",
             "attributes",
+            "tax",
         ]
 
 
@@ -73,7 +74,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ["id", "slug", "name", "icon", "attributes", "featured"]
+        fields = ["id", "slug", "name", "icon", "attributes", "featured","tax"]
 
 
 class CategoryReadOnlySerializer(serializers.ModelSerializer):
