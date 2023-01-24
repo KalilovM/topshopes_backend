@@ -51,6 +51,8 @@ class CreateCategorySerializer(serializers.ModelSerializer):
     """
     Serialzier to create category only
     """
+    
+    tax = serializers.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
         model = Category
