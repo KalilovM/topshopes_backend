@@ -18,13 +18,13 @@ class UserPaymentViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,mixins
     def get_queryset(self):
         return Payment.objects.filter(user=self.request.user)
     
-    def get_seiralizer_class(self):
+    def get_serializer_class(self):
         if self.action == "retrieve":
-            return SinglePaymentSerializer()
+            return SinglePaymentSerializer
         if self.action == "create":
-            return CreatePaymentSerialzier()
+            return CreatePaymentSerialzier
         super().get_serializer_class()
-        return PaymentSerializer()
+        return PaymentSerializer
     
 
 @extend_schema(
