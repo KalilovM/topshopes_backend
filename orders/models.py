@@ -17,7 +17,7 @@ class Order(models.Model):
         ("shop_decline", "Shop Decline"),
         ("delivering", "Delivering"),
         ("delivered", "Delivered"),
-        ("cenceled", "Cenceled"),
+        ("canceled", "Canceled"),
         ("completed", "Completed")
     )
 
