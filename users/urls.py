@@ -17,5 +17,5 @@ urlpatterns = [
         name="profile",
     ),
     path("profile/create_application/", CustomerViewSet.as_view({"post": "create_application"}), name="create_application"),
-    path("profile/address/", include(router.urls)),
+    path("profile/", include(router.urls)),
 ]
