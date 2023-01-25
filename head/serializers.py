@@ -44,6 +44,7 @@ class AdminProductSerializer(serializers.ModelSerializer):
     discount = serializers.IntegerField()
     discount_price = serializers.DecimalField(max_digits=10, decimal_places=2)
     overall_price = serializers.DecimalField(max_digits=10, decimal_places=2)
+    price = serializers.DecimalField(max_digits=10, decimal_places=2)
 
     # reviews = ReviewSerializer(many=True)
 
@@ -64,6 +65,7 @@ class AdminProductSerializer(serializers.ModelSerializer):
             "discount",
             "discount_price",
             "overall_price",
+            "price",
         ]
 
 

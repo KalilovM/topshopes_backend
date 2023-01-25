@@ -1,4 +1,5 @@
 from rest_framework import routers
+from payments.views import AdminPaymentViewSet
 
 from head.views import (
     AdminBrandTypeViewSet,
@@ -30,3 +31,4 @@ router.register(r"pages", AdminPageViewSet)
 router.register(r"sliders/slides", AdminSlideViewSet)
 router.register(r"sliders", AdminSliderViewSet)
 router.register(r"attributes", AdminAttributesViewSet)
+router.register(r"payments", AdminPaymentViewSet, basename="payment")

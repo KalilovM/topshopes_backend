@@ -162,6 +162,11 @@ class AdminProductViewSet(
                         "discount"
                     )[:1]
                 ),
+                price = Subquery(
+                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                        "price"
+                    )[:1]
+                ),
                 thumbnail=Subquery(
                     ProductVariant.objects.filter(product=OuterRef("pk")).values(
                         "thumbnail"

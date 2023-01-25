@@ -24,6 +24,7 @@ def buy_product(
         user: Customer,
         address: Address,
         shop: Shop,
+        payment_id: str,
 ) -> Dict:
     """
     Buy product service function
@@ -44,6 +45,7 @@ def buy_product(
             product_variant.save()
             order_item = CreateOrderSerializer(
                 data={
+                    "payment_id": payment_id,
                     "product_variant": product_variant.id,
                     "quantity": quantity,
                     "user": user,

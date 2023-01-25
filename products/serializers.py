@@ -215,6 +215,7 @@ class ProductSerializer(serializers.ModelSerializer):
         read_only=True, max_digits=10, decimal_places=2
     )
     discount = serializers.IntegerField(read_only=True)
+    price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     thumbnail = serializers.URLField(read_only=True)
 
     class Meta:
@@ -230,6 +231,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "discount_price",
             "discount",
             "thumbnail",
+            "price",
         ]
 
 
@@ -253,4 +255,5 @@ class SingleCategorySerializer(serializers.ModelSerializer):
             "description",
             "featured",
             "attributes",
+            "tax",
         ]

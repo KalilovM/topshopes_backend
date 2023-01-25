@@ -65,6 +65,11 @@ class ProductViewSet(
                         "discount_price"
                     )[:1]
                 ),
+                price = Subquery(
+                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                        "price"
+                    )[:1]
+                ),
                 discount=Subquery(
                     ProductVariant.objects.filter(product=OuterRef("pk")).values(
                         "discount"
@@ -162,6 +167,7 @@ class ProductVariantViewSet(
         """
         product_variant = ProductVariant.objects.select_for_update().get(pk=pk)
         data = buy_product(
+            payment_id=request.data["payment_id"],
             product_variant=product_variant,
             quantity=request.data["quantity"],
             user=request.user.id,
@@ -214,6 +220,11 @@ class ShopProductViewSet(viewsets.ModelViewSet):
                 discount_price=Subquery(
                     ProductVariant.objects.filter(product=OuterRef("pk")).values(
                         "discount_price"
+                    )[:1]
+                ),
+                price = Subquery(
+                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                        "price"
                     )[:1]
                 ),
                 discount=Subquery(

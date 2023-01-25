@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "reviews.apps.ReviewsConfig",
     "attributes.apps.AttributesConfig",
     "applications.apps.ApplicationsConfig",
+    "payments.apps.PaymentsConfig",
 ]
 
 MIDDLEWARE = [

@@ -1,6 +1,5 @@
 import uuid
 from decimal import Decimal
-
 from django.db import models
 
 
@@ -11,18 +10,22 @@ class Order(models.Model):
     """
 
     STATUSES = (
+        ("payment_error", "Payment Error"),
         ("pending", "Pending"),
         ("paid", "Paid"),
+        ("ready", "Ready"),
+        ("shop_decline", "Shop Decline"),
         ("delivering", "Delivering"),
         ("delivered", "Delivered"),
-        ("received", "Received"),
-        ("cancelled", "Cancelled"),
+        ("cenceled", "Cenceled"),
+        ("completed", "Completed")
     )
 
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     user = models.ForeignKey(
         "users.Customer", on_delete=models.CASCADE, related_name="orders"
     )
+    payment = models.ForeignKey("payments.Payment", on_delete=models.SET_NULL, null=True, blank=True, related_name="orders")
     shop = models.ForeignKey(
         "shops.Shop", on_delete=models.CASCADE, related_name="orders"
     )
