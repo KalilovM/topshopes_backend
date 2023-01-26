@@ -11,6 +11,7 @@ class CreatePaymentSerialzier(serializers.ModelSerializer):
     class Meta:
         model = Payment
         fields = [
+            "id",
             "payment_type",
             "confirm_photo",
             "phone_number",
