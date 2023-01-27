@@ -19,8 +19,7 @@ class Payment(models.Model):
         max_length=20, choices=TYPES, verbose_name=_("Payment Type")
     )
     confirm_photo = models.ImageField(
-        PathAndRename("payment/confirm_photo"),
-    )
+        upload_to=PathAndRename("payment/confirm_photo"))
     phone_number = models.CharField(
         max_length=20, verbose_name=_("Phone Number"))
     bank_account = models.CharField(
