@@ -113,6 +113,33 @@ class ProductViewSet(
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    @extend_schema(
+        description="Buy product variant",
+        parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
+        request=CreateOrderSerializer,
+        responses={201: OrderSerializer},
+        tags=["Product webhooks"],
+    )
+    @action(
+        detail=True,
+        methods=["post"],
+    )
+    @atomic
+    def buy(self, request, pk=None):
+        """
+        Buy product variant
+        """
+        product_variant = ProductVariant.objects.select_for_update().get(pk=pk)
+        data = buy_product(
+            payment=request.data["payment"],
+            product_variant=product_variant,
+            quantity=request.data["quantity"],
+            user=request.user.id,
+            address=request.data["address"],
+            shop=product_variant.product.shop.id,
+        )
+        return Response(data, status=status.HTTP_201_CREATED)
+
 
 @extend_schema(
     description="Product variant viewset to create product variants",
@@ -156,33 +183,6 @@ class ProductVariantViewSet(
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    @extend_schema(
-        description="Buy product variant",
-        parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
-        request=CreateOrderSerializer,
-        responses={201: OrderSerializer},
-        tags=["Product webhooks"],
-    )
-    @action(
-        detail=True,
-        methods=["post"],
-    )
-    @atomic
-    def buy(self, request, pk=None):
-        """
-        Buy product variant
-        """
-        product_variant = ProductVariant.objects.select_for_update().get(pk=pk)
-        data = buy_product(
-            payment_id=request.data["payment_id"],
-            product_variant=product_variant,
-            quantity=request.data["quantity"],
-            user=request.user.id,
-            address=request.data["address"],
-            shop=product_variant.product.shop.id,
-        )
-        return Response(data, status=status.HTTP_201_CREATED)
 
     def get_queryset(self):
         """
