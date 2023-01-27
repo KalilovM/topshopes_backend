@@ -2,8 +2,14 @@ from rest_framework import routers
 
 from attributes.views import AttributeValueViewset
 
-from .views import (BrandViewSet, CategoryViewSet, ImageViewSet,
-                    ProductVariantViewSet, ProductViewSet, ShopProductViewSet)
+from .views import (
+    BrandViewSet,
+    CategoryViewSet,
+    ImageViewSet,
+    ProductVariantViewSet,
+    ProductViewSet,
+    ShopProductViewSet,
+)
 
 router = routers.SimpleRouter()
 # routes for authorized users

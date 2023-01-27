@@ -69,8 +69,10 @@ class ShopOrderViewSet(
         """
         Only current user's shop orders
         """
-        return Order.objects.all().filter(shop=self.request.user.shop).exclude(
-            status__in=["payment_error", "pending"]
+        return (
+            Order.objects.all()
+            .filter(shop=self.request.user.shop)
+            .exclude(status__in=["payment_error", "pending"])
         )
 
     def get_serializer_class(self):

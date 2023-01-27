@@ -2,8 +2,7 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import mixins, permissions, viewsets
 
 from .models import Page, PageCategory, SiteSettings
-from .serializers import (PageCategorySerializer, PageSerializer,
-                          SiteSettingsSerializer)
+from .serializers import PageCategorySerializer, PageSerializer, SiteSettingsSerializer
 
 
 @extend_schema(

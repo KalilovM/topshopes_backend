@@ -13,11 +13,12 @@ class Payment(models.Model):
         ("mbank", "Mbank"),
     )
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    payment_type = models.CharField(max_length=20, choices=TYPES, verbose_name=_("Payment Type"))
+    payment_type = models.CharField(
+        max_length=20, choices=TYPES, verbose_name=_("Payment Type")
+    )
     confirm_photo = models.ImageField(
         PathAndRename("payment/confirm_photo"),
     )
     phone_number = models.CharField(max_length=20, verbose_name=_("Phone Number"))
     bank_account = models.CharField(max_length=20, verbose_name=_("Bank Account"))
     is_verified = models.BooleanField(default=False, verbose_name=_("Is Verified"))
-    

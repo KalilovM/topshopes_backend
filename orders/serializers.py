@@ -1,10 +1,11 @@
 from rest_framework import serializers
-from payments.models import Payment
 
+from payments.models import Payment
+from products.serializers import ProductSerializer, ProductVariantSerializer
 from shops.serializers import ShopSerializer
-from users.serializers import CustomerSerializer, AddressSerializer
+from users.serializers import AddressSerializer, CustomerSerializer
+
 from .models import Order
-from products.serializers import ProductVariantSerializer, ProductSerializer
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -44,23 +45,14 @@ class CreateOrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = [
-            "shop",
-            "user",
-            "product_variant",
-            "quantity",
-            "address",
-            "payment"
-        ]
-
+        fields = ["shop", "user", "product_variant", "quantity", "address", "payment"]
 
     def validate_quantity(self, value):
         if value <= 0:
             raise serializers.ValidationError("Quantity must be greater than 0")
         return value
-    
+
     def validate_payment(self, value):
         payment = Payment.objects.get(id=value).orders.shop
-        if payment.shop != self.initial_data['shop']:
+        if payment.shop != self.initial_data["shop"]:
             raise serializers.ValidationError("Order and payment shop must be the same")
-        

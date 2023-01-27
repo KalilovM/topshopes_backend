@@ -1,7 +1,8 @@
 from rest_framework import routers
-from payments.views import AdminPaymentViewSet
 
 from head.views import (
+    AdminApplicationViewSet,
+    AdminAttributesViewSet,
     AdminBrandTypeViewSet,
     AdminBrandViewSet,
     AdminCategoryViewSet,
@@ -14,8 +15,8 @@ from head.views import (
     AdminSliderViewSet,
     AdminSlideViewSet,
     AdminUsersViewSet,
-    AdminAttributesViewSet
 )
+from payments.views import AdminPaymentViewSet
 
 router = routers.SimpleRouter()
 router.register(r"users", AdminUsersViewSet)
@@ -24,7 +25,7 @@ router.register(r"categories", AdminCategoryViewSet)
 router.register(r"brand/type", AdminBrandTypeViewSet)
 router.register(r"brand", AdminBrandViewSet)
 router.register(r"products/variants", AdminProductVariantViewSet)
-router.register(r"products", AdminProductViewSet,basename="products")
+router.register(r"products", AdminProductViewSet, basename="products")
 router.register(r"posts", AdminPostViewSet)
 router.register(r"page/categories", AdminPageCategoryViewSet)
 router.register(r"pages", AdminPageViewSet)
@@ -32,3 +33,4 @@ router.register(r"sliders/slides", AdminSlideViewSet)
 router.register(r"sliders", AdminSliderViewSet)
 router.register(r"attributes", AdminAttributesViewSet)
 router.register(r"payments", AdminPaymentViewSet, basename="payment")
+router.register(r"applications", AdminApplicationViewSet, basename="applications")

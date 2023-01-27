@@ -7,7 +7,7 @@ class CreatePaymentSerialzier(serializers.ModelSerializer):
     """
     Payment serialzier to create only
     """
-    
+
     class Meta:
         model = Payment
         fields = [
@@ -17,14 +17,13 @@ class CreatePaymentSerialzier(serializers.ModelSerializer):
             "phone_number",
             "bank_account",
         ]
-        
-        
+
+
 class PaymentSerializer(serializers.ModelSerializer):
     """
     Payment serialzier to read only
     """
-    
-    
+
     class Meta:
         model = Payment
         fields = [
@@ -35,13 +34,14 @@ class PaymentSerializer(serializers.ModelSerializer):
             "is_verified",
         ]
 
+
 class SinglePaymentSerializer(serializers.ModelSerializer):
     """
     Payment serialzier to read only
     """
-    orders = OrderSerializer(many=True,read_only=True)
-    
-    
+
+    orders = OrderSerializer(many=True, read_only=True)
+
     class Meta:
         model = Payment
         fields = [
@@ -51,5 +51,5 @@ class SinglePaymentSerializer(serializers.ModelSerializer):
             "phone_number",
             "bank_account",
             "is_verified",
-            "orders"
+            "orders",
         ]

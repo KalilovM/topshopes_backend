@@ -1,28 +1,30 @@
 from django.db.models import OuterRef, Subquery
+from django.db.transaction import atomic
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import (OpenApiParameter, extend_schema,
-                                   extend_schema_view)
-from rest_framework import filters
-from rest_framework import mixins, permissions, serializers, status, viewsets
+from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
+from rest_framework import filters, mixins, permissions, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from attributes.serializers import (AttributeSerializer,
-                                    CreateAttributeValueSerializer)
+from attributes.serializers import AttributeSerializer, CreateAttributeValueSerializer
 from core.permissions import HasShop, IsOwner
 from orders.serializers import CreateOrderSerializer, OrderSerializer
-from products.models import (Brand, BrandType, Category, Image, Product,
-                             ProductVariant)
-from products.serializers import (BrandSerializer, BrandTypeSerializer,
-                                  CategorySerializer, CreateProductSerializer,
-                                  CreateProductVariantSerializer,
-                                  ImageSerializer, ProductSerializer,
-                                  ProductVariantSerializer,
-                                  SingleCategorySerializer,
-                                  SingleProductSerializer)
+from products.models import Brand, BrandType, Category, Image, Product, ProductVariant
+from products.serializers import (
+    BrandSerializer,
+    BrandTypeSerializer,
+    CategorySerializer,
+    CreateProductSerializer,
+    CreateProductVariantSerializer,
+    ImageSerializer,
+    ProductSerializer,
+    ProductVariantSerializer,
+    SingleCategorySerializer,
+    SingleProductSerializer,
+)
 from reviews.serializers import CreateReviewSerializer, ReviewSerializer
-from django.db.transaction import atomic
+
 from .services import buy_product
 
 
@@ -47,7 +49,11 @@ class ProductViewSet(
     """
 
     permission_classes = [permissions.AllowAny]
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
+    filter_backends = [
+        filters.SearchFilter,
+        filters.OrderingFilter,
+        DjangoFilterBackend,
+    ]
     filterset_fields = ["id", "category"]
     search_fields = ["name", "id"]
     ordering_fields = ["name", "rating", "overall_price", "created_at", "discount"]
@@ -65,7 +71,7 @@ class ProductViewSet(
                         "discount_price"
                     )[:1]
                 ),
-                price = Subquery(
+                price=Subquery(
                     ProductVariant.objects.filter(product=OuterRef("pk")).values(
                         "price"
                     )[:1]
@@ -116,7 +122,10 @@ class ProductViewSet(
     tags=["Owner"],
 )
 class ProductVariantViewSet(
-    mixins.CreateModelMixin, mixins.DestroyModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
 ):
     """
     Product variant viewset to create product variants
@@ -155,7 +164,6 @@ class ProductVariantViewSet(
         responses={201: OrderSerializer},
         tags=["Product webhooks"],
     )
-
     @action(
         detail=True,
         methods=["post"],
@@ -224,7 +232,7 @@ class ShopProductViewSet(viewsets.ModelViewSet):
                         "discount_price"
                     )[:1]
                 ),
-                price = Subquery(
+                price=Subquery(
                     ProductVariant.objects.filter(product=OuterRef("pk")).values(
                         "price"
                     )[:1]
@@ -242,12 +250,11 @@ class ShopProductViewSet(viewsets.ModelViewSet):
             )
         )
 
-
     def update(self, request, *args, **kwargs):
         """
         Update product
         """
-        if request.data["category"]:
+        if "cateogory" in request.data:
             product = self.get_object()
             variants = product.variants.all()
             for variant in variants:

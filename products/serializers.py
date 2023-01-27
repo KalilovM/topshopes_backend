@@ -18,6 +18,7 @@ class BrandSerializer(serializers.ModelSerializer):
     Brand serializer able to select fields to represent
     Return all fields
     """
+
     slug = serializers.ReadOnlyField()
 
     class Meta:
@@ -51,7 +52,7 @@ class CreateCategorySerializer(serializers.ModelSerializer):
     """
     Serialzier to create category only
     """
-    
+
     tax = serializers.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
@@ -76,7 +77,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ["id", "slug", "name", "icon", "attributes", "featured","tax"]
+        fields = ["id", "slug", "name", "icon", "attributes", "featured", "tax"]
 
 
 class CategoryReadOnlySerializer(serializers.ModelSerializer):
@@ -88,7 +89,6 @@ class CategoryReadOnlySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ["id", "name"]
-
 
 
 class CreateProductVariantSerializer(serializers.ModelSerializer):
@@ -141,6 +141,7 @@ class CreateProductSerializer(serializers.ModelSerializer):
     Product serializer for write only
     Return all fields
     """
+
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
 
     class Meta:
@@ -166,7 +167,6 @@ class BrandReadSerializer(serializers.ModelSerializer):
         fields = ["id", "slug", "name"]
 
 
-
 class SingleProductSerializer(serializers.ModelSerializer):
     """
     Single Product serializer for read only
@@ -178,7 +178,6 @@ class SingleProductSerializer(serializers.ModelSerializer):
     shop = ShopProductSerializer(read_only=True)
     brand = BrandReadSerializer(read_only=True)
     category = CategoryReadOnlySerializer(read_only=True)
-
 
     class Meta:
         model = Product

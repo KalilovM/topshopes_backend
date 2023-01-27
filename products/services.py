@@ -1,37 +1,35 @@
 from typing import Dict
-import redis
-from redis.exceptions import LockError
-from django.conf import settings
 
+import redis
+from django.conf import settings
+from redis.exceptions import LockError
 from rest_framework import serializers
 
 from orders.serializers import CreateOrderSerializer
 from shops.models import Shop
 from users.models import Address, Customer
+
 from .models import ProductVariant
 
-
-
 r = redis.Redis(
-    host=settings.REDIS_HOST,
-    port=settings.REDIS_PORT,
-    db=settings.REDIS_DB
+    host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB
 )
 
+
 def buy_product(
-        product_variant: ProductVariant,
-        quantity: int,
-        user: Customer,
-        address: Address,
-        shop: Shop,
-        payment_id: str,
+    product_variant: ProductVariant,
+    quantity: int,
+    user: Customer,
+    address: Address,
+    shop: Shop,
+    payment: str,
 ) -> Dict:
     """
     Buy product service function
     """
 
     # lock product variant quantity field
-    lock = r.lock(f'product_variant_{product_variant.id}_quantity', timeout=1)
+    lock = r.lock(f"product_variant_{product_variant.id}_quantity", timeout=1)
     try:
         if lock.acquire():
             if type(quantity) != int:
@@ -45,7 +43,7 @@ def buy_product(
             product_variant.save()
             order_item = CreateOrderSerializer(
                 data={
-                    "payment_id": payment_id,
+                    "payment": payment,
                     "product_variant": product_variant.id,
                     "quantity": quantity,
                     "user": user,
@@ -59,4 +57,3 @@ def buy_product(
 
     except LockError:
         raise serializers.ValidationError("Lock error")
-
