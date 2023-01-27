@@ -4,23 +4,33 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import filters, mixins, permissions, viewsets
 
 from applications.models import Application
-from applications.serializers import (ApplicationSerializer,
-                                      SingleApplicationSerializer)
+from applications.serializers import ApplicationSerializer, SingleApplicationSerializer
 from attributes.models import Attribute
 from attributes.serializers import AttributeSerializer
-from head.serializers import (AdminCustomerSerializer, AdminProductSerializer,
-                              AdminProductUpdateSerializer)
+from head.serializers import (
+    AdminCustomerSerializer,
+    AdminProductSerializer,
+    AdminProductUpdateSerializer,
+)
 from pages.models import Page, PageCategory, SiteSettings
-from pages.serializers import (CreatePageSerializer, PageCategorySerializer,
-                               PageSerializer, SiteSettingsSerializer)
+from pages.serializers import (
+    CreatePageSerializer,
+    PageCategorySerializer,
+    PageSerializer,
+    SiteSettingsSerializer,
+)
 from posts.models import Post
 from posts.serializers import PostSerializer
 from products.models import Brand, BrandType, Category, Product, ProductVariant
-from products.serializers import (BrandSerializer, BrandTypeSerializer,
-                                  CategorySerializer, CreateCategorySerializer,
-                                  CreateProductVariantSerializer,
-                                  ProductVariantSerializer,
-                                  SingleCategorySerializer)
+from products.serializers import (
+    BrandSerializer,
+    BrandTypeSerializer,
+    CategorySerializer,
+    CreateCategorySerializer,
+    CreateProductVariantSerializer,
+    ProductVariantSerializer,
+    SingleCategorySerializer,
+)
 from shops.models import Shop
 from shops.serializers import ShopSerializer, SingleShopSerializer
 from sliders.models import Slide, Slider
@@ -184,11 +194,13 @@ class AdminProductViewSet(
         """
         Update product
         """
-        if request.data["category"]:
+        if "category" in request.data:
             product = self.get_object()
             variants = product.variants.all()
             for variant in variants:
                 variant.attribute_values.all().delete()
+            product.category = Category.objects.get(id=request.data["category"])
+            product.save()
         return super().update(request, *args, **kwargs)
 
 
