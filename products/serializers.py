@@ -1,8 +1,10 @@
 from rest_framework import serializers
 from rest_framework.serializers import Field
 
-from attributes.serializers import AttributeSerializer, AttributeValueSerializer
-from products.models import Brand, BrandType, Category, Image, Product, ProductVariant
+from attributes.serializers import AttributeSerializer,
+                                    AttributeValueSerializer)
+from products.models import (Brand, BrandType, Category, Image, Product,
+                             ProductVariant), Product, ProductVariant
 from reviews.serializers import ReviewSerializer
 from shops.models import Shop
 

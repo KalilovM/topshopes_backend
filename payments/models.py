@@ -1,7 +1,9 @@
-from django.db import models
-from core.helpers import PathAndRename
 import uuid
+
+from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+from core.helpers import PathAndRename
 
 
 class Payment(models.Model):
@@ -19,6 +21,9 @@ class Payment(models.Model):
     confirm_photo = models.ImageField(
         PathAndRename("payment/confirm_photo"),
     )
-    phone_number = models.CharField(max_length=20, verbose_name=_("Phone Number"))
-    bank_account = models.CharField(max_length=20, verbose_name=_("Bank Account"))
-    is_verified = models.BooleanField(default=False, verbose_name=_("Is Verified"))
+    phone_number = models.CharField(
+        max_length=20, verbose_name=_("Phone Number"))
+    bank_account = models.CharField(
+        max_length=20, verbose_name=_("Bank Account"))
+    is_verified = models.BooleanField(
+        default=False, verbose_name=_("Is Verified"))
