@@ -2,27 +2,26 @@ from django.db.models import OuterRef, Subquery
 from django.db.transaction import atomic
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
-from rest_framework import filters, mixins, permissions, serializers, status, viewsets
+from drf_spectacular.utils import (OpenApiParameter, extend_schema,
+                                   extend_schema_view)
+from rest_framework import (filters, mixins, permissions, serializers, status,
+                            viewsets)
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from attributes.serializers import AttributeSerializer, CreateAttributeValueSerializer
+from attributes.serializers import (AttributeSerializer,
+                                    CreateAttributeValueSerializer)
 from core.permissions import HasShop, IsOwner
 from orders.serializers import CreateOrderSerializer, OrderSerializer
-from products.models import Brand, BrandType, Category, Image, Product, ProductVariant
-from products.serializers import (
-    BrandSerializer,
-    BrandTypeSerializer,
-    CategorySerializer,
-    CreateProductSerializer,
-    CreateProductVariantSerializer,
-    ImageSerializer,
-    ProductSerializer,
-    ProductVariantSerializer,
-    SingleCategorySerializer,
-    SingleProductSerializer,
-)
+from products.models import (Brand, BrandType, Category, Image, Product,
+                             ProductVariant)
+from products.serializers import (BrandSerializer, BrandTypeSerializer,
+                                  CategorySerializer, CreateProductSerializer,
+                                  CreateProductVariantSerializer,
+                                  ImageSerializer, ProductSerializer,
+                                  ProductVariantSerializer,
+                                  SingleCategorySerializer,
+                                  SingleProductSerializer)
 from reviews.serializers import CreateReviewSerializer, ReviewSerializer
 
 from .services import buy_product
@@ -56,7 +55,8 @@ class ProductViewSet(
     ]
     filterset_fields = ["id", "category"]
     search_fields = ["name", "id"]
-    ordering_fields = ["name", "rating", "overall_price", "created_at", "discount"]
+    ordering_fields = ["name", "rating",
+                       "overall_price", "created_at", "discount"]
 
     def get_queryset(self):
         if self.action == "list":
@@ -116,7 +116,8 @@ class ProductViewSet(
 
 @extend_schema(
     description="Product variant viewset to create product variants",
-    parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
+    parameters=[OpenApiParameter(
+        "id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
     request=CreateProductVariantSerializer,
     responses={200: ProductVariantSerializer},
     tags=["Owner"],
@@ -159,7 +160,8 @@ class ProductVariantViewSet(
 
     @extend_schema(
         description="Buy product variant",
-        parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
+        parameters=[OpenApiParameter(
+            "id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
         request=CreateOrderSerializer,
         responses={201: OrderSerializer},
         tags=["Product webhooks"],
@@ -200,7 +202,8 @@ class ProductVariantViewSet(
 
 @extend_schema(
     description="Viewset to edit user's shop",
-    parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
+    parameters=[OpenApiParameter(
+        "id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
     request=CreateProductSerializer,
     responses={200: ProductSerializer},
     tags=["Owner"],
@@ -283,7 +286,8 @@ class ShopProductViewSet(viewsets.ModelViewSet):
 
 @extend_schema(
     description="Brand Types for products",
-    parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
+    parameters=[OpenApiParameter(
+        "id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
     request=BrandTypeSerializer,
     responses={200: BrandTypeSerializer},
     tags=["Products additions"],
@@ -300,7 +304,8 @@ class BrandTypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 @extend_schema(
     description="Images for products variants",
-    parameters=[OpenApiParameter("id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
+    parameters=[OpenApiParameter(
+        "id", OpenApiTypes.UUID, OpenApiParameter.PATH)],
     request=ImageSerializer,
     responses={200: ImageSerializer},
     tags=["Products additions"],
@@ -328,7 +333,8 @@ class ImageViewSet(
     ),
     retrieve=extend_schema(
         description="Category for products",
-        parameters=[OpenApiParameter("slug", OpenApiTypes.STR, OpenApiParameter.PATH)],
+        parameters=[OpenApiParameter(
+            "slug", OpenApiTypes.STR, OpenApiParameter.PATH)],
         responses={200: SingleCategorySerializer},
         tags=["All"],
     ),

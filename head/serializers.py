@@ -69,6 +69,12 @@ class AdminProductSerializer(serializers.ModelSerializer):
         ]
 
 
+class AdminProductUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = "__all__"
+
+
 class AdminCustomerSerializer(serializers.ModelSerializer):
     """
     Serializer Customer for admin only
