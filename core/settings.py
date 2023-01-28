@@ -22,6 +22,8 @@ CORS_ALLOWED_ORIGINS = config(
     "CORS_ALLOWED_ORIGINS", cast=lambda v: [s.strip() for s in v.split(",")]
 )
 
+BROKER_URL = config("REDIS_URL")
+
 AUTH_USER_MODEL = "users.Customer"
 # Application definition
 
@@ -40,6 +42,7 @@ INSTALLED_APPS = [
     "drf_spectacular_sidecar",
     "corsheaders",
     "django_filters",
+    "celery",
     # local apps
     "users.apps.UsersConfig",
     "shops.apps.ShopsConfig",
@@ -54,6 +57,7 @@ INSTALLED_APPS = [
     "reviews.apps.ReviewsConfig",
     "attributes.apps.AttributesConfig",
     "applications.apps.ApplicationsConfig",
+    "payments.apps.PaymentsConfig",
 ]
 
 MIDDLEWARE = [
@@ -147,9 +151,9 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    'DEFAULT_PAGINATION_CLASS': 'common.pagination.CommonPagination',
+    "DEFAULT_PAGINATION_CLASS": "common.pagination.CommonPagination",
     # "EXCEPTION_HANDLER": "common.exception_handler.custom_exception_handler",
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
@@ -217,10 +221,10 @@ SESSION_CACHE_ALIAS = "default"
 CACHE_TTL = 60 * 1
 
 # Email
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
 EMAIL_USE_TLS = False
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")

@@ -44,6 +44,7 @@ class AdminProductSerializer(serializers.ModelSerializer):
     discount = serializers.IntegerField()
     discount_price = serializers.DecimalField(max_digits=10, decimal_places=2)
     overall_price = serializers.DecimalField(max_digits=10, decimal_places=2)
+    price = serializers.DecimalField(max_digits=10, decimal_places=2)
 
     # reviews = ReviewSerializer(many=True)
 
@@ -64,13 +65,21 @@ class AdminProductSerializer(serializers.ModelSerializer):
             "discount",
             "discount_price",
             "overall_price",
+            "price",
         ]
+
+
+class AdminProductUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = "__all__"
 
 
 class AdminCustomerSerializer(serializers.ModelSerializer):
     """
     Serializer Customer for admin only
     """
+
     class Meta:
         model = Customer
         fields = [
@@ -81,5 +90,5 @@ class AdminCustomerSerializer(serializers.ModelSerializer):
             "phone",
             "avatar",
             "is_superuser",
-            "is_seller"
+            "is_seller",
         ]

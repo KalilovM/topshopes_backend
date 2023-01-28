@@ -1,4 +1,12 @@
 {
-  "executionEnvironments": [{ "root": "src" }],
-  "ignore": ["**/tests"]
+  "executionEnvironments": [
+    {
+      "root": "src"
+    }
+  ],
+  "ignore": [
+    "**/tests"
+  ],
+  "venvPath": "./venv/",
+  "venv": "venv"
 }

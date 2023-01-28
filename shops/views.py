@@ -10,6 +10,8 @@ from products.models import Product, ProductVariant
 from products.serializers import ProductSerializer
 from reviews.models import Review
 from reviews.serializers import ShopReviewSerializer
+from payments.models import TransferMoney
+from payments.serializers import TransferMoneySerializer
 
 
 from .models import Link, Shop
@@ -163,3 +165,11 @@ class LinkViewSet(
         Return only user's shop links
         """
         return Link.objects.filter(shop=self.request.user.shop)
+
+
+class TransferMoneyViewSet(mixins.ListModelMixin):
+    serializer_class = TransferMoneySerializer
+    permission_classes = [permissions.IsAuthenticated, HasShop]
+
+    def get_queryset(self):
+        return TransferMoney.objects.filter(shop=self.request.user.shop)

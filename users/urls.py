@@ -1,6 +1,7 @@
-from django.urls import path, include
+from django.urls import include, path
 
 from users.views import CustomerViewSet
+
 from .routers import router
 
 urlpatterns = [
@@ -16,6 +17,6 @@ urlpatterns = [
         ),
         name="profile",
     ),
-    path("profile/create_application/", CustomerViewSet.as_view({"post": "create_application"}), name="create_application"),
-    path("profile/address/", include(router.urls)),
+    path("profile/", include("applications.urls")),
+    path("profile/", include(router.urls)),
 ]

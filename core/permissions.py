@@ -30,3 +30,13 @@ class IsOwner(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return obj.shop == request.user.shop
+
+class IsSeller(permissions.BasePermission):
+    """
+    Check is seller
+    """
+
+    message = "You are not seller"
+
+    def has_permission(self, request, view):
+        return request.user.is_seller

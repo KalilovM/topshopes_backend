@@ -1,17 +1,22 @@
+from django.db.models import OuterRef, Subquery
 from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import Subquery, OuterRef
 from drf_spectacular.utils import extend_schema
-from rest_framework import filters
-from rest_framework import mixins, permissions, viewsets
+from rest_framework import filters, mixins, permissions, viewsets
 
+from applications.models import Application
+from applications.serializers import ApplicationSerializer, SingleApplicationSerializer
 from attributes.models import Attribute
 from attributes.serializers import AttributeSerializer
-from head.serializers import AdminCustomerSerializer, AdminProductSerializer
+from head.serializers import (
+    AdminCustomerSerializer,
+    AdminProductSerializer,
+    AdminProductUpdateSerializer,
+)
 from pages.models import Page, PageCategory, SiteSettings
 from pages.serializers import (
+    CreatePageSerializer,
     PageCategorySerializer,
     PageSerializer,
-    CreatePageSerializer,
     SiteSettingsSerializer,
 )
 from posts.models import Post
@@ -20,17 +25,19 @@ from products.models import Brand, BrandType, Category, Product, ProductVariant
 from products.serializers import (
     BrandSerializer,
     BrandTypeSerializer,
-    CreateCategorySerializer,
     CategorySerializer,
+    CreateCategorySerializer,
     CreateProductVariantSerializer,
     ProductVariantSerializer,
+    SingleCategorySerializer,
 )
-from products.serializers import SingleCategorySerializer
 from shops.models import Shop
 from shops.serializers import ShopSerializer, SingleShopSerializer
 from sliders.models import Slide, Slider
 from sliders.serializers import SliderSerializer, SlideSerializer
 from users.models import Customer
+from payments.models import TransferMoney
+from payments.serializers import TransferMoneySerializer, CreateTransferMoneySerializer
 
 
 class AdminUsersViewSet(
@@ -81,7 +88,11 @@ class AdminCategoryViewSet(viewsets.ModelViewSet):
 
     queryset = Category.objects.all()
     permission_classes = [permissions.IsAdminUser]
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
+    filter_backends = [
+        filters.SearchFilter,
+        filters.OrderingFilter,
+        DjangoFilterBackend,
+    ]
     filterset_fields = ["featured"]
     search_fields = ["name"]
     ordering_fields = ["name"]
@@ -103,7 +114,11 @@ class AdminBrandViewSet(viewsets.ModelViewSet):
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
     permission_classes = [permissions.IsAdminUser]
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
+    filter_backends = [
+        filters.SearchFilter,
+        filters.OrderingFilter,
+        DjangoFilterBackend,
+    ]
     filterset_fields = ["featured"]
     search_fields = ["name"]
     ordering_fields = ["name"]
@@ -144,44 +159,50 @@ class AdminProductViewSet(
         """
         Returns all products
         """
-        return (
-            Product.objects.prefetch_related("variants")
-            .annotate(
-                overall_price=Subquery(
-                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
-                        "overall_price"
-                    )[:1]
-                ),
-                discount_price=Subquery(
-                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
-                        "discount_price"
-                    )[:1]
-                ),
-                discount=Subquery(
-                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
-                        "discount"
-                    )[:1]
-                ),
-                thumbnail=Subquery(
-                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
-                        "thumbnail"
-                    )[:1]
-                ),
-            )
+        return Product.objects.prefetch_related("variants").annotate(
+            overall_price=Subquery(
+                ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                    "overall_price"
+                )[:1]
+            ),
+            discount_price=Subquery(
+                ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                    "discount_price"
+                )[:1]
+            ),
+            discount=Subquery(
+                ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                    "discount"
+                )[:1]
+            ),
+            price=Subquery(
+                ProductVariant.objects.filter(product=OuterRef("pk")).values("price")[
+                :1
+                ]
+            ),
+            thumbnail=Subquery(
+                ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                    "thumbnail"
+                )[:1]
+            ),
         )
 
     def get_serializer_class(self):
+        if self.action in ["create", "update"]:
+            return AdminProductUpdateSerializer
         return AdminProductSerializer
 
     def update(self, request, *args, **kwargs):
         """
         Update product
         """
-        if request.data["category"]:
+        if "category" in request.data:
             product = self.get_object()
             variants = product.variants.all()
             for variant in variants:
                 variant.attribute_values.all().delete()
+            product.category = Category.objects.get(id=request.data["category"])
+            product.save()
         return super().update(request, *args, **kwargs)
 
 
@@ -298,3 +319,28 @@ class AdminAttributesViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     filter_backends = [filters.SearchFilter]
     search_fields = ["name"]
+
+
+class AdminApplicationViewSet(
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = Application.objects.all()
+    permission_classes = [permissions.IsAdminUser]
+
+    def get_serializer_class(self):
+        if self.action in ["update", "retrieve"]:
+            return SingleApplicationSerializer
+        return ApplicationSerializer
+
+
+class AdminTransferMoneyViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    queryset = TransferMoney.objects.all()
+    permission_classes = [permissions.IsAdminUser]
+
+    def get_serializer_class(self):
+        if self.action == "update":
+            return CreateTransferMoneySerializer
+        return TransferMoneySerializer

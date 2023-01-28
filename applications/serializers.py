@@ -1,12 +1,17 @@
-from rest_framework import serializers
-from .models import Application
 import os
+
+from shops.serializers import CreateShopSerializer
+from rest_framework import serializers
+
+from .models import Application
+
 
 class CreateApplicationSerializer(serializers.ModelSerializer):
     """
     Serializer to create application
     """
-    customer = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Application
@@ -23,12 +28,43 @@ class CreateApplicationSerializer(serializers.ModelSerializer):
             "bank_account",
             "bik",
             "shop_name",
-            "customer"
+            "user",
         ]
 
     def validate_document(self, value):
         ext = os.path.splitext(value.name)[1]
-        valid_extensions = ['.pdf']
+        valid_extensions = [".pdf"]
         if not ext.lower() in valid_extensions:
-            raise serializers.ValidationError('Unsupported file extension.')
+            raise serializers.ValidationError("Unsupported file extension.")
         return value
+
+    def validate_user(self, value):
+        if Application.objects.filter(user=value, status="moderation").count() >= 1:
+            raise serializers.ValidationError("Couldn't create more than 1 application")
+        return value
+
+
+class ApplicationSerializer(serializers.ModelSerializer):
+    """
+    Serializer to read only
+    """
+
+    class Meta:
+        model = Application
+        fields = ["id", "user", "document", "short_name", "status"]
+
+
+class SingleApplicationSerializer(serializers.ModelSerializer):
+    """
+    Serializer single instance to read only
+    """
+
+    class Meta:
+        model = Application
+        fields = "__all__"
+
+    def update(self, instance, validated_data):
+        if validated_data.get("status") == "approved":
+            instance.user.is_seller = True
+            instance.user.save()
+        return instance

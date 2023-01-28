@@ -8,8 +8,7 @@ from faker import Faker
 
 from attributes.models import Attribute, AttributeValue
 from orders.models import Order
-from products.models import (Brand, BrandType, Category, Image, Product,
-                             ProductVariant)
+from products.models import Brand, BrandType, Category, Image, Product, ProductVariant
 from reviews.models import Review
 from shops.models import Link, Shop
 from users.models import Address, Customer
@@ -380,7 +379,6 @@ PRODUCT_TITLES = [
     "Stickem",
     "Snap It",
     "Scruncho",
-
 ]
 
 UNITS = [

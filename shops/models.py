@@ -18,7 +18,9 @@ class Shop(models.Model):
         default=uuid.uuid4, primary_key=True, verbose_name="Shop's id"
     )
     name = models.CharField(max_length=100, unique=True, verbose_name="Shop's name")
-    slug = models.SlugField(max_length=100, unique=True, verbose_name="Shop's slug", editable=False)
+    slug = models.SlugField(
+        max_length=100, unique=True, verbose_name="Shop's slug", editable=False
+    )
     user = models.OneToOneField(
         "users.Customer",
         on_delete=models.CASCADE,
