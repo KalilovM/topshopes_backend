@@ -25,7 +25,6 @@ from products.serializers import (
 )
 from reviews.serializers import CreateReviewSerializer, ReviewSerializer
 
-from .services import buy_product
 
 
 @extend_schema_view(
@@ -130,15 +129,10 @@ class ProductViewSet(
         Buy product variant
         """
         product_variant = ProductVariant.objects.select_for_update().get(pk=pk)
-        data = buy_product(
-            payment=request.data["payment"],
-            product_variant=product_variant,
-            quantity=request.data["quantity"],
-            user=request.user.id,
-            address=request.data["address"],
-            shop=product_variant.product.shop.id,
-        )
-        return Response(data, status=status.HTTP_201_CREATED)
+        serializer = self.get_serializer_class(request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @extend_schema(
