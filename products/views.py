@@ -129,7 +129,9 @@ class ProductViewSet(
         Buy product variant
         """
         product_variant = ProductVariant.objects.select_for_update().get(pk=pk)
-        serializer = self.get_serializer_class(request.data)
+        serializer = self.get_serializer_class()
+        serializer = serializer(
+            data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
