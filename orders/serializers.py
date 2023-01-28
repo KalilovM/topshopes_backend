@@ -76,12 +76,21 @@ class CreateOrderSerializer(serializers.ModelSerializer):
         )
         print(validated_data)
         user = self.context["request"].user
-        product_variant = validated_data["product_variant"]
+        product_variant:ProductVariant = validated_data["product_variant"]
         order = super().create(validated_data)
         lock = r.lock(f"product_variant_{product_variant.id}_quantity", timeout=1)
         try:
             if lock.acquire():
                 stock = ProductVariant.objects.get(id=product_variant.id).stock
-                # if validated_data["quantity"]
-        except:
-            raise
+                if validated_data["quantity"] > stock:
+                    raise serializers.ValidationError(
+                        "Not enough stock for this product")
+                product_variant.stock -= validated_data["quantity"]
+                product_variant.save()
+
+        except LockError:
+            raise serializers.ValidationError("Lock error")
+        finally:
+            lock.release()
+
+        return order
