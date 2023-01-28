@@ -72,6 +72,9 @@ class AdminPaymentViewSet(viewsets.ModelViewSet):
         if request.data.get("is_verified"):
             payment = self.get_object()
             payment.orders.update(status="paid")
+        else:
+            payment = self.get_object()
+            payment.orders.update(status="payment_error")
         return super().update(request, *args, **kwargs)
 
     def get_serializer_class(self):
