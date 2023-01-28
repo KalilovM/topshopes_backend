@@ -22,6 +22,8 @@ CORS_ALLOWED_ORIGINS = config(
     "CORS_ALLOWED_ORIGINS", cast=lambda v: [s.strip() for s in v.split(",")]
 )
 
+BROKER_URL = config("REDIS_URL")
+
 AUTH_USER_MODEL = "users.Customer"
 # Application definition
 
@@ -40,6 +42,7 @@ INSTALLED_APPS = [
     "drf_spectacular_sidecar",
     "corsheaders",
     "django_filters",
+    "celery",
     # local apps
     "users.apps.UsersConfig",
     "shops.apps.ShopsConfig",

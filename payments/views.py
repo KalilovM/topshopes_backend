@@ -1,12 +1,12 @@
 from rest_framework import viewsets, mixins, permissions
 from drf_spectacular.utils import extend_schema
-from core.permissions import HasShop
 from .serializers import (
     CreatePaymentSerialzier,
     PaymentSerializer,
     SinglePaymentSerializer,
+
 )
-from .models import Payment
+from .models import Payment, TransferMoney
 
 
 @extend_schema(
@@ -57,6 +57,19 @@ class AdminPaymentViewSet(viewsets.ModelViewSet):
             payment = self.get_object()
             payment.orders.update(status="payment_error")
         return super().update(request, *args, **kwargs)
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return SinglePaymentSerializer
+        if self.action == "create":
+            return CreatePaymentSerialzier
+        return PaymentSerializer
+
+class AdminMoneyTransferViewSet(viewsets.ModelViewSet):
+    """Admin money transfer viewset"""
+
+    permission_classses = [permissions.IsAdminUser]
+    queryset = TransferMoney.objects.all()
 
     def get_serializer_class(self):
         if self.action == "retrieve":

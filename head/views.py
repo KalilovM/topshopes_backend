@@ -36,6 +36,8 @@ from shops.serializers import ShopSerializer, SingleShopSerializer
 from sliders.models import Slide, Slider
 from sliders.serializers import SliderSerializer, SlideSerializer
 from users.models import Customer
+from payments.models import TransferMoney
+from payments.serializers import TransferMoneySerializer, CreateTransferMoneySerializer
 
 
 class AdminUsersViewSet(
@@ -175,7 +177,7 @@ class AdminProductViewSet(
             ),
             price=Subquery(
                 ProductVariant.objects.filter(product=OuterRef("pk")).values("price")[
-                    :1
+                :1
                 ]
             ),
             thumbnail=Subquery(
@@ -332,3 +334,13 @@ class AdminApplicationViewSet(
         if self.action in ["update", "retrieve"]:
             return SingleApplicationSerializer
         return ApplicationSerializer
+
+
+class AdminTransferMoneyViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    queryset = TransferMoney.objects.all()
+    permission_classes = [permissions.IsAdminUser]
+
+    def get_serializer_class(self):
+        if self.action == "update":
+            return CreateTransferMoneySerializer
+        return TransferMoneySerializer

@@ -29,3 +29,18 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"{self.payment_type} {self.phone_number} {self.bank_account}"
+
+
+class TransferMoney(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    order = models.ForeignKey("orders.Order", on_delete=models.CASCADE)
+    amount = models.DecimalField(
+        max_digits=10, decimal_places=2, verbose_name=_("Amount"))
+    tax = models.DecimalField(
+        max_digits=10, decimal_places=2, verbose_name=_("Tax"))
+    shop = models.ForeignKey("shops.Shop", on_delete=models.CASCADE)
+    confirm_photo = models.ImageField(
+        upload_to=PathAndRename("payment/transfer/confirm_photo"), blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.order} {self.amount}"

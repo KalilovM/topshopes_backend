@@ -178,13 +178,12 @@ class ProductVariant(models.Model):
         return self.product.name
 
     def save(self, *args, **kwargs):
-        self.overall_price = self.price + (self.price * self.product.category.tax / 100)
         if self.discount:
-            self.discount_price = self.overall_price - (
-                self.price * Decimal(self.discount) / Decimal(100)
-            )
+            self.discount_price = self.price * Decimal(self.discount)/Decimal(100)
         else:
             self.discount_price = None
+
+        self.overall_price = self.discount_price - (self.discount_price * self.product.category.tax/100)
 
         if self.stock == 0:
             self.status = "unavailable"

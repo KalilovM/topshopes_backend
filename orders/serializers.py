@@ -13,6 +13,19 @@ from products.models import ProductVariant
 from .models import Order
 
 
+class OrderInfoSerializer(serializers.ModelSerializer):
+    """
+    Order serializers for read only
+    return product and quantity
+    """
+
+    class Meta:
+        model = Order
+        fields = [
+            "product_variant",
+            "quantity",
+        ]
+
 class OrderSerializer(serializers.ModelSerializer):
     """
     Order serializers for read only

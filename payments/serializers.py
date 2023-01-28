@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from orders.serializers import OrderSerializer
-from .models import Payment
+from orders.serializers import OrderSerializer, OrderInfoSerializer
+from .models import Payment, TransferMoney
+from head.serializers import AdminShopSerializer
 
 
 class CreatePaymentSerialzier(serializers.ModelSerializer):
@@ -53,3 +54,25 @@ class SinglePaymentSerializer(serializers.ModelSerializer):
             "is_verified",
             "orders",
         ]
+
+
+class CreateTransferMoneySerializer(serializers.ModelSerializer):
+    """
+    TransferMoney serialzier to create only
+    """
+
+    class Meta:
+        model = TransferMoney
+        fields = ["id", "order", "amount", "shop", "tax"]
+
+
+class TransferMoneySerializer(serializers.ModelSerializer):
+    """
+    TransferMoney serialzier to read only
+    """
+    shop = AdminShopSerializer(read_only=True)
+    order = OrderInfoSerializer(read_only=True)
+
+    class Meta:
+        model = TransferMoney
+        fields = ["id", "order", "amount", "shop", "tax", "confirm_photo"]
