@@ -128,6 +128,8 @@ class ProductViewSet(
         Buy product variant
         """
         product_variant = ProductVariant.objects.select_for_update().get(pk=pk)
+        request.data["user"] = request.user.id
+        request.data["shop"] = product_variant.product.shop.id
         serializer = CreateOrderSerializer(
             data=request.data, context={"request": request}
         )
