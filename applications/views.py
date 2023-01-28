@@ -4,6 +4,7 @@ from .serializers import (
     ApplicationSerializer,
     SingleApplicationSerializer,
 )
+from core.permissions import IsSeller
 from .models import Application
 from drf_spectacular.utils import extend_schema
 
@@ -19,7 +20,7 @@ class ApplicationViewSet(
     Application view set to read only
     """
 
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsSeller]
 
     def get_queryset(self):
         return Application.objects.filter(user=self.request.user.id)

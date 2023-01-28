@@ -1,5 +1,6 @@
 import os
 
+from shops.serializers import CreateShopSerializer
 from rest_framework import serializers
 
 from .models import Application
@@ -61,3 +62,9 @@ class SingleApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application
         fields = "__all__"
+
+    def update(self, instance, validated_data):
+        if validated_data.get("status") == "approved":
+            instance.user.is_seller = True
+            instance.user.save()
+        return instance
