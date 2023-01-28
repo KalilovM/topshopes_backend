@@ -38,29 +38,10 @@ class UserPaymentViewSet(
         return PaymentSerializer
 
 
-@extend_schema(responses={200: PaymentSerializer(many=True)}, tags=["Owner"])
-class ShopPaymentViewSet(
-    mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
-):
-    """
-    List payments
-    """
-
-    permission_classes = [permissions.IsAuthenticated, HasShop]
-
-    def get_queryset(self):
-        return Payment.objects.filter(shop=self.request.shop)
-
-    def get_seiralizer_class(self):
-        if self.action == "retrieve":
-            return SinglePaymentSerializer
-        return PaymentSerializer
-
-
 @extend_schema(
     responses={200: PaymentSerializer(many=True)},
     request=CreatePaymentSerialzier,
-    tags=["Admin"],
+    tags=["admin"],
 )
 class AdminPaymentViewSet(viewsets.ModelViewSet):
     """Admin payment viewset"""
