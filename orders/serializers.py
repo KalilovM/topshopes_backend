@@ -61,13 +61,13 @@ class CreateOrderSerializer(serializers.ModelSerializer):
         return value
 
     def validate_payment(self, value):
-        payment = Payment.objects.get(id=value)
+        payment = Payment.objects.get(id=value.id)
         shop_id = self.initial_data.get("shop", None)
-        for order in payment.orders:
-            if order.shop.id != shop_id:
-                raise serializers.ValidationError(
-                    "Order and payment shop must be the same")
-        return value
+        shops = payment.orders.values_list('shop', flat=True)
+        if all(shop == shop_id for shop in shops):
+            return value
+        raise serializers.ValidationError(
+            "All orders in payment must have the same shop")
 
     @atomic
     def create(self, validated_data):

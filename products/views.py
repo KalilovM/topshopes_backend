@@ -26,7 +26,6 @@ from products.serializers import (
 from reviews.serializers import CreateReviewSerializer, ReviewSerializer
 
 
-
 @extend_schema_view(
     list=extend_schema(
         description="Get list of products",
@@ -130,7 +129,7 @@ class ProductViewSet(
         """
         product_variant = ProductVariant.objects.select_for_update().get(pk=pk)
         serializer = CreateOrderSerializer(
-            data=request.data,context={"request":request}
+            data=request.data, context={"request": request}
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
