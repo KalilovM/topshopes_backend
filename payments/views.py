@@ -68,6 +68,12 @@ class AdminPaymentViewSet(viewsets.ModelViewSet):
     permission_classses = [permissions.IsAdminUser]
     queryset = Payment.objects.all()
 
+    def update(self, request, *args, **kwargs):
+        if request.data.get("is_verified"):
+            payment = self.get_object()
+            payment.orders.update(status="paid")
+        return super().update(request, *args, **kwargs)
+
     def get_serializer_class(self):
         if self.action == "retrieve":
             return SinglePaymentSerializer
