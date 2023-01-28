@@ -50,7 +50,7 @@ class AdminPaymentViewSet(viewsets.ModelViewSet):
     queryset = Payment.objects.all()
 
     def update(self, request, *args, **kwargs):
-        if request.data.get("is_verified"):
+        if request.data.get("is_verified") == "true":
             payment = self.get_object()
             payment.orders.update(status="paid")
         else:
