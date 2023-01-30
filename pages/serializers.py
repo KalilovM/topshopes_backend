@@ -9,7 +9,7 @@ class PageSerializer(serializers.ModelSerializer):
 
 
 class PageCategorySerializer(serializers.ModelSerializer):
-    pages = PageSerializer(many=True)
+    pages = PageSerializer(many=True, read_only=True)
 
     class Meta:
         model = PageCategory

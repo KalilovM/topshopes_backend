@@ -20,7 +20,7 @@ class ApplicationViewSet(
     Application view set to read only
     """
 
-    permission_classes = [permissions.IsAuthenticated, IsSeller]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return Application.objects.filter(user=self.request.user.id)
