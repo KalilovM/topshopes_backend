@@ -107,7 +107,7 @@ class Brand(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=100, verbose_name="Product name")
-    slug = models.SlugField(max_length=255, unique=True)
+    slug = models.SlugField(max_length=255)
     description = models.TextField()
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name="products"
@@ -181,7 +181,7 @@ class ProductVariant(models.Model):
         if self.discount:
             self.discount_price = self.price * Decimal(self.discount)/Decimal(100)
         else:
-            self.discount_price = None
+            self.discount_price = self.price
 
         self.overall_price = self.discount_price - (self.discount_price * self.product.category.tax/100)
 
