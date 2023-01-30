@@ -127,7 +127,7 @@ class ProductViewSet(
         """
         Buy product variant
         """
-        product_variant = ProductVariant.objects.select_for_update().get(pk=pk)
+        product_variant = ProductVariant.objects.select_for_update().get(pk=request.data.get("product_variant"))
         request.data["user"] = request.user.id
         request.data["shop"] = product_variant.product.shop.id
         serializer = CreateOrderSerializer(
