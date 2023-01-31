@@ -183,7 +183,7 @@ class ProductVariant(models.Model):
         else:
             self.discount_price = self.price
 
-        self.overall_price = self.discount_price - (self.discount_price * self.product.category.tax/100)
+        self.overall_price = self.discount_price + (self.discount_price * self.product.category.tax/100)
 
         if self.stock == 0:
             self.status = "unavailable"
