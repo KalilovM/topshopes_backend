@@ -58,5 +58,5 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def save(self, *args, **kwargs):
-        self.total_price = self.product_variant.overall_price * self.quantity
+        self.total_price = self.product_variant.discount_price * self.quantity
         super().save(*args, **kwargs)

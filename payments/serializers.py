@@ -71,8 +71,8 @@ class TransferMoneySerializer(serializers.ModelSerializer):
     TransferMoney serialzier to read only
     """
     shop = AdminShopSerializer(read_only=True)
-    order = OrderInfoSerializer(read_only=True)
+    order = PaymentSerializer(read_only=True)
 
     class Meta:
         model = TransferMoney
-        fields = ["id", "order", "amount", "shop", "tax", "confirm_photo"]
+        fields = ["id", "payment", "amount", "shop", "tax", "confirm_photo"]
