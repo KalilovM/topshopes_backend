@@ -179,7 +179,7 @@ class ProductVariant(models.Model):
 
     def save(self, *args, **kwargs):
         if self.discount:
-            self.discount_price = self.price * Decimal(self.discount)/Decimal(100)
+            self.discount_price = self.price - (self.price * Decimal(self.discount)/Decimal(100))
         else:
             self.discount_price = self.price
 
