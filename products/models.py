@@ -168,6 +168,11 @@ class ProductVariant(models.Model):
         decimal_places=2,
         verbose_name="Product variant overall price",
     )
+    tax_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name="Product tax price",
+    )
     stock = models.IntegerField(verbose_name="Product variant quantity")
     thumbnail = models.ImageField(
         upload_to=PathAndRename("products/thumbnails/"),
@@ -183,7 +188,8 @@ class ProductVariant(models.Model):
         else:
             self.discount_price = self.price
 
-        self.overall_price = self.discount_price + (self.discount_price * self.product.category.tax/100)
+        self.overall_price = self.discount_price - (self.discount_price * self.product.category.tax/100)
+        self.tax_price = self.discount_price * self.product.category.tax/100
 
         if self.stock == 0:
             self.status = "unavailable"

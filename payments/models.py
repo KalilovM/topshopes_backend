@@ -33,14 +33,26 @@ class Payment(models.Model):
 
 class TransferMoney(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    order = models.ForeignKey("orders.Order", on_delete=models.CASCADE)
+    payment = models.ForeignKey("payments.Payment", on_delete=models.CASCADE)
     amount = models.DecimalField(
         max_digits=10, decimal_places=2, verbose_name=_("Amount"))
+    shop = models.ForeignKey("shops.Shop", on_delete=models.CASCADE)
     tax = models.DecimalField(
         max_digits=10, decimal_places=2, verbose_name=_("Tax"))
-    shop = models.ForeignKey("shops.Shop", on_delete=models.CASCADE)
     confirm_photo = models.ImageField(
         upload_to=PathAndRename("payment/transfer/confirm_photo"), blank=True, null=True)
 
     def __str__(self):
         return f"{self.order} {self.amount}"
+
+    def save(self, *args, **kwargs):
+        a = 0
+        b = 0
+        for i in self.payment.orders.all():
+            a += i.product_variant.tax_price * i.quantity
+            b += i.product_variant.overall_price * i.quantity
+        self. amount = b
+        self.tax = a
+        super().save(*args, **kwargs)
+        
+
