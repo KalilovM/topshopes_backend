@@ -110,6 +110,7 @@ class CreateProductVariantSerializer(serializers.ModelSerializer):
             "discount",
             "thumbnail",
             "stock",
+            "status"
         ]
 
 
