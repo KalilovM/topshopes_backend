@@ -63,7 +63,7 @@ class CreateTransferMoneySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TransferMoney
-        fields = ["id", "order", "amount", "shop", "tax"]
+        fields = ["id", "amount", "shop", "tax"]
 
 
 class TransferMoneySerializer(serializers.ModelSerializer):
@@ -71,7 +71,6 @@ class TransferMoneySerializer(serializers.ModelSerializer):
     TransferMoney serialzier to read only
     """
     shop = AdminShopSerializer(read_only=True)
-    order = PaymentSerializer(read_only=True)
 
     class Meta:
         model = TransferMoney
