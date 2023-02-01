@@ -63,8 +63,8 @@ class SingleApplicationSerializer(serializers.ModelSerializer):
         model = Application
         fields = "__all__"
 
-    def update(self, instance, validated_data):
-        if validated_data.get("status") == "approved":
-            instance.user.is_seller = True
-            instance.user.save()
-        return instance
+    def validate_status(self,value):
+        if value == "approved":
+            self.instance.user.is_seller = True
+            self.instance.user.save()
+        return value
