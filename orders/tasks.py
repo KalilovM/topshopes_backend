@@ -12,6 +12,4 @@ def check_payment_status():
         if order.delivered_at + timedelta(days=3) < timezone.now():
             order.status = 'completed'
             order.save()
-            tax = order.product_variant.price * order.quantity * order.product_variant.product.category.tax
-            TransferMoney.objects.create(order=order, shop=order.shop, amount=order.total_price,
-                                         tax=tax)
+            TransferMoney.objects.create(order=order, shop=order.shop, amount=order.total_price)
