@@ -43,7 +43,7 @@ class TransferMoney(models.Model):
         upload_to=PathAndRename("payment/transfer/confirm_photo"), blank=True, null=True)
 
     def __str__(self):
-        return f"{self.order} {self.amount}"
+        return f"{self.payment} {self.amount}"
 
     def save(self, *args, **kwargs):
         a = 0
