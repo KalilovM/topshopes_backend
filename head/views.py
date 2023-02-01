@@ -3,6 +3,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from rest_framework import filters, mixins, permissions, viewsets
 
+from orders.models import Order
+from orders.serializers import OrderSerializer
+
 from applications.models import Application
 from applications.serializers import ApplicationSerializer, SingleApplicationSerializer
 from attributes.models import Attribute
@@ -344,3 +347,19 @@ class AdminTransferMoneyViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin, 
         if self.action == "update":
             return CreateTransferMoneySerializer
         return TransferMoneySerializer
+
+
+class AdminOrderViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    """
+    Viewset to manage orders
+    Allowed: All methods
+    """
+
+    queryset = Order.objects.all()
+    permission_classes = [permissions.IsAdminUser]
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    filterset_fields = ["status"]
+    search_fields = ["name"]
+
+    def get_serializer_class(self):
+        return OrderSerializer
