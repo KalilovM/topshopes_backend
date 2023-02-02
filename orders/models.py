@@ -59,7 +59,5 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def save(self, *args, **kwargs):
-        if self.status == "delivered":
-            self.delivered_at = timezone.now()
         self.total_price = self.product_variant.discount_price * self.quantity
         super().save(*args, **kwargs)

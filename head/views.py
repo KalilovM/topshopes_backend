@@ -2,6 +2,7 @@ from django.db.models import OuterRef, Subquery
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from rest_framework import filters, mixins, permissions, viewsets
+from datetime import timedelta
 
 from orders.models import Order
 from orders.serializers import OrderSerializer
@@ -41,6 +42,8 @@ from sliders.serializers import SliderSerializer, SlideSerializer
 from users.models import Customer
 from payments.models import TransferMoney
 from payments.serializers import TransferMoneySerializer, CreateTransferMoneySerializer
+from django.utils import timezone
+from orders.tasks import check_payment_status
 
 
 class AdminUsersViewSet(
@@ -363,3 +366,15 @@ class AdminOrderViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,mixins.
 
     def get_serializer_class(self):
         return OrderSerializer
+
+    def update(self, request, *args, **kwargs):
+        if request.data.get("status") == "delivered":
+            order = self.get_object()
+            order.status = "delivered"
+            order.delivered_at = timezone.now()
+            order.save()
+            check_payment_status.apply_async(
+                args=[order.id], countdown=60 * 60 * 24 * 3
+            )
+        return super().update(request, *args, **kwargs)
+
