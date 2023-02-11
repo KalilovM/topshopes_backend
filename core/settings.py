@@ -27,7 +27,8 @@ CORS_ALLOWED_ORIGINS = config(
     "CORS_ALLOWED_ORIGINS", cast=lambda v: [s.strip() for s in v.split(",")]
 )
 
-BROKER_URL = config("REDIS_URL")
+CELERY_BROKER_URL = config("REDIS_URL")
+CELERY_RESULT_BACKEND = config("REDIS_URL")
 
 AUTH_USER_MODEL = "users.Customer"
 # Application definition

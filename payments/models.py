@@ -43,16 +43,4 @@ class TransferMoney(models.Model):
         upload_to=PathAndRename("payment/transfer/confirm_photo"), blank=True, null=True)
 
     def __str__(self):
-        return f"{self.order} {self.amount}"
-
-    def save(self, *args, **kwargs):
-        a = 0
-        b = 0
-        for i in self.payment.orders.all():
-            a += i.product_variant.tax_price * i.quantity
-            b += i.product_variant.overall_price * i.quantity
-        self. amount = b
-        self.tax = a
-        super().save(*args, **kwargs)
-        
-
+        return f"{self.payment} {self.amount}"

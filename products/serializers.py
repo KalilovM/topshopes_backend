@@ -90,7 +90,7 @@ class CategoryReadOnlySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ["id", "name"]
+        fields = ["id", "name", "tax"]
 
 
 class CreateProductVariantSerializer(serializers.ModelSerializer):

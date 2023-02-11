@@ -1,6 +1,7 @@
 import uuid
 from decimal import Decimal
 from django.db import models
+from django.utils import timezone
 
 
 class Order(models.Model):

@@ -15,7 +15,8 @@ from head.views import (
     AdminSliderViewSet,
     AdminSlideViewSet,
     AdminUsersViewSet,
-    AdminTransferMoneyViewSet
+    AdminTransferMoneyViewSet,
+    AdminOrderViewSet,
 )
 from payments.views import AdminPaymentViewSet
 
@@ -36,3 +37,4 @@ router.register(r"attributes", AdminAttributesViewSet)
 router.register(r"payments", AdminPaymentViewSet, basename="payment")
 router.register(r"applications", AdminApplicationViewSet, basename="applications")
 router.register(r"transfer_money", AdminTransferMoneyViewSet, basename="transfer_money")
+router.register(r"orders", AdminOrderViewSet, basename="orders")
