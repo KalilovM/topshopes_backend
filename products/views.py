@@ -58,7 +58,7 @@ class ProductViewSet(
 
     def get_queryset(self):
         if self.action == "list":
-            return Product.objects.all().annotate(
+            return Product.objects.prefetch_related("variants").all().annotate(
                 overall_price=Subquery(
                     ProductVariant.objects.filter(product=OuterRef("pk")).values(
                         "overall_price"
@@ -77,11 +77,6 @@ class ProductViewSet(
                 discount=Subquery(
                     ProductVariant.objects.filter(product=OuterRef("pk")).values(
                         "discount"
-                    )[:1]
-                ),
-                thumbnail=Subquery(
-                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
-                        "thumbnail"
                     )[:1]
                 ),
             )
