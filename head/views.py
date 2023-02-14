@@ -253,6 +253,7 @@ class AdminPageCategoryViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ["title"]
 
+    # IDK what is it
     def get_object(self):
         return SiteSettings.objects.first()
 

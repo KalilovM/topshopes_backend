@@ -53,5 +53,7 @@ class SiteSettings(models.Model):
         return self.email
 
     def save(self, *args, **kwargs):
-        if not self.__class__.objects.exists():
-            super().save(*args, **kwargs)
+        if self.__class__.objects.count() > 1:
+            self.__class__.objects.last().delete()
+            print(self.__class__.objects.count())
+        super().save(*args, **kwargs)
