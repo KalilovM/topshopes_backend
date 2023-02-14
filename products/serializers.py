@@ -220,7 +220,7 @@ class ProductSerializer(serializers.ModelSerializer):
     discount = serializers.IntegerField(read_only=True)
     price = serializers.DecimalField(
         max_digits=10, decimal_places=2, read_only=True)
-    thumbnail = serializers.URLField(read_only=True)
+    thumbnail = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -238,6 +238,9 @@ class ProductSerializer(serializers.ModelSerializer):
             "price",
         ]
 
+    def get_thumbnail(self, object):
+        variant = object.variants.first().thumbnail
+        return self.context["request"].build_absolute_uri(variant.url)
 
 class SingleCategorySerializer(serializers.ModelSerializer):
     """
