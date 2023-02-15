@@ -54,6 +54,7 @@ class ProductViewSet(
         filters.OrderingFilter,
         DjangoFilterBackend,
         ProductFilter,
+    filterset_class = ProductFilter
     ]
     filterset_fields = ["id", "category"]
     search_fields = ["name", "id"]
