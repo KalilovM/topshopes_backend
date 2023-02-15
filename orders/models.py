@@ -3,7 +3,6 @@ from decimal import Decimal
 from django.db import models
 from django.utils import timezone
 from .tasks import check_payment_status
-from payments.models import TransferMoney
 
 
 class Order(models.Model):
@@ -67,5 +66,5 @@ class Order(models.Model):
         if self.status == "paid":
             check_payment_status(order=self)
         if self.status == "payment_error":
-            TransferMoney.objects.filter(payment=self.payment).delete()
+            self.payment.money_transfer.delete()
         super().save(*args, **kwargs)
