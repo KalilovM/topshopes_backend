@@ -2,7 +2,7 @@ import uuid
 from decimal import Decimal
 from django.db import models
 from django.utils import timezone
-from .tasks import check_payment_status
+from payments.models import TransferMoney
 
 
 class Order(models.Model):
@@ -64,7 +64,13 @@ class Order(models.Model):
         if self.status == "delivered":
             self.delivered_at = timezone.now()
         if self.status == "paid":
-            check_payment_status(order=self)
+            tax = self.product_variant.tax_price * self.quantity
+            TransferMoney.objects.create(
+                payment=self.payment,
+                shop=self.shop,
+                amount=self.total_price,
+                tax=tax,
+            )
         if self.status == "payment_error":
             self.payment.money_transfer.delete()
         super().save(*args, **kwargs)
