@@ -7,6 +7,8 @@ from rest_framework import filters, mixins, permissions, serializers, status, vi
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from .filters import ProductFilter
+
 from attributes.serializers import AttributeSerializer, CreateAttributeValueSerializer
 from core.permissions import HasShop, IsOwner
 from orders.serializers import CreateOrderSerializer, OrderSerializer
@@ -51,6 +53,7 @@ class ProductViewSet(
         filters.SearchFilter,
         filters.OrderingFilter,
         DjangoFilterBackend,
+        ProductFilter,
     ]
     filterset_fields = ["id", "category"]
     search_fields = ["name", "id"]
