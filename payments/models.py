@@ -31,11 +31,12 @@ class Payment(models.Model):
         return f"{self.payment_type} {self.phone_number} {self.bank_account}"
 
     def save(self, *args, **kwargs):
-        order = Order.objects.get(payment=self)
         if self.is_verified:
+            order = Order.objects.get(payment=self)
             order.status = "paid"
             order.save()
         if self.is_verified is False:
+            order = Order.objects.get(payment=self)
             order.status = "payment_error"
             order.save()
         super().save(*args, **kwargs)
