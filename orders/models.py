@@ -2,7 +2,6 @@ import uuid
 from decimal import Decimal
 from django.db import models
 from django.utils import timezone
-from payments.models import TransferMoney
 
 
 class Order(models.Model):
@@ -64,6 +63,8 @@ class Order(models.Model):
         if self.status == "delivered":
             self.delivered_at = timezone.now()
         if self.status == "paid":
+            from payments.models import TransferMoney
+
             tax = self.product_variant.tax_price * self.quantity
             TransferMoney.objects.create(
                 payment=self.payment,
