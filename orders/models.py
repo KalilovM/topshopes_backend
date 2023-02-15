@@ -2,6 +2,8 @@ import uuid
 from decimal import Decimal
 from django.db import models
 from django.utils import timezone
+from .tasks import check_payment_status
+from payments.models import TransferMoney
 
 
 class Order(models.Model):
@@ -60,4 +62,10 @@ class Order(models.Model):
 
     def save(self, *args, **kwargs):
         self.total_price = self.product_variant.discount_price * self.quantity
+        if self.status == "delivered":
+            self.delivered_at = timezone.now()
+        if self.status == "paid":
+            check_payment_status(order=self)
+        if self.status == "payment_error":
+            TransferMoney.objects.filter(payment=self.payment).delete()
         super().save(*args, **kwargs)

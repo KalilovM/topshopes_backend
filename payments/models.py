@@ -33,7 +33,7 @@ class Payment(models.Model):
 
 class TransferMoney(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    payment = models.ForeignKey("payments.Payment", on_delete=models.CASCADE)
+    payment = models.ForeignKey("payments.Payment", on_delete=models.CASCADE, related_name="transfer_money")
     amount = models.DecimalField(
         max_digits=10, decimal_places=2, verbose_name=_("Amount"))
     shop = models.ForeignKey("shops.Shop", on_delete=models.CASCADE)
