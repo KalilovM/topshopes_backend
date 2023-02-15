@@ -60,4 +60,18 @@ class Order(models.Model):
 
     def save(self, *args, **kwargs):
         self.total_price = self.product_variant.discount_price * self.quantity
+        if self.status == "delivered":
+            self.delivered_at = timezone.now()
+        if self.status == "paid":
+            from payments.models import TransferMoney
+
+            tax = self.product_variant.tax_price * self.quantity
+            TransferMoney.objects.create(
+                payment=self.payment,
+                shop=self.shop,
+                amount=self.total_price,
+                tax=tax,
+            )
+        if self.status == "payment_error":
+            self.payment.money_transfer.delete()
         super().save(*args, **kwargs)

@@ -7,6 +7,8 @@ from rest_framework import filters, mixins, permissions, serializers, status, vi
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from .filters import ProductFilter
+
 from attributes.serializers import AttributeSerializer, CreateAttributeValueSerializer
 from core.permissions import HasShop, IsOwner
 from orders.serializers import CreateOrderSerializer, OrderSerializer
@@ -52,33 +54,38 @@ class ProductViewSet(
         filters.OrderingFilter,
         DjangoFilterBackend,
     ]
+    filterset_class = ProductFilter
     filterset_fields = ["id", "category"]
     search_fields = ["name", "id"]
     ordering_fields = ["name", "rating", "overall_price", "created_at", "discount"]
 
     def get_queryset(self):
         if self.action == "list":
-            return Product.objects.prefetch_related("variants").all().annotate(
-                overall_price=Subquery(
-                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
-                        "overall_price"
-                    )[:1]
-                ),
-                discount_price=Subquery(
-                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
-                        "discount_price"
-                    )[:1]
-                ),
-                price=Subquery(
-                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
-                        "price"
-                    )[:1]
-                ),
-                discount=Subquery(
-                    ProductVariant.objects.filter(product=OuterRef("pk")).values(
-                        "discount"
-                    )[:1]
-                ),
+            return (
+                Product.objects.prefetch_related("variants")
+                .all()
+                .annotate(
+                    overall_price=Subquery(
+                        ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                            "overall_price"
+                        )[:1]
+                    ),
+                    discount_price=Subquery(
+                        ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                            "discount_price"
+                        )[:1]
+                    ),
+                    price=Subquery(
+                        ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                            "price"
+                        )[:1]
+                    ),
+                    discount=Subquery(
+                        ProductVariant.objects.filter(product=OuterRef("pk")).values(
+                            "discount"
+                        )[:1]
+                    ),
+                )
             )
         return Product.objects.all().prefetch_related("variants", "reviews")
 
@@ -122,7 +129,9 @@ class ProductViewSet(
         """
         Buy product variant
         """
-        product_variant = ProductVariant.objects.select_for_update().get(pk=request.data.get("product_variant"))
+        product_variant = ProductVariant.objects.select_for_update().get(
+            pk=request.data.get("product_variant")
+        )
         request.data["user"] = request.user.id
         request.data["shop"] = product_variant.product.shop.id
         serializer = CreateOrderSerializer(

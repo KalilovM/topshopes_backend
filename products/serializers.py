@@ -78,7 +78,14 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = [
-            "id", "slug", "name", "icon", "image", "attributes", "featured", "tax"
+            "id",
+            "slug",
+            "name",
+            "icon",
+            "image",
+            "attributes",
+            "featured",
+            "tax",
         ]
 
 
@@ -110,7 +117,7 @@ class CreateProductVariantSerializer(serializers.ModelSerializer):
             "discount",
             "thumbnail",
             "stock",
-            "status"
+            "status",
         ]
 
 
@@ -145,8 +152,7 @@ class CreateProductSerializer(serializers.ModelSerializer):
     Return all fields
     """
 
-    category = serializers.PrimaryKeyRelatedField(
-        queryset=Category.objects.all())
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
 
     class Meta:
         model = Product
@@ -218,9 +224,11 @@ class ProductSerializer(serializers.ModelSerializer):
         read_only=True, max_digits=10, decimal_places=2
     )
     discount = serializers.IntegerField(read_only=True)
-    price = serializers.DecimalField(
-        max_digits=10, decimal_places=2, read_only=True)
+    price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     thumbnail = serializers.SerializerMethodField()
+    brand = serializers.SlugRelatedField(
+        slug_field="name", queryset=Brand.objects.all()
+    )
 
     class Meta:
         model = Product
@@ -233,6 +241,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "rating",
             "overall_price",
             "discount_price",
+            "brand",
             "discount",
             "thumbnail",
             "price",
@@ -241,6 +250,7 @@ class ProductSerializer(serializers.ModelSerializer):
     def get_thumbnail(self, object):
         variant = object.variants.first().thumbnail
         return self.context["request"].build_absolute_uri(variant.url)
+
 
 class SingleCategorySerializer(serializers.ModelSerializer):
     """
