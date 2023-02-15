@@ -1,14 +1,13 @@
-from django_filters.rest_framework import RangeFilter, FilterSet
+from django_filters.rest_framework import FilterSet
 import django_filters
-from .models import Product, Brand
+from .models import Product
 
 
 class ProductFilter(FilterSet):
-		price = RangeFilter()
-		brand = django_filters.ModelMultipleChoiceFilter(
-				queryset=Brand.objects.all(),
-				widget=django_filters.widgets.CSVWidget,
-		)
-		class Meta:
-				model = Product
-				fields = ['price', 'brand']
+    max_price = django_filters.CharFilter(field_name="price", lookup_expr="lte")
+    min_price = django_filters.CharFilter(field_name="price", lookup_expr="gte")
+    brand = django_filters.CharFilter(field_name="brand__name", lookup_expr="in")
+
+    class Meta:
+        model = Product
+        fields = ["price", "brand"]
